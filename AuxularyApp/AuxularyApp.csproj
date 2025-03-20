@@ -10,8 +10,12 @@
 
   <ItemGroup>
     <Folder Include="Infrastructure\Новая папка\" />
-    <Folder Include="Services\" />
     <Folder Include="Data\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OxyPlot.Wpf" Version="2.2.0" />
   </ItemGroup>
 
 </Project>

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using AuxularyApp.Models.DataModels.Base;
 namespace AuxularyApp.Models.DataModels;
 
-public partial class StandPart
+public partial class StandPart : Data
 {
     public int? StandId { get; set; }
 

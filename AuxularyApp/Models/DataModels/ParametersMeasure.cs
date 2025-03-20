@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using AuxularyApp.Models.DataModels.Base;
 namespace AuxularyApp.Models.DataModels;
 
-public partial class ParametersMeasure
+public partial class ParametersMeasure : Data
 {
     public int? Id { get; set; }
 
