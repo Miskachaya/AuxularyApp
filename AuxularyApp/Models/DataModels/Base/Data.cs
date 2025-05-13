@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace AuxularyApp.Models.DataModels.Base
 {
-    public partial class Data
+    public partial class Data : IDisposable
     {
-
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
