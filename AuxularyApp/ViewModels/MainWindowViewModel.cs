@@ -459,6 +459,21 @@ namespace AuxularyApp.ViewModels
             Series6[i].IsVisible = !Series6[i].IsVisible;
         }
         private bool CanSwitchVisiableCommandExecuted(object p) => true;
+        public ICommand CanGetDataList { get; }
+        private async void OnGetDataList(object p)
+        {
+            
+            HttpClientHandler handler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
+                {
+                    return true;
+                }
+            };
+            HttpClient httpClient = new HttpClient(handler);
+            using var response = await httpClient.GetAsync("https://localhost:7133/api/ParametersMeasures/lv");
+            string content = await response.Content.ReadAsStringAsync();
+        }
         #endregion
         #region Properties
 
