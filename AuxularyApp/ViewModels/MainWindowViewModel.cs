@@ -29,14 +29,39 @@ using LiveChartsCore.Kernel.Sketches;
 using LiveChartsCore.SkiaSharpView.VisualElements;
 using GalaSoft.MvvmLight.Command;
 using AuxularyApp.Infrastructure.Commands;
+using LiveChartsCore.Kernel.Events;
+using System.Collections.ObjectModel;
+using System.Linq;
+using CommunityToolkit.Mvvm.Input;
+using LiveChartsCore;
+using LiveChartsCore.Defaults;
+using LiveChartsCore.Kernel.Events;
+using LiveChartsCore.Kernel.Sketches;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
+using SkiaSharp;
 namespace AuxularyApp.ViewModels
 {
-    internal class MainWindowViewModel : ViewModel
+    internal partial class MainWindowViewModel : ViewModel
     {
         int maxVal =18;
         public ObservableCollection<ObservableCollection<ParametersMeasure>> _Measurements = new ObservableCollection<ObservableCollection<ParametersMeasure>>();
         private readonly DateTimeAxis _customAxis;
-        #region
+        private readonly DateTimeAxis _customAxis2;
+        private bool _isDown = false;
+        private readonly ObservableCollection<DateTimePoint> _values1 = [];
+        private readonly ObservableCollection<DateTimePoint> _values2 = [];
+        private readonly ObservableCollection<DateTimePoint> _values3 = [];
+
+        public ISeries[] Series { get; set; }
+        public Axis[] ScrollableAxes { get; set; }
+        public ISeries[] ScrollbarSeries { get; set; }
+        public Axis[] InvisibleX { get; set; }
+        public Axis[] InvisibleY { get; set; }
+        public LiveChartsCore.Measure.Margin Margin { get; set; }
+        public RectangularSection[] Thumbs { get; set; }
+  
+        #region Series
         public ObservableCollection<ISeries> Series1 { get; set; }
         private readonly List<DateTimePoint> _Voltagevalues1 = [];
         private readonly List<DateTimePoint> _ActiveLPvalues1 = [];
@@ -73,6 +98,12 @@ namespace AuxularyApp.ViewModels
         private readonly List<DateTimePoint> _ReactiveLPvalues6= [];
         private readonly List<DateTimePoint> _FullLPvalues6 = [];
 
+        public ObservableCollection<ISeries> Series7 { get; set; }
+        private readonly List<DateTimePoint> _Voltagevalues7 = [];
+        private readonly List<DateTimePoint> _ActiveLPvalues7 = [];
+        private readonly List<DateTimePoint> _ReactiveLPvalues7 = [];
+        private readonly List<DateTimePoint> _FullLPvalues7 = [];
+
         #endregion
         public Axis[] XAxes { get; set; }
         public ICartesianAxis[] YAxes { get; set; } = [
@@ -93,6 +124,102 @@ namespace AuxularyApp.ViewModels
         public bool IsReading { get; set; } = true;
 
         public MainWindowViewModel(){
+            var trend = 1000;
+            var r = new Random();
+
+            for (var i = 0; i < 500; i++)
+            {
+                _values1.Add(new DateTimePoint(DateTime.Now.AddSeconds(i), trend += r.Next(-10, 10)));
+                _values2.Add(new DateTimePoint(DateTime.Now.AddSeconds(i), trend += r.Next(-10, 10)));
+                _values3.Add(new DateTimePoint(DateTime.Now.AddSeconds(i), trend += r.Next(-10, 10)));
+            }
+                
+
+            Series = [
+                new LineSeries<DateTimePoint>
+            {
+                Name = "МТПН1-А3",
+                IsVisible = true,
+                Values = _values1,
+                Fill = null,
+                GeometryFill = null,
+                GeometryStroke = null,
+                LineSmoothness = 0,
+                DataPadding = new(0, 1)
+            },
+            new LineSeries<DateTimePoint>
+            {
+                Name = "МТПН1-А4",
+                IsVisible = true,
+                Values = _values2,
+                Fill = null,
+                GeometryFill = null,
+                GeometryStroke = null,
+                LineSmoothness = 0,
+                DataPadding = new(0, 1)
+            },
+            new LineSeries<DateTimePoint>
+            {
+                Name = "ИПОС1-Р1",
+                IsVisible = true,
+                Values = _values3,
+                Fill = null,
+                GeometryFill = null,
+                GeometryStroke = null,
+                LineSmoothness = 0,
+                DataPadding = new(0, 1)
+            }
+            ];
+
+            ScrollbarSeries = [
+                new LineSeries<DateTimePoint>
+            {
+                Values = _values1,
+                GeometryStroke = null,
+                GeometryFill = null,
+                DataPadding = new(0, 1)
+            },
+              new LineSeries<DateTimePoint>
+            {
+                Values = _values2,
+                GeometryStroke = null,
+                GeometryFill = null,
+                DataPadding = new(0, 1)
+            },
+              new LineSeries<DateTimePoint>
+            {
+                Values = _values3,
+                GeometryStroke = null,
+                GeometryFill = null,
+                DataPadding = new(0, 1)
+            }
+            ];
+
+            
+            _customAxis2 = new DateTimeAxis(TimeSpan.FromSeconds(1), Formatter)
+            {
+                LabelsRotation = 90,
+                //MaxLimit = DateTime.Now.AddSeconds(-20).Ticks,
+                AnimationsSpeed = TimeSpan.FromMilliseconds(0),
+                SeparatorsPaint = new SolidColorPaint(SKColors.Black.WithAlpha(100))
+            };
+            ScrollableAxes = [_customAxis2];
+            Thumbs = [
+                new RectangularSection
+            {
+                Fill = new SolidColorPaint(new SKColor(255, 205, 210, 100))
+            }
+            ];
+
+            InvisibleX = [new Axis { IsVisible = false }];
+            InvisibleY = [new Axis { IsVisible = false }];
+
+            // force the left margin to be 100 and the right margin 50 in both charts, this will
+            // align the start and end point of the "draw margin",
+            // no matter the size of the labels in the Y axis of both chart.
+            var auto = LiveChartsCore.Measure.Margin.Auto;
+            Margin = new(100, auto, 50, auto);
+
             SwitchVisiableCommand1 = new LambdaCommand(OnSwitchVisibleCommandExecuted1, CanSwitchVisiableCommandExecuted);
             SwitchVisiableCommand2 = new LambdaCommand(OnSwitchVisibleCommandExecuted2, CanSwitchVisiableCommandExecuted);
             SwitchVisiableCommand3 = new LambdaCommand(OnSwitchVisibleCommandExecuted3, CanSwitchVisiableCommandExecuted);
@@ -342,6 +469,46 @@ namespace AuxularyApp.ViewModels
                 GeometryStroke = null
             }
         ];
+            Series7 = [
+            new LineSeries<DateTimePoint>
+            {
+                Name = "Voltage",
+                IsVisible = true,
+                Values = _Voltagevalues7,
+                Fill = null,
+                GeometryFill = null,
+                GeometryStroke = null,
+                LineSmoothness = 0
+            },
+            new LineSeries<DateTimePoint>
+            {
+                Name = "ActiveLP",
+                IsVisible = true,
+                Values = _ActiveLPvalues7,
+                Fill = null,
+                GeometryFill = null,
+                GeometryStroke = null,
+                LineSmoothness = 1
+            },
+            new LineSeries<DateTimePoint>
+            {
+                Name = "ReactiveLP",
+                IsVisible = true,
+                Values = _ReactiveLPvalues7,
+                Fill = null,
+                GeometryFill = null,
+                GeometryStroke = null
+            },
+            new LineSeries<DateTimePoint>
+            {
+                Name = "FullLP",
+                IsVisible = true,
+                Values = _FullLPvalues7,
+                Fill = null,
+                GeometryFill = null,
+                GeometryStroke = null
+            }
+        ];
             _customAxis = new DateTimeAxis(TimeSpan.FromSeconds(1), Formatter)
             {
                 LabelsRotation = 90,
@@ -416,6 +583,48 @@ namespace AuxularyApp.ViewModels
                
         }
         #region Команды
+        [RelayCommand]
+        public void ChartUpdated(ChartCommandArgs args)
+        {
+            var cartesianChart = (ICartesianChartView)args.Chart;
+
+            var x = cartesianChart.XAxes.First();
+
+            // update the scroll bar thumb when the chart is updated (zoom/pan)
+            // this will let the user know the current visible range
+            var thumb = Thumbs[0];
+
+            thumb.Xi = x.MinLimit;
+            thumb.Xj = x.MaxLimit;
+        }
+
+        [RelayCommand]
+        public void PointerDown(PointerCommandArgs args) =>
+            _isDown = true;
+
+        [RelayCommand]
+        public void PointerMove(PointerCommandArgs args)
+        {
+            if (!_isDown) return;
+
+            var chart = (ICartesianChartView)args.Chart;
+            var positionInData = chart.ScalePixelsToData(args.PointerPosition);
+
+            var thumb = Thumbs[0];
+            var currentRange = thumb.Xj - thumb.Xi;
+
+            // update the scroll bar thumb when the user is dragging the chart
+            thumb.Xi = positionInData.X - currentRange / 2;
+            thumb.Xj = positionInData.X + currentRange / 2;
+
+            // update the chart visible range
+            ScrollableAxes[0].MinLimit = thumb.Xi;
+            ScrollableAxes[0].MaxLimit = thumb.Xj;
+        }
+
+        [RelayCommand]
+        public void PointerUp(PointerCommandArgs args) =>
+            _isDown = false;
         public ICommand SwitchVisiableCommand1 { get; }
         private void OnSwitchVisibleCommandExecuted1(object p)
         {
@@ -473,10 +682,10 @@ namespace AuxularyApp.ViewModels
             HttpClient httpClient = new HttpClient(handler);
             using var response = await httpClient.GetAsync("https://localhost:7133/api/ParametersMeasures/lv");
             string content = await response.Content.ReadAsStringAsync();
+            ParametersMeasure[] collection = JsonSerializer.Deserialize<ParametersMeasure[]>(content);
         }
         #endregion
         #region Properties
-
         #region WindowTitle
         private string _Title;
         public string Title2
@@ -485,13 +694,24 @@ namespace AuxularyApp.ViewModels
                 set => Set(ref _Title,value);
             }
         #endregion
-        #region
-        private int _Int;
-        public int Int
+        #region ParametersData
+        public class ParametersData
         {
-            get => _Int;
-            set => Set(ref _Int, value);
+            public string ParameterName { get; set; }
+            public string ParameterSubName { get; set; }
         }
+
+        private List<ParametersData> _ParamData = new List<ParametersData>()
+        {
+            new ParametersData() { ParameterSubName = "Напряжение", ParameterName="VoltageValue" },
+            new ParametersData() { ParameterSubName = "Ток", ParameterName="CurrentValue"},
+            new ParametersData() { ParameterSubName = "Активная мощность", ParameterName="ActiveLoadPower" },
+            new ParametersData() { ParameterSubName = "Реактивная мощность", ParameterName="ReactiveLoadPower"},
+            new ParametersData() { ParameterSubName = "Полная мощность", ParameterName="FullLoadPower" },
+            new ParametersData() { ParameterSubName = "Коэф. мощности нагрузки", ParameterName="LoadPowerFactor" },
+            new ParametersData() { ParameterSubName = "частота эл. сети", ParameterName="MicrogridFrequency" },
+        };
+        public List<ParametersData> ParamData { get => _ParamData; set => _ParamData = value; }
         #endregion
         #endregion
         public async void GetResponse()
