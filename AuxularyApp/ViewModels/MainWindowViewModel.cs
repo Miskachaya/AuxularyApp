@@ -40,6 +40,7 @@ using LiveChartsCore.Kernel.Sketches;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using SkiaSharp;
+using System.Xml.Linq;
 namespace AuxularyApp.ViewModels
 {
     internal partial class MainWindowViewModel : ViewModel
@@ -67,71 +68,109 @@ namespace AuxularyApp.ViewModels
         private readonly List<DateTimePoint> _ActiveLPvalues1 = [];
         private readonly List<DateTimePoint> _ReactiveLPvalues1 = [];
         private readonly List<DateTimePoint> _FullLPvalues1 = [];
+        private readonly List<DateTimePoint> _MicrogridFr1 = [];
+        private readonly List<DateTimePoint> _CurrentValue1 = [];
+        private readonly List<DateTimePoint> _LPF1 = [];
 
         public ObservableCollection<ISeries> Series2 { get; set; }
         private readonly List<DateTimePoint> _Voltagevalues2 = [];
         private readonly List<DateTimePoint> _ActiveLPvalues2 = [];
         private readonly List<DateTimePoint> _ReactiveLPvalues2 = [];
         private readonly List<DateTimePoint> _FullLPvalues2 = [];
+        private readonly List<DateTimePoint> _MicrogridFr2 = [];
+        private readonly List<DateTimePoint> _CurrentValue2 = [];
+        private readonly List<DateTimePoint> _LPF2 = [];
 
         public ObservableCollection<ISeries> Series3 { get; set; }
         private readonly List<DateTimePoint> _Voltagevalues3 = [];
         private readonly List<DateTimePoint> _ActiveLPvalues3 = [];
         private readonly List<DateTimePoint> _ReactiveLPvalues3 = [];
         private readonly List<DateTimePoint> _FullLPvalues3 = [];
+        private readonly List<DateTimePoint> _MicrogridFr3 = [];
+        private readonly List<DateTimePoint> _CurrentValue3 = [];
+        private readonly List<DateTimePoint> _LPF3 = [];
 
         public ObservableCollection<ISeries> Series4 { get; set; }
         private readonly List<DateTimePoint> _Voltagevalues4 = [];
         private readonly List<DateTimePoint> _ActiveLPvalues4 = [];
         private readonly List<DateTimePoint> _ReactiveLPvalues4 = [];
         private readonly List<DateTimePoint> _FullLPvalues4 = [];
+        private readonly List<DateTimePoint> _MicrogridFr4 = [];
+        private readonly List<DateTimePoint> _CurrentValue4 = [];
+        private readonly List<DateTimePoint> _LPF4 = [];
 
         public ObservableCollection<ISeries> Series5 { get; set; }
         private readonly List<DateTimePoint> _Voltagevalues5 = [];
         private readonly List<DateTimePoint> _ActiveLPvalues5 = [];
         private readonly List<DateTimePoint> _ReactiveLPvalues5 = [];
         private readonly List<DateTimePoint> _FullLPvalues5 = [];
+        private readonly List<DateTimePoint> _MicrogridFr5 = [];
+        private readonly List<DateTimePoint> _CurrentValue5 = [];
+        private readonly List<DateTimePoint> _LPF5 = [];
 
         public ObservableCollection<ISeries> Series6 { get; set; }
         private readonly List<DateTimePoint> _Voltagevalues6 = [];
         private readonly List<DateTimePoint> _ActiveLPvalues6 = [];
         private readonly List<DateTimePoint> _ReactiveLPvalues6= [];
         private readonly List<DateTimePoint> _FullLPvalues6 = [];
+        private readonly List<DateTimePoint> _MicrogridFr6 = [];
+        private readonly List<DateTimePoint> _CurrentValue6 = [];
+        private readonly List<DateTimePoint> _LPF6 = [];
 
         public ObservableCollection<ISeries> Series7 { get; set; }
         private readonly List<DateTimePoint> _Voltagevalues7 = [];
         private readonly List<DateTimePoint> _ActiveLPvalues7 = [];
         private readonly List<DateTimePoint> _ReactiveLPvalues7 = [];
         private readonly List<DateTimePoint> _FullLPvalues7 = [];
+        private readonly List<DateTimePoint> _MicrogridFr7 = [];
+        private readonly List<DateTimePoint> _CurrentValue7 = [];
+        private readonly List<DateTimePoint> _LPF7 = [];
 
         #endregion
         public Axis[] XAxes { get; set; }
         public ICartesianAxis[] YAxes { get; set; } = [
         new Axis
             {
+                TextSize = 13,
                 // We can specify a custom separator collection
                 // the library will use this separators instead of
                 // calculating them based on the date of the chart
-                CustomSeparators = [0, 100, 200, 300,400,500],
+                CustomSeparators = [0,  1000, 2000,3000,4000, 5000],
+                MinLimit = 0, // forces the axis to start at 0
+                MaxLimit = 5000, // forces the axis to end at 100
+                SeparatorsPaint = new SolidColorPaint(SKColors.Black.WithAlpha(100))
+            }
+        ];
+        public ICartesianAxis[] YAxes2 { get; set; } = [
+        new Axis
+            {
+                TextSize = 13,
+                // We can specify a custom separator collection
+                // the library will use this separators instead of
+                // calculating them based on the date of the chart
+                CustomSeparators = [0,  100, 200,300,400, 500],
                 MinLimit = 0, // forces the axis to start at 0
                 MaxLimit = 500, // forces the axis to end at 100
                 SeparatorsPaint = new SolidColorPaint(SKColors.Black.WithAlpha(100))
             }
         ];
-      
+
         public object Sync { get; } = new object();
 
         public bool IsReading { get; set; } = true;
 
         public MainWindowViewModel(){
-            var trend = 1000;
+            UpdateClock();
+            var trend1 = 350;
+            var trend2 = 318;
+            var trend3 = 252;
             var r = new Random();
 
             for (var i = 0; i < 500; i++)
             {
-                _values1.Add(new DateTimePoint(DateTime.Now.AddSeconds(i), trend += r.Next(-10, 10)));
-                _values2.Add(new DateTimePoint(DateTime.Now.AddSeconds(i), trend += r.Next(-10, 10)));
-                _values3.Add(new DateTimePoint(DateTime.Now.AddSeconds(i), trend += r.Next(-10, 10)));
+                _values1.Add(new DateTimePoint(DateTime.Now.AddSeconds(i), trend1 += r.Next(-3, 3)));
+                _values2.Add(new DateTimePoint(DateTime.Now.AddSeconds(i), trend2 + r.Next(-1, 1)));
+                _values3.Add(new DateTimePoint(DateTime.Now.AddSeconds(i), trend3 + r.Next(-5, 5)));
             }
                 
 
@@ -147,28 +186,28 @@ namespace AuxularyApp.ViewModels
                 LineSmoothness = 0,
                 DataPadding = new(0, 1)
             },
-            new LineSeries<DateTimePoint>
-            {
-                Name = "МТПН1-А4",
-                IsVisible = true,
-                Values = _values2,
-                Fill = null,
-                GeometryFill = null,
-                GeometryStroke = null,
-                LineSmoothness = 0,
-                DataPadding = new(0, 1)
-            },
-            new LineSeries<DateTimePoint>
-            {
-                Name = "ИПОС1-Р1",
-                IsVisible = true,
-                Values = _values3,
-                Fill = null,
-                GeometryFill = null,
-                GeometryStroke = null,
-                LineSmoothness = 0,
-                DataPadding = new(0, 1)
-            }
+            //new LineSeries<DateTimePoint>
+            //{
+            //    Name = "МТПН1-А4",
+            //    IsVisible = true,
+            //    Values = _values2,
+            //    Fill = null,
+            //    GeometryFill = null,
+            //    GeometryStroke = null,
+            //    LineSmoothness = 0,
+            //    DataPadding = new(0, 1)
+            //},
+            //    new LineSeries<DateTimePoint>
+            //{
+            //    Name = "ИПОС1-Р1",
+            //    IsVisible = true,
+            //    Values = _values3,
+            //    Fill = null,
+            //    GeometryFill = null,
+            //    GeometryStroke = null,
+            //    LineSmoothness = 0,
+            //    DataPadding = new (0, 1)
+            //}
             ];
 
             ScrollbarSeries = [
@@ -179,25 +218,27 @@ namespace AuxularyApp.ViewModels
                 GeometryFill = null,
                 DataPadding = new(0, 1)
             },
-              new LineSeries<DateTimePoint>
-            {
-                Values = _values2,
-                GeometryStroke = null,
-                GeometryFill = null,
-                DataPadding = new(0, 1)
-            },
-              new LineSeries<DateTimePoint>
-            {
-                Values = _values3,
-                GeometryStroke = null,
-                GeometryFill = null,
-                DataPadding = new(0, 1)
-            }
+            //new LineSeries<DateTimePoint>
+            //{
+            //    Values = _values2,
+            //    GeometryStroke = null,
+            //    GeometryFill = null,
+            //    DataPadding = new(0, 1)
+            //},
+            //new LineSeries<DateTimePoint>
+            //{
+            //    Values = _values3,
+            //    GeometryStroke = null,
+            //    GeometryFill = null,
+            //    DataPadding = new(0, 1)
+            //}
             ];
 
-            
+
             _customAxis2 = new DateTimeAxis(TimeSpan.FromSeconds(1), Formatter)
             {
+                
+                //TextSize = 13,
                 LabelsRotation = 90,
                 //MaxLimit = DateTime.Now.AddSeconds(-20).Ticks,
                 AnimationsSpeed = TimeSpan.FromMilliseconds(0),
@@ -230,7 +271,7 @@ namespace AuxularyApp.ViewModels
 
             new LineSeries<DateTimePoint>
             {
-                Name = "Voltage",
+                Name = "Напряжение",
                 IsVisible = true,
                 Values = _Voltagevalues1,
                 Fill = null,
@@ -240,7 +281,17 @@ namespace AuxularyApp.ViewModels
             },
             new LineSeries<DateTimePoint>
             {
-                Name = "ActiveLP",
+                Name = "Ток",
+                IsVisible = true,
+                Values = _CurrentValue1,
+                Fill = null,
+                GeometryFill = null,
+                GeometryStroke = null,
+                LineSmoothness = 0
+            },
+            new LineSeries<DateTimePoint>
+            {
+                Name = "Ативная МН",
                 IsVisible = true,
                 Values = _ActiveLPvalues1,
                 Fill = null,
@@ -250,7 +301,7 @@ namespace AuxularyApp.ViewModels
             },
             new LineSeries<DateTimePoint>
             {
-                Name = "ReactiveLP",
+                Name = "Реактивная МН",
                 IsVisible = true,
                 Values = _ReactiveLPvalues1,
                 Fill = null,
@@ -260,9 +311,29 @@ namespace AuxularyApp.ViewModels
             },
             new LineSeries<DateTimePoint>
             {
-                Name = "FullLP",
+                Name = "Полная МН",
                 IsVisible = true,
                 Values = _FullLPvalues1,
+                Fill = null,
+                GeometryFill = null,
+                GeometryStroke = null,
+                LineSmoothness = 0
+            },
+            new LineSeries<DateTimePoint>
+            {
+                Name = "Коэф. мощности нагрузки",
+                IsVisible = true,
+                Values = _LPF1,
+                Fill = null,
+                GeometryFill = null,
+                GeometryStroke = null,
+                LineSmoothness = 0
+            },
+            new LineSeries<DateTimePoint>
+            {
+                Name = "Частота эл.сети",
+                IsVisible = true,
+                Values = _MicrogridFr1,
                 Fill = null,
                 GeometryFill = null,
                 GeometryStroke = null,
@@ -272,7 +343,7 @@ namespace AuxularyApp.ViewModels
             Series2 = [
             new LineSeries<DateTimePoint>
             {
-                Name = "Voltage",
+                Name = "Напряжение",
                 IsVisible = true,
                 Values = _Voltagevalues2,
                 Fill = null,
@@ -282,7 +353,17 @@ namespace AuxularyApp.ViewModels
             },
             new LineSeries<DateTimePoint>
             {
-                Name = "ActiveLP",
+                Name = "Ток",
+                IsVisible = true,
+                Values = _CurrentValue2,
+                Fill = null,
+                GeometryFill = null,
+                GeometryStroke = null,
+                LineSmoothness = 0
+            },
+            new LineSeries<DateTimePoint>
+            {
+                Name = "Активная МН",
                 IsVisible = true,
                 Values = _ActiveLPvalues2,
                 Fill = null,
@@ -292,7 +373,7 @@ namespace AuxularyApp.ViewModels
             },
             new LineSeries<DateTimePoint>
             {
-                Name = "ReactiveLP",
+                Name = "Реактивная МН",
                 IsVisible = true,
                 Values = _ReactiveLPvalues2,
                 Fill = null,
@@ -301,18 +382,38 @@ namespace AuxularyApp.ViewModels
             },
             new LineSeries<DateTimePoint>
             {
-                Name = "FullLP",
+                Name = "Полная МН",
                 IsVisible = true,
                 Values = _FullLPvalues2,
                 Fill = null,
                 GeometryFill = null,
                 GeometryStroke = null
+            },
+            new LineSeries<DateTimePoint>
+            {
+                Name = "Коэф. мощности нагрузки",
+                IsVisible = true,
+                Values = _LPF2,
+                Fill = null,
+                GeometryFill = null,
+                GeometryStroke = null,
+                LineSmoothness = 0
+            },
+            new LineSeries<DateTimePoint>
+            {
+                Name = "Частота эл.сети",
+                IsVisible = true,
+                Values = _MicrogridFr2,
+                Fill = null,
+                GeometryFill = null,
+                GeometryStroke = null,
+                LineSmoothness = 0
             }
         ];
             Series3 = [
             new LineSeries<DateTimePoint>
             {
-                Name = "Voltage",
+                Name = "Напряжение",
                 IsVisible = true,
                 Values = _Voltagevalues3,
                 Fill = null,
@@ -322,7 +423,17 @@ namespace AuxularyApp.ViewModels
             },
             new LineSeries<DateTimePoint>
             {
-                Name = "ActiveLP",
+                Name = "Ток",
+                IsVisible = true,
+                Values = _CurrentValue3,
+                Fill = null,
+                GeometryFill = null,
+                GeometryStroke = null,
+                LineSmoothness = 0
+            },
+            new LineSeries<DateTimePoint>
+            {
+                Name = "Активная МН",
                 IsVisible = true,
                 Values = _ActiveLPvalues3,
                 Fill = null,
@@ -332,7 +443,7 @@ namespace AuxularyApp.ViewModels
             },
             new LineSeries<DateTimePoint>
             {
-                Name = "ReactiveLP",
+                Name = "Реактивная МН",
                 IsVisible = true,
                 Values = _ReactiveLPvalues3,
                 Fill = null,
@@ -341,18 +452,38 @@ namespace AuxularyApp.ViewModels
             },
             new LineSeries<DateTimePoint>
             {
-                Name = "FullLP",
+                Name = "Полная МН",
                 IsVisible = true,
                 Values = _FullLPvalues3,
                 Fill = null,
                 GeometryFill = null,
                 GeometryStroke = null
+            },
+            new LineSeries<DateTimePoint>
+            {
+                Name = "Коэф. мощности нагрузки",
+                IsVisible = true,
+                Values = _LPF3,
+                Fill = null,
+                GeometryFill = null,
+                GeometryStroke = null,
+                LineSmoothness = 0
+            },
+            new LineSeries<DateTimePoint>
+            {
+                Name = "Частота эл.сети",
+                IsVisible = true,
+                Values = _MicrogridFr3,
+                Fill = null,
+                GeometryFill = null,
+                GeometryStroke = null,
+                LineSmoothness = 0
             }
         ];
             Series4 = [
             new LineSeries<DateTimePoint>
             {
-                Name = "Voltage",
+                Name = "Напряжение",
                 IsVisible = true,
                 Values = _Voltagevalues4,
                 Fill = null,
@@ -362,7 +493,17 @@ namespace AuxularyApp.ViewModels
             },
             new LineSeries<DateTimePoint>
             {
-                Name = "ActiveLP",
+                Name = "Ток",
+                IsVisible = true,
+                Values = _CurrentValue4,
+                Fill = null,
+                GeometryFill = null,
+                GeometryStroke = null,
+                LineSmoothness = 0
+            },
+            new LineSeries<DateTimePoint>
+            {
+                Name = "Активная МН",
                 IsVisible = true,
                 Values = _ActiveLPvalues4,
                 Fill = null,
@@ -372,7 +513,7 @@ namespace AuxularyApp.ViewModels
             },
             new LineSeries<DateTimePoint>
             {
-                Name = "ReactiveLP",
+                Name = "Реактивная МН",
                 IsVisible = true,
                 Values = _ReactiveLPvalues4,
                 Fill = null,
@@ -381,18 +522,38 @@ namespace AuxularyApp.ViewModels
             },
             new LineSeries<DateTimePoint>
             {
-                Name = "FullLP",
+                Name = "Полная Мн",
                 IsVisible = true,
                 Values = _FullLPvalues4,
                 Fill = null,
                 GeometryFill = null,
                 GeometryStroke = null
+            },
+            new LineSeries<DateTimePoint>
+            {
+                Name = "Коэф. мощности нагрузки",
+                IsVisible = true,
+                Values = _LPF4,
+                Fill = null,
+                GeometryFill = null,
+                GeometryStroke = null,
+                LineSmoothness = 0
+            },
+            new LineSeries<DateTimePoint>
+            {
+                Name = "Частота эл.сети",
+                IsVisible = true,
+                Values = _MicrogridFr4,
+                Fill = null,
+                GeometryFill = null,
+                GeometryStroke = null,
+                LineSmoothness = 0
             }
         ];
             Series5 = [
             new LineSeries<DateTimePoint>
             {
-                Name = "Voltage",
+                Name = "Напряжение",
                 IsVisible = true,
                 Values = _Voltagevalues5,
                 Fill = null,
@@ -402,7 +563,17 @@ namespace AuxularyApp.ViewModels
             },
             new LineSeries<DateTimePoint>
             {
-                Name = "ActiveLP",
+                Name = "Ток",
+                IsVisible = true,
+                Values = _CurrentValue5,
+                Fill = null,
+                GeometryFill = null,
+                GeometryStroke = null,
+                LineSmoothness = 0
+            },
+            new LineSeries<DateTimePoint>
+            {
+                Name = "Активная МН",
                 IsVisible = true,
                 Values = _ActiveLPvalues5,
                 Fill = null,
@@ -412,7 +583,7 @@ namespace AuxularyApp.ViewModels
             },
             new LineSeries<DateTimePoint>
             {
-                Name = "ReactiveLP",
+                Name = "Реактивная МН",
                 IsVisible = true,
                 Values = _ReactiveLPvalues5,
                 Fill = null,
@@ -421,18 +592,38 @@ namespace AuxularyApp.ViewModels
             },
             new LineSeries<DateTimePoint>
             {
-                Name = "FullLP",
+                Name = "Полная МН",
                 IsVisible = true,
                 Values = _FullLPvalues5,
                 Fill = null,
                 GeometryFill = null,
                 GeometryStroke = null
+            },
+            new LineSeries<DateTimePoint>
+            {
+                Name = "Коэф. мощности нагрузки",
+                IsVisible = true,
+                Values = _LPF5,
+                Fill = null,
+                GeometryFill = null,
+                GeometryStroke = null,
+                LineSmoothness = 0
+            },
+            new LineSeries<DateTimePoint>
+            {
+                Name = "Частота эл.сети",
+                IsVisible = true,
+                Values = _MicrogridFr5,
+                Fill = null,
+                GeometryFill = null,
+                GeometryStroke = null,
+                LineSmoothness = 0
             }
         ];
             Series6 = [
             new LineSeries<DateTimePoint>
             {
-                Name = "Voltage",
+                Name = "Нпряжение",
                 IsVisible = true,
                 Values = _Voltagevalues6,
                 Fill = null,
@@ -442,7 +633,17 @@ namespace AuxularyApp.ViewModels
             },
             new LineSeries<DateTimePoint>
             {
-                Name = "ActiveLP",
+                Name = "Ток",
+                IsVisible = true,
+                Values = _CurrentValue6,
+                Fill = null,
+                GeometryFill = null,
+                GeometryStroke = null,
+                LineSmoothness = 0
+            },
+            new LineSeries<DateTimePoint>
+            {
+                Name = "Активная МН",
                 IsVisible = true,
                 Values = _ActiveLPvalues6,
                 Fill = null,
@@ -452,7 +653,7 @@ namespace AuxularyApp.ViewModels
             },
             new LineSeries<DateTimePoint>
             {
-                Name = "ReactiveLP",
+                Name = "Реактивная МН",
                 IsVisible = true,
                 Values = _ReactiveLPvalues6,
                 Fill = null,
@@ -461,18 +662,38 @@ namespace AuxularyApp.ViewModels
             },
             new LineSeries<DateTimePoint>
             {
-                Name = "FullLP",
+                Name = "Полная МН",
                 IsVisible = true,
                 Values = _FullLPvalues6,
                 Fill = null,
                 GeometryFill = null,
                 GeometryStroke = null
+            },
+            new LineSeries<DateTimePoint>
+            {
+                Name = "Коэф. мощности нагрузки",
+                IsVisible = true,
+                Values = _LPF6,
+                Fill = null,
+                GeometryFill = null,
+                GeometryStroke = null,
+                LineSmoothness = 0
+            },
+            new LineSeries<DateTimePoint>
+            {
+                Name = "Частота эл.сети",
+                IsVisible = true,
+                Values = _MicrogridFr6,
+                Fill = null,
+                GeometryFill = null,
+                GeometryStroke = null,
+                LineSmoothness = 0
             }
         ];
             Series7 = [
             new LineSeries<DateTimePoint>
             {
-                Name = "Voltage",
+                Name = "Напряжение",
                 IsVisible = true,
                 Values = _Voltagevalues7,
                 Fill = null,
@@ -482,7 +703,17 @@ namespace AuxularyApp.ViewModels
             },
             new LineSeries<DateTimePoint>
             {
-                Name = "ActiveLP",
+                Name = "Ток",
+                IsVisible = true,
+                Values = _CurrentValue7,
+                Fill = null,
+                GeometryFill = null,
+                GeometryStroke = null,
+                LineSmoothness = 0
+            },
+            new LineSeries<DateTimePoint>
+            {
+                Name = "Активная МН",
                 IsVisible = true,
                 Values = _ActiveLPvalues7,
                 Fill = null,
@@ -492,7 +723,7 @@ namespace AuxularyApp.ViewModels
             },
             new LineSeries<DateTimePoint>
             {
-                Name = "ReactiveLP",
+                Name = "Реактивная МН",
                 IsVisible = true,
                 Values = _ReactiveLPvalues7,
                 Fill = null,
@@ -501,16 +732,37 @@ namespace AuxularyApp.ViewModels
             },
             new LineSeries<DateTimePoint>
             {
-                Name = "FullLP",
+                Name = "Полная МН",
                 IsVisible = true,
                 Values = _FullLPvalues7,
                 Fill = null,
                 GeometryFill = null,
                 GeometryStroke = null
+            },
+            new LineSeries<DateTimePoint>
+            {
+                Name = "Коэф. мощности нагрузки",
+                IsVisible = true,
+                Values = _LPF7,
+                Fill = null,
+                GeometryFill = null,
+                GeometryStroke = null,
+                LineSmoothness = 0
+            },
+            new LineSeries<DateTimePoint>
+            {
+                Name = "Частота эл.сети",
+                IsVisible = true,
+                Values = _MicrogridFr7,
+                Fill = null,
+                GeometryFill = null,
+                GeometryStroke = null,
+                LineSmoothness = 0
             }
         ];
             _customAxis = new DateTimeAxis(TimeSpan.FromSeconds(1), Formatter)
             {
+                TextSize = 13,
                 LabelsRotation = 90,
                 //MaxLimit = DateTime.Now.AddSeconds(-20).Ticks,
                 CustomSeparators = GetSeparators(),
@@ -709,9 +961,27 @@ namespace AuxularyApp.ViewModels
             new ParametersData() { ParameterSubName = "Реактивная мощность", ParameterName="ReactiveLoadPower"},
             new ParametersData() { ParameterSubName = "Полная мощность", ParameterName="FullLoadPower" },
             new ParametersData() { ParameterSubName = "Коэф. мощности нагрузки", ParameterName="LoadPowerFactor" },
-            new ParametersData() { ParameterSubName = "частота эл. сети", ParameterName="MicrogridFrequency" },
+            new ParametersData() { ParameterSubName = "Частота эл. сети", ParameterName="MicrogridFrequency" },
         };
         public List<ParametersData> ParamData { get => _ParamData; set => _ParamData = value; }
+        #endregion
+        #region DateTime
+        private string _Date = DateTime.Now.ToString("dd.MM.yyyy\nHH:mm:ss");
+        public string Date
+        {
+            get => _Date;
+            set => Set(ref _Date, value);
+        }
+        private void UpdateClock()
+        {
+            var timer = new System.Windows.Threading.DispatcherTimer();
+            timer.Interval = TimeSpan.FromSeconds(1); // Обновлять каждую секунду
+            timer.Tick += (sender, e) =>
+            {
+                Date = DateTime.Now.ToString("dd.MM.yyyy\nHH:mm:ss");
+            };
+            timer.Start();
+        }
         #endregion
         #endregion
         public async void GetResponse()
@@ -745,6 +1015,13 @@ namespace AuxularyApp.ViewModels
                             if (_FullLPvalues1.Count > maxVal) _FullLPvalues1.RemoveAt(0);
                             _ActiveLPvalues1.Add(new DateTimePoint(d.Time, d.ActiveLoadPower));
                             if (_ActiveLPvalues1.Count > maxVal) _ActiveLPvalues1.RemoveAt(0);
+
+                            _CurrentValue1.Add(new DateTimePoint(d.Time, d.CurrentValue));
+                            if (_CurrentValue1.Count > maxVal) _CurrentValue1.RemoveAt(0);
+                            _LPF1.Add(new DateTimePoint(d.Time, d.LoadPowerFactor));
+                            if (_LPF1.Count > maxVal) _LPF1.RemoveAt(0);
+                            _MicrogridFr1.Add(new DateTimePoint(d.Time, d.MicrogridFrequency));
+                            if (_MicrogridFr1.Count > maxVal) _MicrogridFr1.RemoveAt(0);
                             break;
                         case 2:
                             _Voltagevalues2.Add(new DateTimePoint(d.Time, d.VoltageValue));
@@ -755,6 +1032,13 @@ namespace AuxularyApp.ViewModels
                             if (_FullLPvalues2.Count > maxVal) _FullLPvalues2.RemoveAt(0);
                             _ActiveLPvalues2.Add(new DateTimePoint(d.Time, d.ActiveLoadPower));
                             if (_ActiveLPvalues2.Count > maxVal) _ActiveLPvalues2.RemoveAt(0);
+
+                            _CurrentValue2.Add(new DateTimePoint(d.Time, d.CurrentValue));
+                            if (_CurrentValue2.Count > maxVal) _CurrentValue2.RemoveAt(0);
+                            _LPF2.Add(new DateTimePoint(d.Time, d.LoadPowerFactor));
+                            if (_LPF2.Count > maxVal) _LPF2.RemoveAt(0);
+                            _MicrogridFr2.Add(new DateTimePoint(d.Time, d.MicrogridFrequency));
+                            if (_MicrogridFr2.Count > maxVal) _MicrogridFr2.RemoveAt(0);
                             break;
                         case 3:
                             _Voltagevalues3.Add(new DateTimePoint(d.Time, d.VoltageValue));
@@ -765,6 +1049,13 @@ namespace AuxularyApp.ViewModels
                             if (_FullLPvalues3.Count > maxVal) _FullLPvalues3.RemoveAt(0);
                             _ActiveLPvalues3.Add(new DateTimePoint(d.Time, d.ActiveLoadPower));
                             if (_ActiveLPvalues3.Count > maxVal) _ActiveLPvalues3.RemoveAt(0);
+
+                            _CurrentValue3.Add(new DateTimePoint(d.Time, d.CurrentValue));
+                            if (_CurrentValue3.Count > maxVal) _CurrentValue3.RemoveAt(0);
+                            _LPF3.Add(new DateTimePoint(d.Time, d.LoadPowerFactor));
+                            if (_LPF3.Count > maxVal) _LPF3.RemoveAt(0);
+                            _MicrogridFr3.Add(new DateTimePoint(d.Time, d.MicrogridFrequency));
+                            if (_MicrogridFr3.Count > maxVal) _MicrogridFr3.RemoveAt(0);
                             break;
                         case 4:
                             _Voltagevalues4.Add(new DateTimePoint(d.Time, d.VoltageValue));
@@ -775,6 +1066,13 @@ namespace AuxularyApp.ViewModels
                             if (_FullLPvalues4.Count > maxVal) _FullLPvalues4.RemoveAt(0);
                             _ActiveLPvalues4.Add(new DateTimePoint(d.Time, d.ActiveLoadPower));
                             if (_ActiveLPvalues4.Count > maxVal) _ActiveLPvalues4.RemoveAt(0);
+
+                            _CurrentValue4.Add(new DateTimePoint(d.Time, d.CurrentValue));
+                            if (_CurrentValue4.Count > maxVal) _CurrentValue4.RemoveAt(0);
+                            _LPF4.Add(new DateTimePoint(d.Time, d.LoadPowerFactor));
+                            if (_LPF4.Count > maxVal) _LPF4.RemoveAt(0);
+                            _MicrogridFr4.Add(new DateTimePoint(d.Time, d.MicrogridFrequency));
+                            if (_MicrogridFr4.Count > maxVal) _MicrogridFr4.RemoveAt(0);
                             break;
                         case 5:
                             _Voltagevalues5.Add(new DateTimePoint(d.Time, d.VoltageValue));
@@ -785,6 +1083,13 @@ namespace AuxularyApp.ViewModels
                             if (_FullLPvalues5.Count > maxVal) _FullLPvalues5.RemoveAt(0);
                             _ActiveLPvalues5.Add(new DateTimePoint(d.Time, d.ActiveLoadPower));
                             if (_ActiveLPvalues5.Count > maxVal) _ActiveLPvalues5.RemoveAt(0);
+
+                            _CurrentValue5.Add(new DateTimePoint(d.Time, d.CurrentValue));
+                            if (_CurrentValue5.Count > maxVal) _CurrentValue5.RemoveAt(0);
+                            _LPF5.Add(new DateTimePoint(d.Time, d.LoadPowerFactor));
+                            if (_LPF5.Count > maxVal) _LPF5.RemoveAt(0);
+                            _MicrogridFr5.Add(new DateTimePoint(d.Time, d.MicrogridFrequency));
+                            if (_MicrogridFr5.Count > maxVal) _MicrogridFr5.RemoveAt(0);
                             break;
                         case 6:
                             _Voltagevalues6.Add(new DateTimePoint(d.Time, d.VoltageValue));
@@ -795,6 +1100,13 @@ namespace AuxularyApp.ViewModels
                             if (_FullLPvalues6.Count > maxVal) _FullLPvalues6.RemoveAt(0);
                             _ActiveLPvalues6.Add(new DateTimePoint(d.Time, d.ActiveLoadPower));
                             if (_ActiveLPvalues6.Count > maxVal) _ActiveLPvalues6.RemoveAt(0);
+
+                            _CurrentValue6.Add(new DateTimePoint(d.Time, d.CurrentValue));
+                            if (_CurrentValue6.Count > maxVal) _CurrentValue6.RemoveAt(0);
+                            _LPF6.Add(new DateTimePoint(d.Time, d.LoadPowerFactor));
+                            if (_LPF6.Count > maxVal) _LPF6.RemoveAt(0);
+                            _MicrogridFr6.Add(new DateTimePoint(d.Time, d.MicrogridFrequency));
+                            if (_MicrogridFr6.Count > maxVal) _MicrogridFr6.RemoveAt(0);
                             break;
                     }
                 }
