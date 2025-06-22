@@ -293,6 +293,96 @@
                             <TextBlock Margin="3">Управляющие воздействия</TextBlock>
                         </StackPanel>
                     </TabItem.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Image Grid.Column="1" Source="C:\Users\maksb\source\repos\Miskachaya\AuxularyApp\AuxularyApp\Images\Schematic.png" />
+                        <Grid Grid.Column="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Grid Grid.Column="1">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition Height="2*"/>
+                                    </Grid.RowDefinitions>
+                                    <Button Margin="0,25,0,0" Background="Green"/>
+                                    <Button  Margin="0,25,0,0" Background="Green" Grid.Column="2"/>
+                                </Grid>
+                                <Grid Grid.Column="3">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition Height="2*"/>
+                                    </Grid.RowDefinitions>
+                                    <Button  Margin="0,25,0,0" Background="Green"/>
+                                    <Button  Margin="0,25,0,0" Background="Green" Grid.Column="2"/>
+                                </Grid>
+                            </Grid>
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="0.8*"/>
+                                    <ColumnDefinition Width="0.8*"/>
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition Height="2*"/>
+                                    </Grid.RowDefinitions>
+                                    <Button  Margin="0,25,0,0" Background="Green"/>
+                                    <Button Margin="0,25,0,0" Background="Red"  Grid.Column="2"/>
+                                </Grid>
+                                <Grid Grid.Column="4">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition Height="2*"/>
+                                    </Grid.RowDefinitions>
+                                    <Button  Margin="0,25,0,0" Background="Green"/>
+                                    <Button  Margin="0,25,0,0" Background="Green" Grid.Column="2"/>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        <StackPanel>
+                            
+                        </StackPanel>
+                        <Grid Style="{StaticResource BigFont20}">
+                            
+                        </Grid>
+                    </Grid>
                 </TabItem>
                 <TabItem>
                     <TabItem.Header>
