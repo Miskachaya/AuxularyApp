@@ -376,12 +376,13 @@
                                 </Grid>
                             </Grid>
                         </Grid>
-                        <StackPanel>
-                            
+                        <StackPanel Style="{StaticResource BigFont20}">
+                            <TextBlock FontSize="30" Text="Состоянеие"/>
+                            <TextBlock FontSize="30" Text="МТПиН1-А3             вкл.\выкл."/>
+                            <TextBlock FontSize="30" Text="МТПиН1-А4             вкл.\вкл."/>
+                            <TextBlock FontSize="30" Text="МТПиН1-А5             вкл.\вкл."/>
+                            <TextBlock FontSize="30" Text="МТПиН1-А6             вкл.\вкл."/>
                         </StackPanel>
-                        <Grid Style="{StaticResource BigFont20}">
-                            
-                        </Grid>
                     </Grid>
                 </TabItem>
                 <TabItem>
