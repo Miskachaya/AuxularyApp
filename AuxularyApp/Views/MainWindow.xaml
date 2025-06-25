@@ -293,6 +293,67 @@
                             <TextBlock Margin="3">Управляющие воздействия</TextBlock>
                         </StackPanel>
                     </TabItem.Header>
+                    <Grid Style="{StaticResource BigFont20}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Button Grid.Column="1" Grid.Row="1" Background="Green"/>
+                            <Button Grid.Column="1" Grid.Row="3" Background="Green"/>
+                            <Button Grid.Column="1" Grid.Row="6" Background="Green"/>
+                            <Button Grid.Column="1" Grid.Row="8" Background="Green"/>
+                        </Grid>
+                        <Grid Grid.Column="3">
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Button Grid.Column="1" Grid.Row="1" Background="Green"/>
+                            <Button Grid.Column="1" Grid.Row="3" Background="Green"/>
+                            <Button Grid.Column="1" Grid.Row="6" Background="Green"/>
+                            <Button Grid.Column="1" Grid.Row="8" Background="Green"/>
+                        </Grid>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Text="МТПиН1-А3"/>
+                            <TextBlock Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" Text="МТПиН1-А4"/>
+                        </Grid>
+                        <Grid Grid.Column="4">
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Text="МТПиН1-А6"/>
+                            <TextBlock Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" Text="МТПиН1-А5"/>
+                        </Grid>
+                    </Grid>
                 </TabItem>
                 <TabItem>
                     <TabItem.Header>
