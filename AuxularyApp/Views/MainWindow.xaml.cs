@@ -12,7 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-
+using AuxularyApp.ViewModels;
 namespace AuxularyApp.Views
 {
     /// <summary>
@@ -20,10 +20,13 @@ namespace AuxularyApp.Views
     /// </summary>
     public partial class MainWindow : Window
     {
+        MainWindowViewModel viewModel;
         public MainWindow()
         {
             InitializeComponent();
-           // DataContext = new MainWindowViewModel();
+            //DataContext = new MainWindowViewModel();
         }
+
+        
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using AuxularyApp.Models.DataModels.Base;
-namespace AuxularyApp.Models.DataModels;
+namespace AuxularyApp.Models.DataModels.MicrogridModels;
 
 public partial class ParametersChangeable : Data
 {
@@ -21,5 +21,5 @@ public partial class ParametersChangeable : Data
 
     public string? Time { get; set; }
 
-   public virtual MicrogridParametersChangeable? Block { get; set; }
+    public virtual MicrogridParametersChangeable? Block { get; set; }
 }

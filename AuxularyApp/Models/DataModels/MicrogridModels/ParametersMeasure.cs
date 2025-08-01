@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using AuxularyApp.Models.DataModels.Base;
-namespace AuxularyApp.Models.DataModels;
+namespace AuxularyApp.Models.DataModels.MicrogridModels;
 
 public partial class ParametersMeasure : Data
 {

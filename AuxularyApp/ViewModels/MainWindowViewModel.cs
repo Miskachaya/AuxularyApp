@@ -19,7 +19,6 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http;
 using System.Windows;
 using System.Collections.ObjectModel;
-using AuxularyApp.Models.DataModels;
 using System.Text.Json;
 using System.Windows.Media;
 using System.Runtime.Serialization;
@@ -41,6 +40,10 @@ using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using SkiaSharp;
 using System.Xml.Linq;
+using AuxularyApp.Models.DataModels.MicrogridModels;
+using AuxularyApp.Views;
+using AuxularyApp.Models.DataModels.InstructionModels;
+using AuxularyApp.Models.DataModels.ViewComponentModels;
 namespace AuxularyApp.ViewModels
 {
     internal partial class MainWindowViewModel : ViewModel
@@ -53,6 +56,58 @@ namespace AuxularyApp.ViewModels
         private readonly ObservableCollection<DateTimePoint> _values1 = [];
         private readonly ObservableCollection<DateTimePoint> _values2 = [];
         private readonly ObservableCollection<DateTimePoint> _values3 = [];
+
+
+
+
+        public Instruction instruction = new Instruction();
+        public List<InstructionStep> steps = new List<InstructionStep>();   
+        public ObservableCollection<ParametersChange> ParameterPanelItems { get; } = new ObservableCollection<ParametersChange>();
+        public ObservableCollection<StateChange> StatePanelItems { get; } = new ObservableCollection<StateChange>();
+        public ICommand AddParameterPanelCommand { get; }
+        public ICommand AddStatePanelCommand { get; }
+
+        // Общий список всех добавленных панелей (для отображения)
+        public ObservableCollection<object> AddedPanels { get; } = new ObservableCollection<object>();
+        public List<int> AddedPanelsValue { get; } = new List<int>();
+        private void AddStatePanel()
+        {
+            AddedPanelsValue.Add(0);
+            InstructionStep step = new InstructionStep();
+            
+            steps.Add(step);
+            StateChange newItem = new StateChange();
+            AddedPanels.Add(newItem);
+            StatePanelItems.Add(newItem);
+            MessageBox.Show($"{steps.Count} {StatePanelItems.Count}" );
+            /*AddedPanels.Add(new { Type = "Parameter", Content = newItem });*/ // Можно передавать ViewModel вместо анонимного типа
+        }
+        private void AddParameterPanel()
+        {
+            AddedPanelsValue.Add(0);
+            InstructionStep step = new InstructionStep();
+            
+            steps.Add(step);
+            ParametersChange newItem = new ParametersChange();
+            AddedPanels.Add(newItem);
+            ParameterPanelItems.Add(newItem);
+            MessageBox.Show($"{steps.Count} {ParameterPanelItems.Count}");
+        }
+
+
+        public class RelayCommand : ICommand
+        {
+            private readonly Action _execute;
+            public RelayCommand(Action execute) => _execute = execute;
+            public bool CanExecute(object parameter) => true;
+            public void Execute(object parameter) => _execute();
+            public event EventHandler CanExecuteChanged;
+        }
+
+
+
+
+
 
         public ISeries[] Series { get; set; }
         public Axis[] ScrollableAxes { get; set; }
@@ -160,6 +215,8 @@ namespace AuxularyApp.ViewModels
         public bool IsReading { get; set; } = true;
 
         public MainWindowViewModel(){
+            AddParameterPanelCommand = new RelayCommand(AddParameterPanel);
+            AddStatePanelCommand = new RelayCommand(AddStatePanel);
             UpdateClock();
             var trend1 = 350;
             var trend2 = 318;
@@ -260,7 +317,9 @@ namespace AuxularyApp.ViewModels
             // no matter the size of the labels in the Y axis of both chart.
             var auto = LiveChartsCore.Measure.Margin.Auto;
             Margin = new(100, auto, 50, auto);
-
+            //AddAcceptCommand = new GalaSoft.MvvmLight.CommandWpf.RelayCommand<string>(OnAccept);
+            AddStepStateCommand = new LambdaCommand(OnAddState, CanAddStepStateExecuted);
+            AddStepParameterCommand = new LambdaCommand(OnAddStepParameter, CanAddStepParameterExecuted);
             SwitchVisiableCommand1 = new LambdaCommand(OnSwitchVisibleCommandExecuted1, CanSwitchVisiableCommandExecuted);
             SwitchVisiableCommand2 = new LambdaCommand(OnSwitchVisibleCommandExecuted2, CanSwitchVisiableCommandExecuted);
             SwitchVisiableCommand3 = new LambdaCommand(OnSwitchVisibleCommandExecuted3, CanSwitchVisiableCommandExecuted);
@@ -936,15 +995,95 @@ namespace AuxularyApp.ViewModels
             string content = await response.Content.ReadAsStringAsync();
             ParametersMeasure[] collection = JsonSerializer.Deserialize<ParametersMeasure[]>(content);
         }
+        private bool CanAddStepParameterExecuted(object p) => true;
+        public ICommand AddStepParameterCommand { get; }
+        public async void OnAddStepParameter(object p)
+        {
+            InstructionStep step = new InstructionStep();
+            step.StepNumber = instructionStepList.Count + 1;
+            instructionStepList.Add(step);
+            //instructionStepList.Add(IS);
+            //ParametersChange paremeterChange = new ParametersChange();
+            //IS.ParametersChanges.Add(paremeterChange);
+            //parameterChangeList.Add(paremeterChange);
+            //MessageBox.Show("Писянчик1");
+        }
+
+        private bool CanAddStepStateExecuted(object p) => true;
+        public ICommand AddStepStateCommand { get; }
+        public async void OnAddState(object p)
+        {
+            InstructionStep IS = new InstructionStep();
+            instructionStepList.Add(IS);
+            IS.StepNumber = instructionStepList.Count + 1;
+            instruction.InstructionSteps.Add(IS);
+            //InstructionStep IS = new InstructionStep();
+            //instructionStepList.Add(IS);
+            //StateChange stateChange = new StateChange();
+            //IS.StateChanges.Add(stateChange);
+            //stateChangeList.Add(stateChange);
+            //MessageBox.Show("Писянчик2");
+        }
+
+        //private bool CanAcceptExecuted(object p) => true;
+        //public ICommand AddAcceptCommand { get; }
+        //public async void OnAccept(string p)
+        //{
+        //    InstructionStep IS = instructionStepList.Last();
+        //    IS.Time = DateStep;
+        //    IS.StepNumber=instructionStepList.Count + 1;
+        //    StateChange stateChange = new StateChange();
+
+        //    MessageBox.Show(p.ToString());
+        //}
+
+        private bool CanSetStateExecuted(object p) => true;
+        public ICommand AddSetStateCommand { get; }
+        public async void OnSetState(object p)
+        {
+            InstructionStep IS = instructionStepList.Last();
+            IS.Time = DateStep;
+            IS.StepNumber = instructionStepList.Count + 1;
+            StateChange stateChange = new StateChange();
+
+            MessageBox.Show(IS.Time);
+        }
         #endregion
-        #region Properties
-        #region WindowTitle
-        private string _Title;
-        public string Title2
-            {
-                get => _Title; 
-                set => Set(ref _Title,value);
-            }
+        #region Properties 
+        #region Instruction
+        private Instruction _Instruction;
+        public Instruction Instruction
+        {
+            get => _Instruction;
+            set => Set(ref _Instruction, value);
+        }
+        #endregion
+        #region InstructionStepList
+        private ObservableCollection<InstructionStep> _instructionStepList = new ObservableCollection<InstructionStep>();
+
+        public ObservableCollection<InstructionStep> instructionStepList
+        {
+            get => _instructionStepList;
+            set => Set(ref _instructionStepList, value);
+        }
+        #endregion
+        #region parameterChangeList
+        private ObservableCollection<ParametersChange> _parameterChangeList = new ObservableCollection<ParametersChange>();
+
+        public ObservableCollection<ParametersChange> parameterChangeList
+        {
+            get => _parameterChangeList;
+            set => Set(ref _parameterChangeList, value);
+        }
+        #endregion
+        #region StateChangeList
+        private ObservableCollection<StateChange> _stateChangeList = new ObservableCollection<StateChange>();
+
+        public ObservableCollection<StateChange> stateChangeList
+        {
+            get => _stateChangeList;
+            set => Set(ref _stateChangeList, value);
+        }
         #endregion
         #region ParametersData
         public class ParametersData
@@ -981,6 +1120,30 @@ namespace AuxularyApp.ViewModels
                 Date = DateTime.Now.ToString("dd.MM.yyyy\nHH:mm:ss");
             };
             timer.Start();
+        }
+        #endregion
+        #region Date
+        private string _DateStep;
+        public string DateStep
+        {
+            get => _DateStep;
+            set => Set(ref _DateStep, value);
+        }
+        #endregion
+        #region LeftSwitchValue
+        private int _LeftSwitchValue;
+        public int LeftSwitchValue
+        {
+            get => _LeftSwitchValue;
+            set => Set(ref _LeftSwitchValue, value);
+        }
+        #endregion
+        #region LeftSwitchValue
+        private int _RightSwitchValue;
+        public int RightSwitchValue
+        {
+            get => _RightSwitchValue;
+            set => Set(ref _RightSwitchValue, value);
         }
         #endregion
         #endregion

@@ -6,18 +6,60 @@
         xmlns:local="clr-namespace:AuxularyApp.Views"
         xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
         xmlns:vm="clr-namespace:AuxularyApp.ViewModels"
+        xmlns:models="clr-namespace:AuxularyApp.Models.DataModels.InstructionModels"
         mc:Ignorable="d"
         Height="450" Width="800"
         Title="Приложение визуализации данных">
     <Window.DataContext>
+        
         <vm:MainWindowViewModel/>
     </Window.DataContext>
     <Window.Resources>
         <Style x:Key="BigFont20">
             <Setter Property="Control.FontSize" Value="20"/>
         </Style>
+        <DataTemplate x:Key="ParameterTemplate">
+            <Border Background="#FFFFCCCC" BorderBrush="Red" BorderThickness="1" Margin="5" Padding="10">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="{Binding DataContext.AddedPanelsValue.Count, RelativeSource={RelativeSource AncestorType=Window}, StringFormat='Шаг {0}'}"/>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="Время"/>
+                        <TextBox Text="16:25 13.08.2025"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="Параметр"/>
+                        <ComboBox>
+                            <ComboBoxItem Content="1 айтем"/>
+                            <ComboBoxItem Content="2 айтем"/>
+                        </ComboBox>
+                    </StackPanel>
+                    
+                </Grid>
+            </Border>
+        </DataTemplate>
+
+        <!-- Шаблон для синей панели -->
+        <DataTemplate x:Key="StateTemplate">
+            <Border Background="#FFCCE5FF" BorderBrush="Blue" BorderThickness="1" Margin="5" Padding="10">
+                <StackPanel>
+                    <TextBlock Text="{Binding AddedPanels.Count}" Foreground="DarkBlue" />
+                    <Button Content="Click me!" Margin="0,5,0,0"/>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+
+        <!-- Селектор шаблонов (выбирает подходящий DataTemplate по Type) -->
+        <vm:PanelTemplateSelector x:Key="PanelTemplateSelector"
+            ParameterTemplate="{StaticResource ParameterTemplate}"
+            StateTemplate="{StaticResource StateTemplate}"/>
     </Window.Resources>
-    <Window.Content>
+    
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -416,226 +458,48 @@
                                 </TreeViewItem>
                             </TreeView>
                         </StackPanel>
-                        <ScrollViewer Grid.Column="1">
-                            <Grid x:Name="GeneralStepGrid" ShowGridLines="True">
+                        <Grid Grid.Column="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="1*"/>
+                                <RowDefinition Height="7*"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="auto"/>
-                                    <RowDefinition Height="auto"/>
-                                    <RowDefinition Height="auto"/>
-                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="1*"/>
+                                    <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
-                                <TextBlock HorizontalAlignment="Center" Text="№160625-141"/>
-                                <StackPanel  Grid.Row="1" x:Name="StepGrid">
-                                    <Grid  Background="AliceBlue" ShowGridLines="True" HorizontalAlignment="Stretch">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto"/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                        </Grid.ColumnDefinitions>
-                                        <Label Grid.Column="0" Content="{Binding Children.Count, ElementName=StepGrid}" ContentStringFormat="Шаг {0}" VerticalContentAlignment="Center"/>
-                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                            <Label Content="Блок" VerticalAlignment="Center"/>
-                                            <ComboBox VerticalAlignment="Center" SelectedIndex="1">
-                                                <ComboBoxItem Content="ИПОС1-Р1"/>
-                                                <ComboBoxItem Content="МТПиН1-А2"/>
-                                                <ComboBoxItem Content="МТПиН1-А3"/>
-                                                <ComboBoxItem Content="МТПиН1-А4"/>
-                                                <ComboBoxItem Content="МТПиН1-А5"/>
-                                                <ComboBoxItem Content="ИПОС1-Р6"/>
-                                            </ComboBox>
-                                        </StackPanel>
-                                        <StackPanel Grid.Column="2" Orientation="Horizontal">
-                                            <Label Content="Параметр" VerticalAlignment="Center"/>
-                                            <ComboBox VerticalAlignment="Center" SelectedIndex="1">
-                                                <ComboBoxItem Content="Индуктивность"/>
-                                                <ComboBoxItem Content="Акт. сопротивление"/>
-                                                <ComboBoxItem Content="Мощ. акт. нагрузки"/>
-                                                <ComboBoxItem Content="Мощ. реакт. нагрузки"/>
-                                            </ComboBox>
-                                        </StackPanel>
-                                        <StackPanel Grid.Column="3" Orientation="Horizontal">
-                                            <Label Content="Значение" VerticalAlignment="Center"/>
-                                            <TextBox Background="LightGray" VerticalAlignment="Center" Text="100"/>
-                                        </StackPanel>
-                                        <StackPanel Grid.Column="4" Orientation="Horizontal">
-                                            <Label Content="Время" VerticalAlignment="Center"/>
-                                            <TextBox Background="LightGray" VerticalAlignment="Center" Text="13:14 16.06.2005"/>
-                                        </StackPanel>
-                                    </Grid>
-                                    <Grid Background="LightBlue" ShowGridLines="True" HorizontalAlignment="Stretch">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto"/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                        </Grid.ColumnDefinitions>
-                                        <Label Grid.Column="0" Content="{Binding Children.Count, ElementName=StepGrid}" ContentStringFormat="Шаг {0}" VerticalContentAlignment="Center"/>
-                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                            <Label Content="Блок" VerticalAlignment="Center"/>
-                                            <ComboBox VerticalAlignment="Center" SelectedIndex="1">
-                                                <ComboBoxItem Content="ИПОС1-Р1"/>
-                                                <ComboBoxItem Content="МТПиН1-А2"/>
-                                                <ComboBoxItem Content="МТПиН1-А3"/>
-                                                <ComboBoxItem Content="МТПиН1-А4"/>
-                                                <ComboBoxItem Content="МТПиН1-А5"/>
-                                                <ComboBoxItem Content="ИПОС1-Р6"/>
-                                            </ComboBox>
-                                        </StackPanel>
-                                        <StackPanel Grid.Column="2" Orientation="Horizontal">
-                                            <Label Content="Параметр" VerticalAlignment="Center"/>
-                                            <ComboBox VerticalAlignment="Center" SelectedIndex="1">
-                                                <ComboBoxItem Content="Индуктивность"/>
-                                                <ComboBoxItem Content="Акт. сопротивление"/>
-                                                <ComboBoxItem Content="Мощ. акт. нагрузки"/>
-                                                <ComboBoxItem Content="Мощ. реакт. нагрузки"/>
-                                            </ComboBox>
-                                        </StackPanel>
-                                        <StackPanel Grid.Column="3" Orientation="Horizontal">
-                                            <Label Content="Значение" VerticalAlignment="Center"/>
-                                            <TextBox Background="LightGray" VerticalAlignment="Center" Text="100"/>
-                                        </StackPanel>
-                                        <StackPanel Grid.Column="4" Orientation="Horizontal">
-                                            <Label Content="Время" VerticalAlignment="Center"/>
-                                            <TextBox Background="LightGray" VerticalAlignment="Center" Text="13:14 16.06.2005"/>
-                                        </StackPanel>
-                                    </Grid>
-                                    <Grid Background="AliceBlue" ShowGridLines="True" HorizontalAlignment="Stretch">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto"/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                        </Grid.ColumnDefinitions>
-                                        <Label Grid.Column="0" Content="{Binding Children.Count, ElementName=StepGrid}" ContentStringFormat="Шаг {0}" VerticalContentAlignment="Center"/>
-                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                            <Label Content="Блок" VerticalAlignment="Center"/>
-                                            <ComboBox VerticalAlignment="Center" SelectedIndex="1">
-                                                <ComboBoxItem Content="ИПОС1-Р1"/>
-                                                <ComboBoxItem Content="МТПиН1-А2"/>
-                                                <ComboBoxItem Content="МТПиН1-А3"/>
-                                                <ComboBoxItem Content="МТПиН1-А4"/>
-                                                <ComboBoxItem Content="МТПиН1-А5"/>
-                                                <ComboBoxItem Content="ИПОС1-Р6"/>
-                                            </ComboBox>
-                                        </StackPanel>
-                                        <StackPanel Grid.Column="2" Orientation="Horizontal">
-                                            <Label Content="Параметр" VerticalAlignment="Center"/>
-                                            <ComboBox VerticalAlignment="Center" SelectedIndex="1">
-                                                <ComboBoxItem Content="Индуктивность"/>
-                                                <ComboBoxItem Content="Акт. сопротивление"/>
-                                                <ComboBoxItem Content="Мощ. акт. нагрузки"/>
-                                                <ComboBoxItem Content="Мощ. реакт. нагрузки"/>
-                                            </ComboBox>
-                                        </StackPanel>
-                                        <StackPanel Grid.Column="3" Orientation="Horizontal">
-                                            <Label Content="Значение" VerticalAlignment="Center"/>
-                                            <TextBox Background="LightGray" VerticalAlignment="Center" Text="100"/>
-                                        </StackPanel>
-                                        <StackPanel Grid.Column="4" Orientation="Horizontal">
-                                            <Label Content="Время" VerticalAlignment="Center"/>
-                                            <TextBox Background="LightGray" VerticalAlignment="Center" Text="13:14 16.06.2005"/>
-                                        </StackPanel>
-                                    </Grid>
-                                    <Grid Background="LightBlue" ShowGridLines="True" HorizontalAlignment="Stretch">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto"/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                        </Grid.ColumnDefinitions>
-                                        <Label Grid.Column="0" Content="{Binding Children.Count, ElementName=StepGrid}" ContentStringFormat="Шаг {0}" VerticalContentAlignment="Center"/>
-                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                            <Label Content="Блок" VerticalAlignment="Center"/>
-                                            <ComboBox VerticalAlignment="Center" SelectedIndex="1">
-                                                <ComboBoxItem Content="ИПОС1-Р1"/>
-                                                <ComboBoxItem Content="МТПиН1-А2"/>
-                                                <ComboBoxItem Content="МТПиН1-А3"/>
-                                                <ComboBoxItem Content="МТПиН1-А4"/>
-                                                <ComboBoxItem Content="МТПиН1-А5"/>
-                                                <ComboBoxItem Content="ИПОС1-Р6"/>
-                                            </ComboBox>
-                                        </StackPanel>
-                                        <StackPanel Grid.Column="2" Orientation="Horizontal">
-                                            <Label Content="Параметр" VerticalAlignment="Center"/>
-                                            <ComboBox VerticalAlignment="Center" SelectedIndex="1">
-                                                <ComboBoxItem Content="Индуктивность"/>
-                                                <ComboBoxItem Content="Акт. сопротивление"/>
-                                                <ComboBoxItem Content="Мощ. акт. нагрузки"/>
-                                                <ComboBoxItem Content="Мощ. реакт. нагрузки"/>
-                                            </ComboBox>
-                                        </StackPanel>
-                                        <StackPanel Grid.Column="3" Orientation="Horizontal">
-                                            <Label Content="Значение" VerticalAlignment="Center"/>
-                                            <TextBox Background="LightGray" VerticalAlignment="Center" Text="100"/>
-                                        </StackPanel>
-                                        <StackPanel Grid.Column="4" Orientation="Horizontal">
-                                            <Label Content="Время" VerticalAlignment="Center"/>
-                                            <TextBox Background="LightGray" VerticalAlignment="Center" Text="13:14 16.06.2005"/>
-                                        </StackPanel>
-                                    </Grid>
-                                    <Grid Background="SlateGray" ShowGridLines="True" HorizontalAlignment="Stretch">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="auto"/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                        </Grid.ColumnDefinitions>
-                                        <Label Grid.Column="0" Content="{Binding Children.Count, ElementName=StepGrid}" ContentStringFormat="Шаг {0}" VerticalContentAlignment="Center"/>
-                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                            <Label Content="Блок" VerticalAlignment="Center"/>
-                                            <ComboBox VerticalAlignment="Center" SelectedIndex="1">
-                                                <ComboBoxItem Content="ИПОС1-Р1"/>
-                                                <ComboBoxItem Content="МТПиН1-А2"/>
-                                                <ComboBoxItem Content="МТПиН1-А3"/>
-                                                <ComboBoxItem Content="МТПиН1-А4"/>
-                                                <ComboBoxItem Content="МТПиН1-А5"/>
-                                                <ComboBoxItem Content="ИПОС1-Р6"/>
-                                            </ComboBox>
-                                        </StackPanel>
-                                        <StackPanel Grid.Column="2" Orientation="Horizontal">
-                                            <Label Content="переключатель" VerticalAlignment="Center"/>
-                                            <ComboBox VerticalAlignment="Center" SelectedIndex="1">
-                                                <ComboBoxItem Content="левый"/>
-                                                <ComboBoxItem Content="правый"/>
-                                            </ComboBox>
-                                        </StackPanel>
-                                        <StackPanel Grid.Column="3" Orientation="Horizontal">
-                                            <Label Content="Значение" VerticalAlignment="Center"/>
-                                            <Button  Background="Red" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Content="       " />
-                                        </StackPanel>
-                                        <StackPanel Grid.Column="4" Orientation="Horizontal">
-                                            <Label Content="Время" VerticalAlignment="Center"/>
-                                            <TextBox Background="LightGray" VerticalAlignment="Center" Text="13:14 16.06.2005"/>
-                                        </StackPanel>
-                                    </Grid>
+                                <Button Grid.Row="0" Grid.Column="0" Content="Добавить шаг параметров" Command="{Binding AddParameterPanelCommand}" />
+                                <Button Grid.Row="0" Grid.Column="1" Content="Добавить шаг состояния" Command="{Binding AddStatePanelCommand}"/>
+                                <Button Grid.Row="0" Grid.Column="2" Content="Удалить последний шаг"/>
+                                <Button Grid.Row="1" Grid.Column="1" Content="Создать новую инструкцию" Background="Yellow"/>
+                                <Button Grid.Row="1" Grid.Column="2" Content="Готово" Background="GreenYellow"/>
+                                <StackPanel Grid.Row="1" Grid.Column="0" CanVerticallyScroll="True">
+                                    <Button HorizontalAlignment="Stretch" Content="Изменить"/>
+                                    <ComboBox HorizontalAlignment="Stretch">
+                                        <ComboBoxItem Content="1"/>
+                                        <ComboBoxItem Content="2"/>
+                                        <ComboBoxItem Content="3"/>
+                                    </ComboBox>
                                 </StackPanel>
-                                <StackPanel Grid.Row="1" >
-                                </StackPanel>
-                                <Grid  Grid.Row="{Binding Children.Count, ElementName=GeneralStepGrid}">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition/>
-                                    </Grid.ColumnDefinitions>
-                                    <Button Grid.Column="0" Content="Добавить шаг параметров"/>
-                                    <Button Grid.Column="1" Content="Добавить шаг состояния"/>
-                                    <StackPanel Grid.Column="2">
-                                        <Button HorizontalAlignment="Stretch" Content="Изменить"/>
-                                        <ComboBox HorizontalAlignment="Stretch">
-                                            <ComboBoxItem Content="1"/>
-                                            <ComboBoxItem Content="2"/>
-                                            <ComboBoxItem Content="3"/>
-                                        </ComboBox>
-                                    </StackPanel>
-                                </Grid>
                             </Grid>
-                        </ScrollViewer>
+                            <TextBlock Grid.Row="1" Text="2130-23190-315123-5123" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Grid Grid.Row="2">
+                                <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Visible">
+                                    <StackPanel CanVerticallyScroll="True" x:Name="GeneralStepGrid2" Orientation="Vertical">
+                                        <ItemsControl 
+                                            Grid.Row="1"
+                                            ItemsSource="{Binding AddedPanels}"
+                                            ItemTemplateSelector="{StaticResource PanelTemplateSelector}"/>
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </TabItem>
             </TabControl>
@@ -643,5 +507,5 @@
 
             </TextBlock>
         </Grid>
-    </Window.Content>
+    
 </Window>

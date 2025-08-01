@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using AuxularyApp.Models.DataModels.Base;
+namespace AuxularyApp.Models.DataModels.MicrogridModels;
 
-namespace AuxularyApp.Models.DataModels;
-
-public partial class MicrogridParametersChangeable : Data
+public partial class MicrogridParametersMeasureChangeable : Data
 {
     public int? BlockId { get; set; }
 
     public string? BlockType { get; set; }
 
     public int? StandId { get; set; }
-
-    public virtual ICollection<ParametersChangeable>? ParametersChangeables { get; set; } = new List<ParametersChangeable>();
 
     public virtual StandPart? Stand { get; set; }
 }
