@@ -1,28 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
-namespace AuxularyApp.Models.DataModels.InstructionModels;
+namespace OperatorApplication.Models.DataModels.InstructionModels;
 
-public partial class ParametersChange : INotifyPropertyChanged
+public partial class StateChange : INotifyPropertyChanged
 {
+    [JsonIgnore]
+    private string _Block = "";
+    [JsonIgnore]
+    public string Block { get => _Block; set { _Block = value; OnPropertyChanged(); } }
     [JsonIgnore]
     public int ChangeId { get; set; }
     [JsonIgnore]
     public int StepId { get; set; }
     [JsonIgnore]
-    public string _Parameter = null!;
-    public string Parameter { get=> _Parameter; set { _Parameter = value;OnPropertyChanged(); } }
+    private int _SwitchL;
+    public int SwitchL { get=> _SwitchL; set { _SwitchL = value; OnPropertyChanged(); } }
     [JsonIgnore]
-    private double _ParameterValue;
-    public double ParameterValue { get=> _ParameterValue; set { _ParameterValue = value;OnPropertyChanged(); } }
-    [JsonIgnore]
-    private string _Block = "";
-    [JsonIgnore]
-    public string Block { get => _Block; set { _Block = value; OnPropertyChanged(); } }
+    private int _SwitchR;
+    public int SwitchR { get=> _SwitchR; set { _SwitchR = value; OnPropertyChanged(); } }
     [JsonIgnore]
     private string _Time = DateTime.Now.ToString("HH:mm:ss dd.MM.yyyy");
     [JsonIgnore]

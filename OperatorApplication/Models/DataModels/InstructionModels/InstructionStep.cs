@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
-using AuxularyApp.ViewModels.Base;
-namespace AuxularyApp.Models.DataModels.InstructionModels;
+using OperatorApplication.ViewModels.Base;
+namespace OperatorApplication.Models.DataModels.InstructionModels;
 
 public partial class InstructionStep : INotifyPropertyChanged
 {

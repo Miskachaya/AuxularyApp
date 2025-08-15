@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
-namespace AuxularyApp.Models.DataModels.InstructionModels;
+namespace OperatorApplication.Models.DataModels.InstructionModels;
 
 public partial class ParametersChange : INotifyPropertyChanged
 {

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AuxularyApp.Infrastructure.Commands.Base;
-namespace AuxularyApp.Infrastructure.Commands
+using OperatorApplication.Infrastructure.Commands.Base;
+namespace OperatorApplication.Infrastructure.Commands
 {
     internal class LambdaCommand : Command
     {

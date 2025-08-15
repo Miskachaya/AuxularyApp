@@ -7,6 +7,7 @@
         xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
         xmlns:vm="clr-namespace:AuxularyApp.ViewModels"
         xmlns:models="clr-namespace:AuxularyApp.Models.DataModels.InstructionModels"
+        xmlns:System="clr-namespace:System;assembly=netstandard"
         mc:Ignorable="d"
         Height="450" Width="800"
         Title="Приложение визуализации данных">
@@ -18,28 +19,66 @@
         <Style x:Key="BigFont20">
             <Setter Property="Control.FontSize" Value="20"/>
         </Style>
-        <DataTemplate x:Key="ParameterTemplate">
+      
+        
+        <DataTemplate x:Key="ParameterTemplate" >
             <Border Background="#FFFFCCCC" BorderBrush="Red" BorderThickness="1" Margin="5" Padding="10">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="6*"/>
+                        <ColumnDefinition Width="3*"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" Text="{Binding DataContext.AddedPanelsValue.Count, RelativeSource={RelativeSource AncestorType=Window}, StringFormat='Шаг {0}'}"/>
-                    <StackPanel Grid.Column="1">
-                        <TextBlock Text="Время"/>
-                        <TextBox Text="16:25 13.08.2025"/>
-                    </StackPanel>
-                    <StackPanel>
-                        <TextBlock Text="Параметр"/>
-                        <ComboBox>
-                            <ComboBoxItem Content="1 айтем"/>
-                            <ComboBoxItem Content="2 айтем"/>
+                    <Grid Grid.Column="1" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Блок"/>
+                        <ComboBox Grid.Column="1" Margin="10,0,10,0" SelectedValue="{Binding Block}" SelectedValuePath="Content" SelectedIndex="1">
+                            <ComboBoxItem Content="МЛЭП А7"/>
+                            <ComboBoxItem Content="МЛЭП А8"/>
+                            <ComboBoxItem Content="МЛЭП А9"/>
+                            <ComboBoxItem Content="МЛЭП А10"/>
+                            <ComboBoxItem Content="МЛЭП А11"/>
+                            <ComboBoxItem Content="МТПиН А3"/>
+                            <ComboBoxItem Content="МТПиН А4"/>
+                            <ComboBoxItem Content="МТПиН А5"/>
+                            <ComboBoxItem Content="МТПиН А6"/>
                         </ComboBox>
-                    </StackPanel>
-                    
+                    </Grid>
+                    <Grid Grid.Column="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width ="auto"/>
+                            <ColumnDefinition Width = "*"/>
+                        </Grid.ColumnDefinitions> 
+                        <TextBlock Grid.Row="0" Text="Время"/>
+                        <TextBox Grid.Column="1" Margin="10,0,10,0" Text="{Binding Time}" HorizontalAlignment="Stretch"/>
+                    </Grid>
+                    <Grid Grid.Column="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Параметр"/>
+                        <ComboBox Grid.Column="1"  Margin="10,0,10,0" SelectedIndex="0" SelectedValue="{Binding Parameter}" SelectedValuePath="Content" HorizontalAlignment="Stretch">
+                            <ComboBoxItem Content="Мощность активной нагрузки"/>
+                            <ComboBoxItem Content="Мощность индуктивной нагрузки"/>
+                            <ComboBoxItem Content="Индуктивность"/>
+                            <ComboBoxItem Content="Активное сопротивление"/>
+                        </ComboBox>
+                    </Grid>
+                    <Grid Grid.Column="4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Значение"/>
+                        <TextBox Grid.Column="1" Text="{Binding ParameterValue}" Margin="10,0,10,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                    </Grid>
                 </Grid>
             </Border>
         </DataTemplate>
@@ -47,10 +86,59 @@
         <!-- Шаблон для синей панели -->
         <DataTemplate x:Key="StateTemplate">
             <Border Background="#FFCCE5FF" BorderBrush="Blue" BorderThickness="1" Margin="5" Padding="10">
-                <StackPanel>
-                    <TextBlock Text="{Binding AddedPanels.Count}" Foreground="DarkBlue" />
-                    <Button Content="Click me!" Margin="0,5,0,0"/>
-                </StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="3*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="{Binding DataContext.AddedPanelsValue.Count, RelativeSource={RelativeSource AncestorType=Window}, StringFormat='Шаг {0}'}"/>
+                    <Grid Grid.Column="1" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Блок"/>
+                        <ComboBox Grid.Column="1" Margin="10,0,10,0" SelectedValue="{Binding Block}" SelectedValuePath="Content" SelectedIndex="1">
+                            <ComboBoxItem Content="МТПиН А3"/>
+                            <ComboBoxItem Content="МТПиН А4"/>
+                            <ComboBoxItem Content="МТПиН А5"/>
+                            <ComboBoxItem Content="МТПиН А6"/>
+                        </ComboBox>
+                    </Grid>
+                    <Grid Grid.Column="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width ="auto"/>
+                            <ColumnDefinition Width = "*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Row="0" Text="Время"/>
+                        <TextBox Grid.Column="1" Margin="10,0,10,0" Text="{Binding Time}" HorizontalAlignment="Stretch"/>
+                    </Grid>
+                    <Grid Grid.Column="4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Правый Переключатель"/>
+                        <ComboBox Grid.Column="1"  Margin="10,0,10,0" SelectedIndex="1"  SelectedItem="{Binding SwitchR}" HorizontalAlignment="Stretch">
+                            <System:Int32>1</System:Int32>
+                            <System:Int32>0</System:Int32>
+                        </ComboBox>
+                    </Grid>
+                    <Grid Grid.Column="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Левый Переключатель"/>
+                        <ComboBox Grid.Column="1"  Margin="20,0,30,0"  SelectedValue="{Binding SwitchL}" HorizontalAlignment="Stretch">
+                            <System:Int32>1</System:Int32>
+                            <System:Int32>0</System:Int32>
+                        </ComboBox>
+                    </Grid>
+                </Grid>
             </Border>
         </DataTemplate>
 
@@ -478,7 +566,7 @@
                                 <Button Grid.Row="0" Grid.Column="1" Content="Добавить шаг состояния" Command="{Binding AddStatePanelCommand}"/>
                                 <Button Grid.Row="0" Grid.Column="2" Content="Удалить последний шаг"/>
                                 <Button Grid.Row="1" Grid.Column="1" Content="Создать новую инструкцию" Background="Yellow"/>
-                                <Button Grid.Row="1" Grid.Column="2" Content="Готово" Background="GreenYellow"/>
+                                <Button Grid.Row="1" Grid.Column="2" Content="Готово" Background="GreenYellow" Command="{Binding AcceptCommand}"/>
                                 <StackPanel Grid.Row="1" Grid.Column="0" CanVerticallyScroll="True">
                                     <Button HorizontalAlignment="Stretch" Content="Изменить"/>
                                     <ComboBox HorizontalAlignment="Stretch">
@@ -488,7 +576,7 @@
                                     </ComboBox>
                                 </StackPanel>
                             </Grid>
-                            <TextBlock Grid.Row="1" Text="2130-23190-315123-5123" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Row="1" Text="{Binding instructionNote}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             <Grid Grid.Row="2">
                                 <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Visible">
                                     <StackPanel CanVerticallyScroll="True" x:Name="GeneralStepGrid2" Orientation="Vertical">

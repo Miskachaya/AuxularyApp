@@ -1,49 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AuxularyApp.ViewModels.Base;
+﻿using AuxularyApp.Infrastructure.Commands;
 using AuxularyApp.Models;
+using AuxularyApp.Models.DataModels.Base;
+using AuxularyApp.Models.DataModels.InstructionModels;
+using AuxularyApp.Models.DataModels.MicrogridModels;
+using AuxularyApp.Models.DataModels.ViewComponentModels;
+using AuxularyApp.ViewModels.Base;
+using AuxularyApp.Views;
+using CommunityToolkit.Mvvm.Input;
+using GalaSoft.MvvmLight.Command;
+using LiveChartsCore;
 using LiveChartsCore;
 using LiveChartsCore.Defaults;
+using LiveChartsCore.Defaults;
+using LiveChartsCore.Kernel.Events;
+using LiveChartsCore.Kernel.Events;
+using LiveChartsCore.Kernel.Sketches;
+using LiveChartsCore.Kernel.Sketches;
+using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
+using LiveChartsCore.SkiaSharpView.Painting;
+using LiveChartsCore.SkiaSharpView.VisualElements;
+using Microsoft.Extensions.DependencyInjection;
+using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 using SkiaSharp;
+using SkiaSharp;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
+using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
+using System.Text;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.Unicode;
+using System.Threading.Tasks;
 using System.Threading.Tasks;
 using System.Timers;
-using System.Windows.Input;
-using Microsoft.Extensions.DependencyInjection;
-using System.Net.Http;
 using System.Windows;
-using System.Collections.ObjectModel;
-using System.Text.Json;
+using System.Windows.Input;
 using System.Windows.Media;
-using System.Runtime.Serialization;
-using System.Net.Http.Json;
-using AuxularyApp.Models.DataModels.Base;
-using LiveChartsCore.Kernel.Sketches;
-using LiveChartsCore.SkiaSharpView.VisualElements;
-using GalaSoft.MvvmLight.Command;
-using AuxularyApp.Infrastructure.Commands;
-using LiveChartsCore.Kernel.Events;
-using System.Collections.ObjectModel;
-using System.Linq;
-using CommunityToolkit.Mvvm.Input;
-using LiveChartsCore;
-using LiveChartsCore.Defaults;
-using LiveChartsCore.Kernel.Events;
-using LiveChartsCore.Kernel.Sketches;
-using LiveChartsCore.SkiaSharpView;
-using LiveChartsCore.SkiaSharpView.Painting;
-using SkiaSharp;
 using System.Xml.Linq;
-using AuxularyApp.Models.DataModels.MicrogridModels;
-using AuxularyApp.Views;
-using AuxularyApp.Models.DataModels.InstructionModels;
-using AuxularyApp.Models.DataModels.ViewComponentModels;
 namespace AuxularyApp.ViewModels
 {
     internal partial class MainWindowViewModel : ViewModel
@@ -57,21 +61,23 @@ namespace AuxularyApp.ViewModels
         private readonly ObservableCollection<DateTimePoint> _values2 = [];
         private readonly ObservableCollection<DateTimePoint> _values3 = [];
 
+        public Dictionary<int, (ParametersChange, StateChange)> GeneralDictionary = new();
 
 
-
-        public Instruction instruction = new Instruction();
+        //public Instruction instruction = new Instruction();
         public List<InstructionStep> steps = new List<InstructionStep>();   
         public ObservableCollection<ParametersChange> ParameterPanelItems { get; } = new ObservableCollection<ParametersChange>();
         public ObservableCollection<StateChange> StatePanelItems { get; } = new ObservableCollection<StateChange>();
         public ICommand AddParameterPanelCommand { get; }
         public ICommand AddStatePanelCommand { get; }
+        public ICommand AcceptCommand { get; }
 
         // Общий список всех добавленных панелей (для отображения)
         public ObservableCollection<object> AddedPanels { get; } = new ObservableCollection<object>();
         public List<int> AddedPanelsValue { get; } = new List<int>();
         private void AddStatePanel()
         {
+            
             AddedPanelsValue.Add(0);
             InstructionStep step = new InstructionStep();
             
@@ -79,22 +85,28 @@ namespace AuxularyApp.ViewModels
             StateChange newItem = new StateChange();
             AddedPanels.Add(newItem);
             StatePanelItems.Add(newItem);
-            MessageBox.Show($"{steps.Count} {StatePanelItems.Count}" );
+
+            GeneralDictionary.Add(steps.Count - 1, (null, newItem));
+            //MessageBox.Show($"{steps.Count} {StatePanelItems.Count}" );
+            
             /*AddedPanels.Add(new { Type = "Parameter", Content = newItem });*/ // Можно передавать ViewModel вместо анонимного типа
         }
         private void AddParameterPanel()
         {
             AddedPanelsValue.Add(0);
             InstructionStep step = new InstructionStep();
-            
             steps.Add(step);
             ParametersChange newItem = new ParametersChange();
             AddedPanels.Add(newItem);
             ParameterPanelItems.Add(newItem);
-            MessageBox.Show($"{steps.Count} {ParameterPanelItems.Count}");
+            GeneralDictionary.Add(steps.Count - 1, (newItem,null));
+            //MessageBox.Show($"{steps.Count} {ParameterPanelItems.Count}");
         }
 
-
+        //private async Task Acept()
+        //{
+            
+        //}
         public class RelayCommand : ICommand
         {
             private readonly Action _execute;
@@ -217,6 +229,7 @@ namespace AuxularyApp.ViewModels
         public MainWindowViewModel(){
             AddParameterPanelCommand = new RelayCommand(AddParameterPanel);
             AddStatePanelCommand = new RelayCommand(AddStatePanel);
+            AcceptCommand = new AsyncLambdaCommand(Acept);
             UpdateClock();
             var trend1 = 350;
             var trend2 = 318;
@@ -318,8 +331,8 @@ namespace AuxularyApp.ViewModels
             var auto = LiveChartsCore.Measure.Margin.Auto;
             Margin = new(100, auto, 50, auto);
             //AddAcceptCommand = new GalaSoft.MvvmLight.CommandWpf.RelayCommand<string>(OnAccept);
-            AddStepStateCommand = new LambdaCommand(OnAddState, CanAddStepStateExecuted);
-            AddStepParameterCommand = new LambdaCommand(OnAddStepParameter, CanAddStepParameterExecuted);
+            //AddStepStateCommand = new LambdaCommand(OnAddState, CanAddStepStateExecuted);
+            //AddStepParameterCommand = new LambdaCommand(OnAddStepParameter, CanAddStepParameterExecuted);
             SwitchVisiableCommand1 = new LambdaCommand(OnSwitchVisibleCommandExecuted1, CanSwitchVisiableCommandExecuted);
             SwitchVisiableCommand2 = new LambdaCommand(OnSwitchVisibleCommandExecuted2, CanSwitchVisiableCommandExecuted);
             SwitchVisiableCommand3 = new LambdaCommand(OnSwitchVisibleCommandExecuted3, CanSwitchVisiableCommandExecuted);
@@ -995,47 +1008,76 @@ namespace AuxularyApp.ViewModels
             string content = await response.Content.ReadAsStringAsync();
             ParametersMeasure[] collection = JsonSerializer.Deserialize<ParametersMeasure[]>(content);
         }
-        private bool CanAddStepParameterExecuted(object p) => true;
-        public ICommand AddStepParameterCommand { get; }
-        public async void OnAddStepParameter(object p)
-        {
-            InstructionStep step = new InstructionStep();
-            step.StepNumber = instructionStepList.Count + 1;
-            instructionStepList.Add(step);
-            //instructionStepList.Add(IS);
-            //ParametersChange paremeterChange = new ParametersChange();
-            //IS.ParametersChanges.Add(paremeterChange);
-            //parameterChangeList.Add(paremeterChange);
-            //MessageBox.Show("Писянчик1");
-        }
-
-        private bool CanAddStepStateExecuted(object p) => true;
-        public ICommand AddStepStateCommand { get; }
-        public async void OnAddState(object p)
-        {
-            InstructionStep IS = new InstructionStep();
-            instructionStepList.Add(IS);
-            IS.StepNumber = instructionStepList.Count + 1;
-            instruction.InstructionSteps.Add(IS);
-            //InstructionStep IS = new InstructionStep();
-            //instructionStepList.Add(IS);
-            //StateChange stateChange = new StateChange();
-            //IS.StateChanges.Add(stateChange);
-            //stateChangeList.Add(stateChange);
-            //MessageBox.Show("Писянчик2");
-        }
-
-        //private bool CanAcceptExecuted(object p) => true;
-        //public ICommand AddAcceptCommand { get; }
-        //public async void OnAccept(string p)
+        //private bool CanAddStepParameterExecuted(object p) => true;
+        //public ICommand AddStepParameterCommand { get; }
+        //public async void OnAddStepParameter(object p)
         //{
-        //    InstructionStep IS = instructionStepList.Last();
-        //    IS.Time = DateStep;
-        //    IS.StepNumber=instructionStepList.Count + 1;
-        //    StateChange stateChange = new StateChange();
-
-        //    MessageBox.Show(p.ToString());
+        //    InstructionStep step = new InstructionStep();
+        //    step.StepNumber = instructionStepList.Count + 1;
+        //    instructionStepList.Add(step);
+        //    //instructionStepList.Add(IS);
+        //    //ParametersChange paremeterChange = new ParametersChange();
+        //    //IS.ParametersChanges.Add(paremeterChange);
+        //    //parameterChangeList.Add(paremeterChange);
+        //    //MessageBox.Show("Писянчик1");
         //}
+
+        public async Task Acept()
+        {
+            Instruction instruction = new Instruction();
+            instruction.State = "unaccess";
+            instruction.Name = instructionNote;
+            for (int i = 0; i < steps.Count; i++)
+            {
+                steps[i].StepNumber = i + 1;
+                if (GeneralDictionary[i].Item1 == null)
+                {
+                    StateChange SC = GeneralDictionary[i].Item2;
+                    steps[i].StateChanges.Add(SC);
+                    steps[i].Time = GeneralDictionary[i].Item2.Time;
+                    steps[i].Block = GeneralDictionary[i].Item2.Block;
+                }
+                else
+                {
+                    ParametersChange PC = GeneralDictionary[i].Item1;
+                    steps[i].ParametersChanges.Add(PC);
+                    steps[i].Time = GeneralDictionary[i].Item1.Time;
+                    steps[i].Block = GeneralDictionary[i].Item1.Block;
+                }
+                instruction.InstructionSteps = steps;
+                var options = new JsonSerializerOptions
+                {
+                    Encoder = JavaScriptEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.Cyrillic),
+                    WriteIndented = true
+                };
+                string json = JsonSerializer.Serialize<Instruction>(instruction, options);
+                json = json.Replace("\r\n", "");
+                // replace \" with "
+                json = json.Replace('\"', '"');
+                json = json.Replace("\'", "");
+                Clipboard.SetText(json);
+                //MessageBox.Show(json);
+
+                var factory = new ConnectionFactory() { HostName = "localhost" };
+                using var connection = await factory.CreateConnectionAsync();
+                using var channel = await connection.CreateChannelAsync();
+                {
+                    // Создание очереди (если её нет)
+                    channel.QueueDeclareAsync(queue: "instructionQueue",
+                                         durable: false,
+                                         exclusive: false,
+                                         autoDelete: false,
+                                         arguments: null);
+
+                    // Сообщение для отправки
+                    string message = json;
+                    var body = Encoding.UTF8.GetBytes(message);
+
+                    // Отправка сообщения
+                    await channel.BasicPublishAsync(exchange: string.Empty, routingKey: "instructionQueue", body: body);
+                }
+            }
+        }
 
         private bool CanSetStateExecuted(object p) => true;
         public ICommand AddSetStateCommand { get; }
@@ -1045,8 +1087,6 @@ namespace AuxularyApp.ViewModels
             IS.Time = DateStep;
             IS.StepNumber = instructionStepList.Count + 1;
             StateChange stateChange = new StateChange();
-
-            MessageBox.Show(IS.Time);
         }
         #endregion
         #region Properties 
@@ -1144,6 +1184,14 @@ namespace AuxularyApp.ViewModels
         {
             get => _RightSwitchValue;
             set => Set(ref _RightSwitchValue, value);
+        }
+        #endregion
+        #region Name of instruction
+        private string _instructionNote = DateTime.Now.ToString("yy-MM.dd-HH");
+        public string instructionNote
+        {
+            get => _instructionNote;
+            set => Set(ref _instructionNote, value);
         }
         #endregion
         #endregion
