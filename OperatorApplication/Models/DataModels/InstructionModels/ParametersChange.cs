@@ -12,21 +12,23 @@ public partial class ParametersChange : INotifyPropertyChanged
     [JsonIgnore]
     public int ChangeId { get; set; }
     [JsonIgnore]
+    public int StepNumber { get; set; }
+    [JsonIgnore]
     public int StepId { get; set; }
     [JsonIgnore]
     public string _Parameter = null!;
-    public string Parameter { get=> _Parameter; set { _Parameter = value;OnPropertyChanged(); } }
+    public string Parameter { get=> _Parameter; set { _Parameter = value; OnPropertyChanged(); } }
     [JsonIgnore]
     private double _ParameterValue;
-    public double ParameterValue { get=> _ParameterValue; set { _ParameterValue = value;OnPropertyChanged(); } }
+    public double ParameterValue { get=> _ParameterValue; set { _ParameterValue = value; OnPropertyChanged(); } }
     [JsonIgnore]
-    private string _Block = "";
+    private string _Block= null!;
     [JsonIgnore]
     public string Block { get => _Block; set { _Block = value; OnPropertyChanged(); } }
     [JsonIgnore]
-    private string _Time = DateTime.Now.ToString("HH:mm:ss dd.MM.yyyy");
+    private string _Time= null!;
     [JsonIgnore]
-    public string Time { get => _Time; set { _Block = Time; OnPropertyChanged(); } }
+    public string Time { get => _Time; set { _Time = value; OnPropertyChanged(); } }
     [JsonIgnore]
     public virtual InstructionStep? Step { get; set; }
     public event PropertyChangedEventHandler PropertyChanged;

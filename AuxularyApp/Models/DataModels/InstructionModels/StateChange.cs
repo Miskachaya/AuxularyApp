@@ -23,9 +23,9 @@ public partial class StateChange : INotifyPropertyChanged
     private int _SwitchR;
     public int SwitchR { get=> _SwitchR; set { _SwitchR = value; OnPropertyChanged(); } }
     [JsonIgnore]
-    private string _Time = DateTime.Now.ToString("HH:mm:ss dd.MM.yyyy");
+    private string _Time;
     [JsonIgnore]
-    public string Time { get => _Time; set { _Block = Time; OnPropertyChanged(); } }
+    public string Time { get => _Time; set { _Time = value; OnPropertyChanged(); } }
     [JsonIgnore]
     public virtual InstructionStep? Step { get; set; }
     public event PropertyChangedEventHandler PropertyChanged;

@@ -10,17 +10,17 @@
         xmlns:System="clr-namespace:System;assembly=netstandard"
         mc:Ignorable="d"
         Height="450" Width="800"
-        Title="Приложение визуализации данных">
+        Title="Приложение визуализации данных"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized">
     <Window.DataContext>
-        
         <vm:MainWindowViewModel/>
     </Window.DataContext>
     <Window.Resources>
         <Style x:Key="BigFont20">
             <Setter Property="Control.FontSize" Value="20"/>
         </Style>
-      
-        
+        <!-- Шаблон для красной панели -->
         <DataTemplate x:Key="ParameterTemplate" >
             <Border Background="#FFFFCCCC" BorderBrush="Red" BorderThickness="1" Margin="5" Padding="10">
                 <Grid>
@@ -54,9 +54,9 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width ="auto"/>
                             <ColumnDefinition Width = "*"/>
-                        </Grid.ColumnDefinitions> 
+                        </Grid.ColumnDefinitions>
                         <TextBlock Grid.Row="0" Text="Время"/>
-                        <TextBox Grid.Column="1" Margin="10,0,10,0" Text="{Binding Time}" HorizontalAlignment="Stretch"/>
+                        <TextBox Grid.Column="1" Margin="10,0,10,0" Text="{Binding Time, Mode=TwoWay}" HorizontalAlignment="Stretch"/>
                     </Grid>
                     <Grid Grid.Column="3">
                         <Grid.ColumnDefinitions>
@@ -114,7 +114,7 @@
                             <ColumnDefinition Width = "*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Row="0" Text="Время"/>
-                        <TextBox Grid.Column="1" Margin="10,0,10,0" Text="{Binding Time}" HorizontalAlignment="Stretch"/>
+                        <TextBox Grid.Column="1" Margin="10,0,10,0" Text="{Binding Time, Mode=TwoWay}" HorizontalAlignment="Stretch"/>
                     </Grid>
                     <Grid Grid.Column="4">
                         <Grid.ColumnDefinitions>
@@ -141,85 +141,90 @@
                 </Grid>
             </Border>
         </DataTemplate>
+        <DataTemplate x:Key="CompletedINstruction">
+            <ListBoxItem>
+                
+            </ListBoxItem>
+        </DataTemplate>
 
         <!-- Селектор шаблонов (выбирает подходящий DataTemplate по Type) -->
         <vm:PanelTemplateSelector x:Key="PanelTemplateSelector"
             ParameterTemplate="{StaticResource ParameterTemplate}"
             StateTemplate="{StaticResource StateTemplate}"/>
     </Window.Resources>
-    
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <Menu Grid.Row="0">
-                <MenuItem Header="Помощь"></MenuItem>
-                <MenuItem Header="О программе"></MenuItem>
-            </Menu>
-            <TabControl Grid.Row="1">
-                <TabItem>
-                    <TabItem.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Margin="3">Текущие данные</TextBlock>
-                        </StackPanel>
-                    </TabItem.Header>
-                    <Grid ShowGridLines="True">
-                        <Grid.RowDefinitions>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                        </Grid.RowDefinitions>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Menu Grid.Row="0">
+            <MenuItem Header="Помощь"></MenuItem>
+            <MenuItem Header="О программе"></MenuItem>
+        </Menu>
+        <TabControl Grid.Row="1">
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Margin="3">Текущие данные</TextBlock>
+                    </StackPanel>
+                </TabItem.Header>
+                <Grid ShowGridLines="True">
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Row="0" Grid.Column="0" >
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition Width="7*"></ColumnDefinition>
                             <ColumnDefinition></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        <Grid Grid.Row="0" Grid.Column="0" >
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="7*"></ColumnDefinition>
-                                <ColumnDefinition></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <StackPanel Grid.Column="1" >
-                                <StackPanel>
-                                    <CheckBox  Margin="0,30,0,13"  IsChecked="{Binding Series1[0].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="0"></CheckBox>
-                                    <CheckBox Margin="0,0,0,13" IsChecked="{Binding Series1[1].IsVisible}" Command="{Binding  SwitchVisiableCommand}" CommandParameter="1"/>
-                                    <CheckBox Margin="0,0,0,13"  IsChecked="{Binding Series1[2].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="2"></CheckBox>
-                                    <CheckBox Margin="0,0,0,13" IsChecked="{Binding Series1[3].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="3"></CheckBox>
-                                    <CheckBox Margin="0,0,0,13" IsChecked="{Binding Series1[4].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="4"></CheckBox>
-                                    <CheckBox Margin="0,0,0,13" IsChecked="{Binding Series1[5].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="5"></CheckBox>
-                                    <CheckBox Margin="0,0,0,13" IsChecked="{Binding Series1[6].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="6"></CheckBox>
-                                </StackPanel>
+                        <StackPanel Grid.Column="1" >
+                            <StackPanel>
+                                <CheckBox  Margin="0,30,0,13"  IsChecked="{Binding Series1[0].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="0"></CheckBox>
+                                <CheckBox Margin="0,0,0,13" IsChecked="{Binding Series1[1].IsVisible}" Command="{Binding  SwitchVisiableCommand}" CommandParameter="1"/>
+                                <CheckBox Margin="0,0,0,13"  IsChecked="{Binding Series1[2].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="2"></CheckBox>
+                                <CheckBox Margin="0,0,0,13" IsChecked="{Binding Series1[3].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="3"></CheckBox>
+                                <CheckBox Margin="0,0,0,13" IsChecked="{Binding Series1[4].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="4"></CheckBox>
+                                <CheckBox Margin="0,0,0,13" IsChecked="{Binding Series1[5].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="5"></CheckBox>
+                                <CheckBox Margin="0,0,0,13" IsChecked="{Binding Series1[6].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="6"></CheckBox>
                             </StackPanel>
-                            <TextBlock Text="{Binding Date, UpdateSourceTrigger=Explicit}" />
-                            <lvc:CartesianChart
-            Grid.Column="0"
-            SyncContext="{Binding Sync}"
-            Series="{Binding Series1}"
-            XAxes="{Binding XAxes}"
-            YAxes="{Binding YAxes}"
-            LegendPosition="Right"
-            LegendTextSize="13"
-            Title="{Binding Title[0]}">
-                            </lvc:CartesianChart>
-                        </Grid>
-                        <Grid Grid.Row="0" Grid.Column="1" >
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="7*"></ColumnDefinition>
-                                <ColumnDefinition></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <StackPanel Grid.Column="1" >
-                                <StackPanel></StackPanel>
-                                <CheckBox Margin="0,30,0,13"  IsChecked="{Binding Series2[0].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="0"></CheckBox>
-                                <CheckBox Margin="0,0,0,13" IsChecked="{Binding Series2[1].IsVisible}" Command="{Binding  SwitchVisiableCommand}" CommandParameter="1"/>
-                                <CheckBox Margin="0,0,0,13"  IsChecked="{Binding Series2[2].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="2"></CheckBox>
-                                <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series2[3].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="3"></CheckBox>
-                                <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series2[4].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="4"></CheckBox>
-                                <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series2[5].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="5"></CheckBox>
-                                <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series2[6].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="6"></CheckBox>
-                            </StackPanel>
-                            <TextBlock Text="{Binding Date, UpdateSourceTrigger=Explicit}" />
-                            <lvc:CartesianChart
+                        </StackPanel>
+                        <TextBlock Text="{Binding Date, UpdateSourceTrigger=Explicit}" />
+                        <lvc:CartesianChart
+                            Grid.Column="0"
+                            SyncContext="{Binding Sync}"
+                            Series="{Binding SeriesCollection[1]}"
+                            XAxes="{Binding XAxes}"
+                            YAxes="{Binding YAxes}"
+                            LegendPosition="Right"
+                            LegendTextSize="13"
+                            Title="{Binding Title[0]}">
+                        </lvc:CartesianChart>
+                    </Grid>
+                    <Grid Grid.Row="0" Grid.Column="1" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="7*"></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="1" >
+                            <StackPanel></StackPanel>
+                            <CheckBox Margin="0,30,0,13"  IsChecked="{Binding Series2[0].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="0"></CheckBox>
+                            <CheckBox Margin="0,0,0,13" IsChecked="{Binding Series2[1].IsVisible}" Command="{Binding  SwitchVisiableCommand}" CommandParameter="1"/>
+                            <CheckBox Margin="0,0,0,13"  IsChecked="{Binding Series2[2].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="2"></CheckBox>
+                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series2[3].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="3"></CheckBox>
+                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series2[4].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="4"></CheckBox>
+                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series2[5].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="5"></CheckBox>
+                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series2[6].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="6"></CheckBox>
+                        </StackPanel>
+                        <TextBlock Text="{Binding Date, UpdateSourceTrigger=Explicit}" />
+                        <lvc:CartesianChart
                 Grid.Column="0"
                 SyncContext="{Binding Sync}"
                 Series="{Binding Series2}"
@@ -228,24 +233,24 @@
                 LegendPosition="Right"
                 LegendTextSize="10"
                 Title="{Binding Title[1]}">
-                            </lvc:CartesianChart>
-                        </Grid>
-                        <Grid Grid.Row="1" Grid.Column="0" >
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="7*"></ColumnDefinition>
-                                <ColumnDefinition></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <StackPanel Grid.Column="1" >
-                                <CheckBox Margin="0,30,0,13"  IsChecked="{Binding Series3[0].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="0"></CheckBox>
-                                <CheckBox Margin="0,0,0,13" IsChecked="{Binding Series3[1].IsVisible}" Command="{Binding  SwitchVisiableCommand}" CommandParameter="1"/>
-                                <CheckBox Margin="0,0,0,13"  IsChecked="{Binding Series3[2].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="2"></CheckBox>
-                                <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series3[3].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="3"></CheckBox>
-                                <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series3[4].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="4"></CheckBox>
-                                <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series3[5].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="5"></CheckBox>
-                                <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series3[6].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="6"></CheckBox>
-                            </StackPanel>
-                            <TextBlock Text="{Binding Date, UpdateSourceTrigger=Explicit}" />
-                            <lvc:CartesianChart
+                        </lvc:CartesianChart>
+                    </Grid>
+                    <Grid Grid.Row="1" Grid.Column="0" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="7*"></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="1" >
+                            <CheckBox Margin="0,30,0,13"  IsChecked="{Binding Series3[0].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="0"></CheckBox>
+                            <CheckBox Margin="0,0,0,13" IsChecked="{Binding Series3[1].IsVisible}" Command="{Binding  SwitchVisiableCommand}" CommandParameter="1"/>
+                            <CheckBox Margin="0,0,0,13"  IsChecked="{Binding Series3[2].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="2"></CheckBox>
+                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series3[3].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="3"></CheckBox>
+                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series3[4].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="4"></CheckBox>
+                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series3[5].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="5"></CheckBox>
+                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series3[6].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="6"></CheckBox>
+                        </StackPanel>
+                        <TextBlock Text="{Binding Date, UpdateSourceTrigger=Explicit}" />
+                        <lvc:CartesianChart
                  Grid.Column="0"
                  SyncContext="{Binding Sync}"
                  Series="{Binding Series3}"
@@ -254,24 +259,24 @@
                  LegendPosition="Right"
                  LegendTextSize="10"
                  Title="{Binding Title[2]}">
-                            </lvc:CartesianChart>
-                        </Grid>
-                        <Grid Grid.Row="1" Grid.Column="1" >
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="7*"></ColumnDefinition>
-                                <ColumnDefinition></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <StackPanel Grid.Column="1" >
-                                <CheckBox Margin="0,30,0,13"  IsChecked="{Binding Series4[0].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="0"></CheckBox>
-                                <CheckBox Margin="0,0,0,13" IsChecked="{Binding Series4[1].IsVisible}" Command="{Binding  SwitchVisiableCommand}" CommandParameter="1"/>
-                                <CheckBox Margin="0,0,0,13"  IsChecked="{Binding Series4[2].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="2"></CheckBox>
-                                <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series4[3].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="3"></CheckBox>
-                                <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series4[4].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="4"></CheckBox>
-                                <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series4[5].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="5"></CheckBox>
-                                <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series4[6].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="6"></CheckBox>
-                            </StackPanel>
-                            <TextBlock Text="{Binding Date, UpdateSourceTrigger=Explicit}" />
-                            <lvc:CartesianChart
+                        </lvc:CartesianChart>
+                    </Grid>
+                    <Grid Grid.Row="1" Grid.Column="1" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="7*"></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="1" >
+                            <CheckBox Margin="0,30,0,13"  IsChecked="{Binding Series4[0].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="0"></CheckBox>
+                            <CheckBox Margin="0,0,0,13" IsChecked="{Binding Series4[1].IsVisible}" Command="{Binding  SwitchVisiableCommand}" CommandParameter="1"/>
+                            <CheckBox Margin="0,0,0,13"  IsChecked="{Binding Series4[2].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="2"></CheckBox>
+                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series4[3].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="3"></CheckBox>
+                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series4[4].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="4"></CheckBox>
+                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series4[5].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="5"></CheckBox>
+                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series4[6].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="6"></CheckBox>
+                        </StackPanel>
+                        <TextBlock Text="{Binding Date, UpdateSourceTrigger=Explicit}" />
+                        <lvc:CartesianChart
                  Grid.Column="0"
                  SyncContext="{Binding Sync}"
                  Series="{Binding Series4}"
@@ -280,25 +285,25 @@
                  LegendPosition="Right"
                  LegendTextSize="10"
                  Title="{Binding Title[3]}">
-                            </lvc:CartesianChart>
-                        </Grid>
+                        </lvc:CartesianChart>
+                    </Grid>
 
-                        <Grid Grid.Row="2" Grid.Column="0" >
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="7*"></ColumnDefinition>
-                                <ColumnDefinition></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <StackPanel Grid.Column="1" >
-                                <CheckBox Margin="0,30,0,13"  IsChecked="{Binding Series5[0].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="0"></CheckBox>
-                                <CheckBox Margin="0,0,0,13" IsChecked="{Binding Series5[1].IsVisible}" Command="{Binding  SwitchVisiableCommand}" CommandParameter="1"/>
-                                <CheckBox Margin="0,0,0,13"  IsChecked="{Binding Series5[2].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="2"></CheckBox>
-                                <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series5[3].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="3"></CheckBox>
-                                <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series5[4].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="4"></CheckBox>
-                                <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series5[5].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="5"></CheckBox>
-                                <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series5[6].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="6"></CheckBox>
-                            </StackPanel>
-                            <TextBlock Text="{Binding Date, UpdateSourceTrigger=Explicit}" />
-                            <lvc:CartesianChart
+                    <Grid Grid.Row="2" Grid.Column="0" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="7*"></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="1" >
+                            <CheckBox Margin="0,30,0,13"  IsChecked="{Binding Series5[0].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="0"></CheckBox>
+                            <CheckBox Margin="0,0,0,13" IsChecked="{Binding Series5[1].IsVisible}" Command="{Binding  SwitchVisiableCommand}" CommandParameter="1"/>
+                            <CheckBox Margin="0,0,0,13"  IsChecked="{Binding Series5[2].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="2"></CheckBox>
+                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series5[3].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="3"></CheckBox>
+                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series5[4].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="4"></CheckBox>
+                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series5[5].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="5"></CheckBox>
+                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series5[6].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="6"></CheckBox>
+                        </StackPanel>
+                        <TextBlock Text="{Binding Date, UpdateSourceTrigger=Explicit}" />
+                        <lvc:CartesianChart
                  Grid.Column="0"
                  SyncContext="{Binding Sync}"
                  Series="{Binding Series5}"
@@ -307,24 +312,24 @@
                  LegendTextSize="10"
                  LegendPosition="Right"
                  Title="{Binding Title[4]}">
-                            </lvc:CartesianChart>
-                        </Grid>
-                        <Grid Grid.Row="2" Grid.Column="1">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="7*"></ColumnDefinition>
-                                <ColumnDefinition></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <StackPanel Grid.Column="1" >
-                                <CheckBox Margin="0,30,0,13"  IsChecked="{Binding Series6[0].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="0"></CheckBox>
-                                <CheckBox Margin="0,0,0,13" IsChecked="{Binding Series6[1].IsVisible}" Command="{Binding  SwitchVisiableCommand}" CommandParameter="1"/>
-                                <CheckBox Margin="0,0,0,13"  IsChecked="{Binding Series6[2].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="2"></CheckBox>
-                                <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series6[3].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="3"></CheckBox>
-                                <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series6[4].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="4"></CheckBox>
-                                <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series6[5].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="5"></CheckBox>
-                                <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series6[6].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="6"></CheckBox>
-                            </StackPanel>
-                            <TextBlock Text="{Binding Date, UpdateSourceTrigger=Explicit}" />
-                            <lvc:CartesianChart
+                        </lvc:CartesianChart>
+                    </Grid>
+                    <Grid Grid.Row="2" Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="7*"></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="1" >
+                            <CheckBox Margin="0,30,0,13"  IsChecked="{Binding Series6[0].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="0"></CheckBox>
+                            <CheckBox Margin="0,0,0,13" IsChecked="{Binding Series6[1].IsVisible}" Command="{Binding  SwitchVisiableCommand}" CommandParameter="1"/>
+                            <CheckBox Margin="0,0,0,13"  IsChecked="{Binding Series6[2].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="2"></CheckBox>
+                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series6[3].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="3"></CheckBox>
+                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series6[4].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="4"></CheckBox>
+                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series6[5].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="5"></CheckBox>
+                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding Series6[6].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="6"></CheckBox>
+                        </StackPanel>
+                        <TextBlock Text="{Binding Date, UpdateSourceTrigger=Explicit}" />
+                        <lvc:CartesianChart
                  Grid.Column="0"
                  SyncContext="{Binding Sync}"
                  Series="{Binding Series6}"
@@ -333,64 +338,64 @@
                  LegendPosition="Right"
                  LegendTextSize="10"
                  Title="{Binding Title[5]}">
-                            </lvc:CartesianChart>
-                        </Grid>
+                        </lvc:CartesianChart>
                     </Grid>
-                </TabItem>
-                <TabItem>
-                    <TabItem.Header>
-                        <StackPanel Orientation="Horizontal">
+                </Grid>
+            </TabItem>
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
 
-                            <TextBlock Margin="3">Ретроспективные данные</TextBlock>
-                        </StackPanel>
-                    </TabItem.Header>
-                    <Grid ShowGridLines="True">
-                        <Grid.RowDefinitions>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <Grid Grid.Row="0" Grid.Column="0" >
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="6*"></ColumnDefinition>
-                                <ColumnDefinition></ColumnDefinition>
-                                <ColumnDefinition Width="2*"></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <Grid Grid.Row="0" Grid.Column="2">
-                                <StackPanel>
-                                    <Label Content="Начальная дата"></Label>
-                                    <TextBox Background="LightGray"></TextBox>
-                                    <Label Content="Конечная дата"></Label>
-                                    <TextBox Background="LightGray"></TextBox>
-                                    <Button Background="LightGreen" Content="Построить график"></Button>
-                                </StackPanel>
-                            </Grid>
-                            <Grid Grid.Column="1" >
-                                <Grid ShowGridLines="True">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="*"/>
-                                    </Grid.RowDefinitions>
-                                    <CheckBox Grid.Row="0" VerticalAlignment="Center" Content="ИПОС1-Р1" Margin="0,0,0,0" IsChecked="{Binding Series7[0].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="0"/>
-                                    <CheckBox Grid.Row="1" VerticalAlignment="Center" Content="МТПН1-А3" Margin="0,0,0,0" IsChecked="{Binding Series7[1].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="1"/>
-                                    <CheckBox Grid.Row="2" VerticalAlignment="Center" Content="МТПН1-А4" Margin="0,0,0,0" IsChecked="{Binding Series7[2].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="2"/>
-                                    <CheckBox Grid.Row="3" VerticalAlignment="Center" Content="МТПН1-А5" Margin="0,0,0,0" IsChecked="{Binding Series7[4].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="3"/>
-                                    <CheckBox Grid.Row="4" VerticalAlignment="Center" Content="МТПН1-А6" Margin="0,0,0,0" IsChecked="{Binding Series7[5].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="3"/>
-                                    <CheckBox Grid.Row="5" VerticalAlignment="Center" Content="ИПОС1-Р2" Margin="0,0,0,0" IsChecked="{Binding Series7[6].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="3"/>
-                                    <ComboBox Grid.Row="6" x:Name="ParametersComboBox" ItemsSource="{Binding ParamData}" DisplayMemberPath="ParameterSubName" FontSize="14" VerticalContentAlignment="Center" >
-                                        <ComboBox.Style>
-                                            <Style TargetType="ComboBox">
+                        <TextBlock Margin="3">Ретроспективные данные</TextBlock>
+                    </StackPanel>
+                </TabItem.Header>
+                <Grid ShowGridLines="True">
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Grid.Column="0" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="6*"></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition Width="2*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Row="0" Grid.Column="2">
+                            <StackPanel>
+                                <Label Content="Начальная дата"></Label>
+                                <TextBox Background="LightGray"></TextBox>
+                                <Label Content="Конечная дата"></Label>
+                                <TextBox Background="LightGray"></TextBox>
+                                <Button Background="LightGreen" Content="Построить график"></Button>
+                            </StackPanel>
+                        </Grid>
+                        <Grid Grid.Column="1" >
+                            <Grid ShowGridLines="True">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <CheckBox Grid.Row="0" VerticalAlignment="Center" Content="ИПОС1-Р1" Margin="0,0,0,0" IsChecked="{Binding Series7[0].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="0"/>
+                                <CheckBox Grid.Row="1" VerticalAlignment="Center" Content="МТПН1-А3" Margin="0,0,0,0" IsChecked="{Binding Series7[1].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="1"/>
+                                <CheckBox Grid.Row="2" VerticalAlignment="Center" Content="МТПН1-А4" Margin="0,0,0,0" IsChecked="{Binding Series7[2].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="2"/>
+                                <CheckBox Grid.Row="3" VerticalAlignment="Center" Content="МТПН1-А5" Margin="0,0,0,0" IsChecked="{Binding Series7[4].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="3"/>
+                                <CheckBox Grid.Row="4" VerticalAlignment="Center" Content="МТПН1-А6" Margin="0,0,0,0" IsChecked="{Binding Series7[5].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="3"/>
+                                <CheckBox Grid.Row="5" VerticalAlignment="Center" Content="ИПОС1-Р2" Margin="0,0,0,0" IsChecked="{Binding Series7[6].IsVisible}" Command="{Binding SwitchVisiableCommand}" CommandParameter="3"/>
+                                <ComboBox Grid.Row="6" x:Name="ParametersComboBox" ItemsSource="{Binding ParamData}" DisplayMemberPath="ParameterSubName" FontSize="14" VerticalContentAlignment="Center" >
+                                    <ComboBox.Style>
+                                        <Style TargetType="ComboBox">
 
-                                            </Style>
-                                        </ComboBox.Style>
-                                    </ComboBox>
-                                </Grid>
+                                        </Style>
+                                    </ComboBox.Style>
+                                </ComboBox>
                             </Grid>
-                            <lvc:CartesianChart
+                        </Grid>
+                        <lvc:CartesianChart
                 
                  Grid.Row="0"
                  Series="{Binding Series}"
@@ -398,11 +403,12 @@
                  ZoomMode="X"
                  DrawMargin="{Binding Margin}"
                  UpdateStartedCommand="{Binding ChartUpdatedCommand}">
-                            </lvc:CartesianChart>
-                        </Grid>
-                        <Grid Grid.Row="1" Grid.Column="0">
-                            <lvc:CartesianChart
+                        </lvc:CartesianChart>
+                    </Grid>
+                    <Grid Grid.Row="1" Grid.Column="0">
+                        <lvc:CartesianChart
                  x:Name="ScrollBarChart"
+                            
                  Grid.Row="1"
                  Series="{Binding ScrollbarSeries}"
                  DrawMargin="{Binding Margin}"
@@ -413,187 +419,182 @@
                  PointerMoveCommand="{Binding PointerMoveCommand}"
                  PointerReleasedCommand="{Binding PointerUpCommand}"
                  TooltipPosition="Hidden">
-                            </lvc:CartesianChart>
-                        </Grid>
+                        </lvc:CartesianChart>
                     </Grid>
-                </TabItem>
-                <TabItem>
-                    <TabItem.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Margin="3">Управляющие воздействия</TextBlock>
-                        </StackPanel>
-                    </TabItem.Header>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
-                        <Image Grid.Column="1" Source="C:\Users\maksb\source\repos\Miskachaya\AuxularyApp\AuxularyApp\Images\Schematic.png" />
-                        <Grid Grid.Column="1">
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <Grid Grid.Row="0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition/>
-                                </Grid.ColumnDefinitions>
-                                <Grid Grid.Column="1">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition/>
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition/>
-                                        <RowDefinition Height="2*"/>
-                                    </Grid.RowDefinitions>
-                                    <Button Margin="0,25,0,0" Background="Green"/>
-                                    <Button  Margin="0,25,0,0" Background="Green" Grid.Column="2"/>
-                                </Grid>
-                                <Grid Grid.Column="3">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition/>
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition/>
-                                        <RowDefinition Height="2*"/>
-                                    </Grid.RowDefinitions>
-                                    <Button  Margin="0,25,0,0" Background="Green"/>
-                                    <Button  Margin="0,25,0,0" Background="Green" Grid.Column="2"/>
-                                </Grid>
-                            </Grid>
-                            <Grid Grid.Row="1">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                    <ColumnDefinition Width="0.8*"/>
-                                    <ColumnDefinition Width="0.8*"/>
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition/>
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition/>
-                                        <RowDefinition Height="2*"/>
-                                    </Grid.RowDefinitions>
-                                    <Button  Margin="0,25,0,0" Background="Green"/>
-                                    <Button Margin="0,25,0,0" Background="Red"  Grid.Column="2"/>
-                                </Grid>
-                                <Grid Grid.Column="4">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition/>
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition/>
-                                        <RowDefinition Height="2*"/>
-                                    </Grid.RowDefinitions>
-                                    <Button  Margin="0,25,0,0" Background="Green"/>
-                                    <Button  Margin="0,25,0,0" Background="Green" Grid.Column="2"/>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                        <StackPanel Style="{StaticResource BigFont20}">
-                            <TextBlock FontSize="30" Text="Состоянеие"/>
-                            <TextBlock FontSize="30" Text="МТПиН1-А3             вкл.\выкл."/>
-                            <TextBlock FontSize="30" Text="МТПиН1-А4             вкл.\вкл."/>
-                            <TextBlock FontSize="30" Text="МТПиН1-А5             вкл.\вкл."/>
-                            <TextBlock FontSize="30" Text="МТПиН1-А6             вкл.\вкл."/>
-                        </StackPanel>
-                    </Grid>
-                </TabItem>
-                <TabItem>
-                    <TabItem.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Margin="3">Инструкции для оператора</TextBlock>
-                        </StackPanel>
-                    </TabItem.Header>
-                    <Grid Style="{StaticResource BigFont20}" ShowGridLines="True">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="5*"/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Orientation="Vertical">
-                            <TreeView >
-                                <TreeViewItem Header="Выполненные">
-                                    <TreeViewItem Header="150625-121"/>
-                                    <TreeViewItem Header="150625-122"/>
-                                    <TreeViewItem Header="120625-151"/>
-                                    <TreeViewItem Header="100625-111"/>
-                                </TreeViewItem>
-                            </TreeView>
-                            <TreeView>
-                                <TreeViewItem Header="В процессе">
-                                </TreeViewItem>
-                            </TreeView>
-                            <TreeView>
-                                <TreeViewItem Header="В планах">
-                                    <TreeViewItem Header="170625-161"/>
-                                    <TreeViewItem Header="170625-162"/>
-                                </TreeViewItem>
-                            </TreeView>
-                        </StackPanel>
-                        <Grid Grid.Column="1">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="1*"/>
-                                <RowDefinition Height="7*"/>
-                            </Grid.RowDefinitions>
-                            <Grid Grid.Row="0">
+                </Grid>
+            </TabItem>
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Margin="3">Управляющие воздействия</TextBlock>
+                    </StackPanel>
+                </TabItem.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="1" Source="C:\Users\maksb\source\repos\Miskachaya\AuxularyApp\AuxularyApp\Images\Schematic.png" />
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid Grid.Column="1">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition/>
                                     <ColumnDefinition/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="1*"/>
-                                    <RowDefinition Height="*"/>
+                                    <RowDefinition/>
+                                    <RowDefinition Height="2*"/>
                                 </Grid.RowDefinitions>
-                                <Button Grid.Row="0" Grid.Column="0" Content="Добавить шаг параметров" Command="{Binding AddParameterPanelCommand}" />
-                                <Button Grid.Row="0" Grid.Column="1" Content="Добавить шаг состояния" Command="{Binding AddStatePanelCommand}"/>
-                                <Button Grid.Row="0" Grid.Column="2" Content="Удалить последний шаг"/>
-                                <Button Grid.Row="1" Grid.Column="1" Content="Создать новую инструкцию" Background="Yellow"/>
-                                <Button Grid.Row="1" Grid.Column="2" Content="Готово" Background="GreenYellow" Command="{Binding AcceptCommand}"/>
-                                <StackPanel Grid.Row="1" Grid.Column="0" CanVerticallyScroll="True">
-                                    <Button HorizontalAlignment="Stretch" Content="Изменить"/>
-                                    <ComboBox HorizontalAlignment="Stretch">
-                                        <ComboBoxItem Content="1"/>
-                                        <ComboBoxItem Content="2"/>
-                                        <ComboBoxItem Content="3"/>
-                                    </ComboBox>
-                                </StackPanel>
+                                <Button Margin="0,25,0,0" Background="Green"/>
+                                <Button  Margin="0,25,0,0" Background="Green" Grid.Column="2"/>
                             </Grid>
-                            <TextBlock Grid.Row="1" Text="{Binding instructionNote}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            <Grid Grid.Row="2">
-                                <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Visible">
-                                    <StackPanel CanVerticallyScroll="True" x:Name="GeneralStepGrid2" Orientation="Vertical">
-                                        <ItemsControl 
-                                            Grid.Row="1"
-                                            ItemsSource="{Binding AddedPanels}"
-                                            ItemTemplateSelector="{StaticResource PanelTemplateSelector}"/>
-                                    </StackPanel>
-                                </ScrollViewer>
+                            <Grid Grid.Column="3">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition Height="2*"/>
+                                </Grid.RowDefinitions>
+                                <Button  Margin="0,25,0,0" Background="Green"/>
+                                <Button  Margin="0,25,0,0" Background="Green" Grid.Column="2"/>
+                            </Grid>
+                        </Grid>
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="0.8*"/>
+                                <ColumnDefinition Width="0.8*"/>
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition Height="2*"/>
+                                </Grid.RowDefinitions>
+                                <Button  Margin="0,25,0,0" Background="Green"/>
+                                <Button Margin="0,25,0,0" Background="Red"  Grid.Column="2"/>
+                            </Grid>
+                            <Grid Grid.Column="4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition Height="2*"/>
+                                </Grid.RowDefinitions>
+                                <Button  Margin="0,25,0,0" Background="Green"/>
+                                <Button  Margin="0,25,0,0" Background="Green" Grid.Column="2"/>
                             </Grid>
                         </Grid>
                     </Grid>
-                </TabItem>
-            </TabControl>
-            <TextBlock Grid.Row="2" Text=" © ИДСИТУ СО РАН, 2025">
+                    <StackPanel Style="{StaticResource BigFont20}">
+                        <TextBlock FontSize="30" Text="Состоянеие"/>
+                        <TextBlock FontSize="30" Text="МТПиН1-А3             вкл.\выкл."/>
+                        <TextBlock FontSize="30" Text="МТПиН1-А4             вкл.\вкл."/>
+                        <TextBlock FontSize="30" Text="МТПиН1-А5             вкл.\вкл."/>
+                        <TextBlock FontSize="30" Text="МТПиН1-А6             вкл.\вкл."/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Margin="3"><Run Text="Инструкции для оператора"/></TextBlock>
+                    </StackPanel>
+                </TabItem.Header>
+                <Grid Style="{StaticResource BigFont20}" ShowGridLines="True">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="5*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*" MaxHeight="30"/>
+                            <RowDefinition Height="2*" />
+                            <RowDefinition Height="1*" MaxHeight="30"/>
+                            <RowDefinition Height="2*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="2" Text="Выполненные"/>
+                        <TextBlock Grid.Row="0" Text="Запланированные"/>
+                        <ListBox Grid.Row="3" ItemsSource="{Binding CompletedInstructions}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate >
+                                    <TextBlock Text="{Binding Name}"/>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        <ListBox Grid.Row="1" ItemsSource="{Binding PlannedInstructions}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate >
+                                    <TextBlock Text="{Binding Name}"/>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="7*"/>
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Button Grid.Row="0" Grid.Column="0" Content="Добавить шаг параметров" Command="{Binding AddParameterPanelCommand}" />
+                            <Button Grid.Row="0" Grid.Column="1" Content="Добавить шаг состояния" Command="{Binding AddStatePanelCommand}"/>
+                            <Button Grid.Row="0" Grid.Column="2" Content="Удалить последний шаг"/>
+                            <Button Grid.Row="1" Grid.Column="1" Content="Создать новую инструкцию" Background="Yellow" Command="{Binding CreateNewInstructionCommand}"/>
+                            <Button Grid.Row="1" Grid.Column="2" Content="Готово" Background="GreenYellow" Command="{Binding AcceptCommand}"/>
+                            <Button Grid.Row="1" Grid.Column="0" Content="Удалить" Background="IndianRed"/>
+                        </Grid>
+                        <TextBlock Grid.Row="1" Text="{Binding instructionNote}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Grid Grid.Row="2">
+                            <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Visible">
+                                <StackPanel CanVerticallyScroll="True" x:Name="GeneralStepGrid2" Orientation="Vertical">
+                                    <ItemsControl 
+                                        Grid.Row="1"
+                                        ItemsSource="{Binding AddedPanels}"
+                                        ItemTemplateSelector="{StaticResource PanelTemplateSelector}"/>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </TabItem>
 
-            </TextBlock>
-        </Grid>
-    
+        </TabControl>
+        <TextBlock Grid.Row="2" Text=" © ИДСТУ СО РАН, 2025" />
+    </Grid>
 </Window>

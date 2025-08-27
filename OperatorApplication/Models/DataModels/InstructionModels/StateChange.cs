@@ -13,6 +13,8 @@ public partial class StateChange : INotifyPropertyChanged
     [JsonIgnore]
     public string Block { get => _Block; set { _Block = value; OnPropertyChanged(); } }
     [JsonIgnore]
+    public int StepNumber { get; set; }
+    [JsonIgnore]
     public int ChangeId { get; set; }
     [JsonIgnore]
     public int StepId { get; set; }

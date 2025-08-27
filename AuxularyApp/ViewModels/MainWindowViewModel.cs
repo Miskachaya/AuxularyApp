@@ -22,6 +22,7 @@ using LiveChartsCore.SkiaSharpView.Painting;
 using LiveChartsCore.SkiaSharpView.Painting;
 using LiveChartsCore.SkiaSharpView.VisualElements;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using SkiaSharp;
@@ -31,6 +32,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data;
 using System.Linq;
 using System.Linq;
 using System.Net.Http;
@@ -52,6 +54,9 @@ namespace AuxularyApp.ViewModels
 {
     internal partial class MainWindowViewModel : ViewModel
     {
+        
+        public ObservableCollection<Instruction> CompletedInstructions { get; } = new ObservableCollection<Instruction>();
+        public ObservableCollection<Instruction> PlannedInstructions { get; } = new ObservableCollection<Instruction>();
         int maxVal =18;
         public ObservableCollection<ObservableCollection<ParametersMeasure>> _Measurements = new ObservableCollection<ObservableCollection<ParametersMeasure>>();
         private readonly DateTimeAxis _customAxis;
@@ -71,7 +76,8 @@ namespace AuxularyApp.ViewModels
         public ICommand AddParameterPanelCommand { get; }
         public ICommand AddStatePanelCommand { get; }
         public ICommand AcceptCommand { get; }
-
+        
+        
         // Общий список всех добавленных панелей (для отображения)
         public ObservableCollection<object> AddedPanels { get; } = new ObservableCollection<object>();
         public List<int> AddedPanelsValue { get; } = new List<int>();
@@ -80,12 +86,12 @@ namespace AuxularyApp.ViewModels
             
             AddedPanelsValue.Add(0);
             InstructionStep step = new InstructionStep();
-            
             steps.Add(step);
+            step.StepNumber = steps.Count;
             StateChange newItem = new StateChange();
+            newItem.Time = DateTime.Now.ToString("HH:mm:ss dd.MM.yyyy");
             AddedPanels.Add(newItem);
             StatePanelItems.Add(newItem);
-
             GeneralDictionary.Add(steps.Count - 1, (null, newItem));
             //MessageBox.Show($"{steps.Count} {StatePanelItems.Count}" );
             
@@ -96,17 +102,14 @@ namespace AuxularyApp.ViewModels
             AddedPanelsValue.Add(0);
             InstructionStep step = new InstructionStep();
             steps.Add(step);
+            step.StepNumber = steps.Count;
             ParametersChange newItem = new ParametersChange();
+            newItem.Time = DateTime.Now.ToString("HH:mm:ss dd.MM.yyyy");
             AddedPanels.Add(newItem);
             ParameterPanelItems.Add(newItem);
             GeneralDictionary.Add(steps.Count - 1, (newItem,null));
             //MessageBox.Show($"{steps.Count} {ParameterPanelItems.Count}");
         }
-
-        //private async Task Acept()
-        //{
-            
-        //}
         public class RelayCommand : ICommand
         {
             private readonly Action _execute;
@@ -115,12 +118,6 @@ namespace AuxularyApp.ViewModels
             public void Execute(object parameter) => _execute();
             public event EventHandler CanExecuteChanged;
         }
-
-
-
-
-
-
         public ISeries[] Series { get; set; }
         public Axis[] ScrollableAxes { get; set; }
         public ISeries[] ScrollbarSeries { get; set; }
@@ -128,8 +125,108 @@ namespace AuxularyApp.ViewModels
         public Axis[] InvisibleY { get; set; }
         public LiveChartsCore.Measure.Margin Margin { get; set; }
         public RectangularSection[] Thumbs { get; set; }
-  
+
         #region Series
+        public ObservableCollection<AuxularyApp.Infrastructure.Graphics.Chart> ChartCollection { get; set; }
+        public void CreateCharts()
+        {
+            for (int i = 0; i < 6; i++)
+            {
+               AuxularyApp.Infrastructure.Graphics.Chart chart = new();
+                ChartCollection.Add(chart);
+            }
+        }
+        //public ObservableCollection<ObservableCollection<ISeries>> SeriesOfSeriesCollection { get; } = [];
+        //public ObservableCollection<ISeries> SeriesCollection { get; set; }
+        //public Dictionary<string, List<DateTimePoint>> DateTimePointDictionary { get; set; }
+        //private List<DateTimePoint> Voltagevalues = [];
+        //private List<DateTimePoint> ActiveLPvalues = [];
+        //private List<DateTimePoint> ReactiveLPvalues = [];
+        //private List<DateTimePoint> FullLPvalues = [];
+        //private List<DateTimePoint> MicrogridFr = [];
+        //private List<DateTimePoint> CurrentValue = [];
+        //private List<DateTimePoint> LPF = [];
+
+        //public List<List<DateTimePoint>> DateTimePointList { get; set; }
+        //public void CreateSerieses()
+        //{
+        //    for (int i = 0; i < 6; i++)
+        //    {
+        //        SeriesCollection = [
+        //            new LineSeries<DateTimePoint>
+        //            {
+        //                Name = "Напряжение",
+        //                IsVisible = true,
+        //                Values = _Voltagevalues1,
+        //                Fill = null,
+        //                GeometryFill = null,
+        //                GeometryStroke = null,
+        //                LineSmoothness = 0
+        //            },
+        //            new LineSeries<DateTimePoint>
+        //            {
+        //                Name = "Ток",
+        //                IsVisible = true,
+        //                Values = _CurrentValue1,
+        //                Fill = null,
+        //                GeometryFill = null,
+        //                GeometryStroke = null,
+        //                LineSmoothness = 0
+        //            },
+        //            new LineSeries<DateTimePoint>
+        //            {
+        //                Name = "Ативная МН",
+        //                IsVisible = true,
+        //                Values = _ActiveLPvalues1,
+        //                Fill = null,
+        //                GeometryFill = null,
+        //                GeometryStroke = null,
+        //                LineSmoothness = 0
+        //            },
+        //            new LineSeries<DateTimePoint>
+        //            {
+        //                Name = "Реактивная МН",
+        //                IsVisible = true,
+        //                Values = _ReactiveLPvalues1,
+        //                Fill = null,
+        //                GeometryFill = null,
+        //                GeometryStroke = null,
+        //                LineSmoothness = 0
+        //            },
+        //            new LineSeries<DateTimePoint>
+        //            {
+        //                Name = "Полная МН",
+        //                IsVisible = true,
+        //                Values = _FullLPvalues1,
+        //                Fill = null,
+        //                GeometryFill = null,
+        //                GeometryStroke = null,
+        //                LineSmoothness = 0
+        //            },
+        //            new LineSeries<DateTimePoint>
+        //            {
+        //                Name = "Коэф. мощности нагрузки",
+        //                IsVisible = true,
+        //                Values = _LPF1,
+        //                Fill = null,
+        //                GeometryFill = null,
+        //                GeometryStroke = null,
+        //                LineSmoothness = 0
+        //            },
+        //            new LineSeries<DateTimePoint>
+        //            {
+        //                Name = "Частота эл.сети",
+        //                IsVisible = true,
+        //                Values = _MicrogridFr1,
+        //                Fill = null,
+        //                GeometryFill = null,
+        //                GeometryStroke = null,
+        //                LineSmoothness = 0
+        //            }];
+        //        SeriesOfSeriesCollection.Add(SeriesCollection);
+        //    }
+        //}
+
         public ObservableCollection<ISeries> Series1 { get; set; }
         private readonly List<DateTimePoint> _Voltagevalues1 = [];
         private readonly List<DateTimePoint> _ActiveLPvalues1 = [];
@@ -339,6 +436,7 @@ namespace AuxularyApp.ViewModels
             SwitchVisiableCommand4 = new LambdaCommand(OnSwitchVisibleCommandExecuted4, CanSwitchVisiableCommandExecuted);
             SwitchVisiableCommand5 = new LambdaCommand(OnSwitchVisibleCommandExecuted5, CanSwitchVisiableCommandExecuted);
             SwitchVisiableCommand6 = new LambdaCommand(OnSwitchVisibleCommandExecuted6, CanSwitchVisiableCommandExecuted);
+            CreateNewInstructionCommand = new LambdaCommand(OnCreateNewInstructionCommand, CanSwitchVisiableCommandExecuted);
             Series1 = [
 
             new LineSeries<DateTimePoint>
@@ -970,6 +1068,26 @@ namespace AuxularyApp.ViewModels
 
             Series3[i].IsVisible = !Series3[i].IsVisible;
         }
+        public ICommand CreateNewInstructionCommand { get; }
+        private void OnCreateNewInstructionCommand(object p)
+        {
+            if (AddedPanels.Count != 0)
+            {
+                MessageBoxResult result = MessageBox.Show("Подтвердив, все шаги текущей инструкции удалятся.\n\nВы хотите продолжить?", "Подтверждение", MessageBoxButton.YesNoCancel);
+                switch (result)
+                {
+                    case MessageBoxResult.Yes:
+                        AddedPanels.Clear();
+                        AddedPanelsValue.Clear();
+                        steps.Clear();
+                        GeneralDictionary.Clear();
+                        break;
+                    case MessageBoxResult.No:
+                        // Действия при выборе "Нет"
+                        break;
+                }
+            }
+        }
         public ICommand SwitchVisiableCommand4 { get; }
         private void OnSwitchVisibleCommandExecuted4(object p)
         {
@@ -1044,39 +1162,47 @@ namespace AuxularyApp.ViewModels
                     steps[i].Time = GeneralDictionary[i].Item1.Time;
                     steps[i].Block = GeneralDictionary[i].Item1.Block;
                 }
-                instruction.InstructionSteps = steps;
-                var options = new JsonSerializerOptions
-                {
-                    Encoder = JavaScriptEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.Cyrillic),
-                    WriteIndented = true
-                };
-                string json = JsonSerializer.Serialize<Instruction>(instruction, options);
-                json = json.Replace("\r\n", "");
-                // replace \" with "
-                json = json.Replace('\"', '"');
-                json = json.Replace("\'", "");
-                Clipboard.SetText(json);
-                //MessageBox.Show(json);
-
-                var factory = new ConnectionFactory() { HostName = "localhost" };
-                using var connection = await factory.CreateConnectionAsync();
-                using var channel = await connection.CreateChannelAsync();
-                {
-                    // Создание очереди (если её нет)
-                    channel.QueueDeclareAsync(queue: "instructionQueue",
-                                         durable: false,
-                                         exclusive: false,
-                                         autoDelete: false,
-                                         arguments: null);
-
-                    // Сообщение для отправки
-                    string message = json;
-                    var body = Encoding.UTF8.GetBytes(message);
-
-                    // Отправка сообщения
-                    await channel.BasicPublishAsync(exchange: string.Empty, routingKey: "instructionQueue", body: body);
-                }
             }
+            instruction.InstructionSteps = steps;
+            var options = new JsonSerializerOptions
+            {
+                Encoder = JavaScriptEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.Cyrillic),
+                WriteIndented = true
+            };
+            string json = JsonSerializer.Serialize<Instruction>(instruction, options);
+            json = json.Replace("\r\n", "");
+            // replace \" with "
+            json = json.Replace('\"', '"');
+            json = json.Replace("\'", "");
+            //Clipboard.SetText(json);
+            //MessageBox.Show(json);
+
+            var factory = new ConnectionFactory() { HostName = "localhost" };
+            using var connection = await factory.CreateConnectionAsync();
+            using var channel = await connection.CreateChannelAsync();
+            {
+                // Создание очереди (если её нет)
+                await channel.QueueDeclareAsync(queue: "instructionQueue",
+                                     durable: false,
+                                     exclusive: false,
+                                     autoDelete: false,
+                                     arguments: null);
+
+                // Сообщение для отправки
+                string message = json;
+                var body = Encoding.UTF8.GetBytes(message);
+
+                // Отправка сообщения
+                await channel.BasicPublishAsync(exchange: string.Empty, routingKey: "instructionQueue", body: body);
+            }
+            AddedPanels.Clear();
+            OnCreateNewInstructionCommand(new object());
+            PlannedInstructions.Add(instruction);
+            steps.Clear();
+            GeneralDictionary.Clear();
+            AddedPanelsValue.Clear();
+            instructionNote = DateTime.Now.ToString("yy/MM/dd/HH/mm");
+            instruction = null;
         }
 
         private bool CanSetStateExecuted(object p) => true;
@@ -1187,7 +1313,7 @@ namespace AuxularyApp.ViewModels
         }
         #endregion
         #region Name of instruction
-        private string _instructionNote = DateTime.Now.ToString("yy-MM.dd-HH");
+        private string _instructionNote = DateTime.Now.ToString("yy/MM/dd/HH/mm");
         public string instructionNote
         {
             get => _instructionNote;
@@ -1214,9 +1340,10 @@ namespace AuxularyApp.ViewModels
                 foreach (ParametersMeasure d in collection)
                 {
                     d.Time = DateTime.Now;
+                    ChartCollection[d.BlockId.Value].PushChartData(maxVal,d.Time,d.VoltageValue.Value,d.ActiveLoadPower.Value, d.ReactiveLoadPower.Value, d.FullLoadPower.Value, d.MicrogridFrequency.Value, d.CurrentValue.Value, d.LoadPowerFactor.Value);
                     switch (d.BlockId)
                     {
-                        
+
                         case 1:
                             _Voltagevalues1.Add(new DateTimePoint(d.Time, d.VoltageValue));
                             if (_Voltagevalues1.Count > maxVal) _Voltagevalues1.RemoveAt(0);
@@ -1326,6 +1453,137 @@ namespace AuxularyApp.ViewModels
                 _customAxis.CustomSeparators = GetSeparators();
             }
         }
+        //public async void GetResponse()
+        //{
+        //    while (true)
+        //    {
+        //        await Task.Delay(500);
+        //        HttpClientHandler handler = new HttpClientHandler
+        //        {
+        //            ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
+        //            {
+        //                return true;
+        //            }
+        //        };
+        //        HttpClient httpClient = new HttpClient(handler);
+        //        using var response = await httpClient.GetAsync("https://localhost:7133/api/ParametersMeasures/lv");
+        //        string content = await response.Content.ReadAsStringAsync();
+        //        ParametersMeasure[] collection = JsonSerializer.Deserialize<ParametersMeasure[]>(content);
+        //        foreach (ParametersMeasure d in collection)
+        //        {
+        //            d.Time = DateTime.Now;
+        //            switch (d.BlockId)
+        //            {
+
+        //                case 1:
+        //                    _Voltagevalues1.Add(new DateTimePoint(d.Time, d.VoltageValue));
+        //                    if (_Voltagevalues1.Count > maxVal) _Voltagevalues1.RemoveAt(0);
+        //                    _ReactiveLPvalues1.Add(new DateTimePoint(d.Time, d.ReactiveLoadPower));
+        //                    if (_ReactiveLPvalues1.Count > maxVal) _ReactiveLPvalues1.RemoveAt(0);
+        //                    _FullLPvalues1.Add(new DateTimePoint(d.Time, d.FullLoadPower));
+        //                    if (_FullLPvalues1.Count > maxVal) _FullLPvalues1.RemoveAt(0);
+        //                    _ActiveLPvalues1.Add(new DateTimePoint(d.Time, d.ActiveLoadPower));
+        //                    if (_ActiveLPvalues1.Count > maxVal) _ActiveLPvalues1.RemoveAt(0);
+
+        //                    _CurrentValue1.Add(new DateTimePoint(d.Time, d.CurrentValue));
+        //                    if (_CurrentValue1.Count > maxVal) _CurrentValue1.RemoveAt(0);
+        //                    _LPF1.Add(new DateTimePoint(d.Time, d.LoadPowerFactor));
+        //                    if (_LPF1.Count > maxVal) _LPF1.RemoveAt(0);
+        //                    _MicrogridFr1.Add(new DateTimePoint(d.Time, d.MicrogridFrequency));
+        //                    if (_MicrogridFr1.Count > maxVal) _MicrogridFr1.RemoveAt(0);
+        //                    break;
+        //                case 2:
+        //                    _Voltagevalues2.Add(new DateTimePoint(d.Time, d.VoltageValue));
+        //                    if (_Voltagevalues2.Count > maxVal) _Voltagevalues2.RemoveAt(0);
+        //                    _ReactiveLPvalues2.Add(new DateTimePoint(d.Time, d.ReactiveLoadPower));
+        //                    if (_ReactiveLPvalues2.Count > maxVal) _ReactiveLPvalues2.RemoveAt(0);
+        //                    _FullLPvalues2.Add(new DateTimePoint(d.Time, d.FullLoadPower));
+        //                    if (_FullLPvalues2.Count > maxVal) _FullLPvalues2.RemoveAt(0);
+        //                    _ActiveLPvalues2.Add(new DateTimePoint(d.Time, d.ActiveLoadPower));
+        //                    if (_ActiveLPvalues2.Count > maxVal) _ActiveLPvalues2.RemoveAt(0);
+
+        //                    _CurrentValue2.Add(new DateTimePoint(d.Time, d.CurrentValue));
+        //                    if (_CurrentValue2.Count > maxVal) _CurrentValue2.RemoveAt(0);
+        //                    _LPF2.Add(new DateTimePoint(d.Time, d.LoadPowerFactor));
+        //                    if (_LPF2.Count > maxVal) _LPF2.RemoveAt(0);
+        //                    _MicrogridFr2.Add(new DateTimePoint(d.Time, d.MicrogridFrequency));
+        //                    if (_MicrogridFr2.Count > maxVal) _MicrogridFr2.RemoveAt(0);
+        //                    break;
+        //                case 3:
+        //                    _Voltagevalues3.Add(new DateTimePoint(d.Time, d.VoltageValue));
+        //                    if (_Voltagevalues3.Count > maxVal) _Voltagevalues3.RemoveAt(0);
+        //                    _ReactiveLPvalues3.Add(new DateTimePoint(d.Time, d.ReactiveLoadPower));
+        //                    if (_ReactiveLPvalues3.Count > maxVal) _ReactiveLPvalues3.RemoveAt(0);
+        //                    _FullLPvalues3.Add(new DateTimePoint(d.Time, d.FullLoadPower));
+        //                    if (_FullLPvalues3.Count > maxVal) _FullLPvalues3.RemoveAt(0);
+        //                    _ActiveLPvalues3.Add(new DateTimePoint(d.Time, d.ActiveLoadPower));
+        //                    if (_ActiveLPvalues3.Count > maxVal) _ActiveLPvalues3.RemoveAt(0);
+
+        //                    _CurrentValue3.Add(new DateTimePoint(d.Time, d.CurrentValue));
+        //                    if (_CurrentValue3.Count > maxVal) _CurrentValue3.RemoveAt(0);
+        //                    _LPF3.Add(new DateTimePoint(d.Time, d.LoadPowerFactor));
+        //                    if (_LPF3.Count > maxVal) _LPF3.RemoveAt(0);
+        //                    _MicrogridFr3.Add(new DateTimePoint(d.Time, d.MicrogridFrequency));
+        //                    if (_MicrogridFr3.Count > maxVal) _MicrogridFr3.RemoveAt(0);
+        //                    break;
+        //                case 4:
+        //                    _Voltagevalues4.Add(new DateTimePoint(d.Time, d.VoltageValue));
+        //                    if (_Voltagevalues4.Count > maxVal) _Voltagevalues4.RemoveAt(0);
+        //                    _ReactiveLPvalues4.Add(new DateTimePoint(d.Time, d.ReactiveLoadPower));
+        //                    if (_ReactiveLPvalues4.Count > maxVal) _ReactiveLPvalues4.RemoveAt(0);
+        //                    _FullLPvalues4.Add(new DateTimePoint(d.Time, d.FullLoadPower));
+        //                    if (_FullLPvalues4.Count > maxVal) _FullLPvalues4.RemoveAt(0);
+        //                    _ActiveLPvalues4.Add(new DateTimePoint(d.Time, d.ActiveLoadPower));
+        //                    if (_ActiveLPvalues4.Count > maxVal) _ActiveLPvalues4.RemoveAt(0);
+
+        //                    _CurrentValue4.Add(new DateTimePoint(d.Time, d.CurrentValue));
+        //                    if (_CurrentValue4.Count > maxVal) _CurrentValue4.RemoveAt(0);
+        //                    _LPF4.Add(new DateTimePoint(d.Time, d.LoadPowerFactor));
+        //                    if (_LPF4.Count > maxVal) _LPF4.RemoveAt(0);
+        //                    _MicrogridFr4.Add(new DateTimePoint(d.Time, d.MicrogridFrequency));
+        //                    if (_MicrogridFr4.Count > maxVal) _MicrogridFr4.RemoveAt(0);
+        //                    break;
+        //                case 5:
+        //                    _Voltagevalues5.Add(new DateTimePoint(d.Time, d.VoltageValue));
+        //                    if (_Voltagevalues5.Count > maxVal) _Voltagevalues5.RemoveAt(0);
+        //                    _ReactiveLPvalues5.Add(new DateTimePoint(d.Time, d.ReactiveLoadPower));
+        //                    if (_ReactiveLPvalues5.Count > maxVal) _ReactiveLPvalues5.RemoveAt(0);
+        //                    _FullLPvalues5.Add(new DateTimePoint(d.Time, d.FullLoadPower));
+        //                    if (_FullLPvalues5.Count > maxVal) _FullLPvalues5.RemoveAt(0);
+        //                    _ActiveLPvalues5.Add(new DateTimePoint(d.Time, d.ActiveLoadPower));
+        //                    if (_ActiveLPvalues5.Count > maxVal) _ActiveLPvalues5.RemoveAt(0);
+
+        //                    _CurrentValue5.Add(new DateTimePoint(d.Time, d.CurrentValue));
+        //                    if (_CurrentValue5.Count > maxVal) _CurrentValue5.RemoveAt(0);
+        //                    _LPF5.Add(new DateTimePoint(d.Time, d.LoadPowerFactor));
+        //                    if (_LPF5.Count > maxVal) _LPF5.RemoveAt(0);
+        //                    _MicrogridFr5.Add(new DateTimePoint(d.Time, d.MicrogridFrequency));
+        //                    if (_MicrogridFr5.Count > maxVal) _MicrogridFr5.RemoveAt(0);
+        //                    break;
+        //                case 6:
+        //                    _Voltagevalues6.Add(new DateTimePoint(d.Time, d.VoltageValue));
+        //                    if (_Voltagevalues6.Count > maxVal) _Voltagevalues6.RemoveAt(0);
+        //                    _ReactiveLPvalues6.Add(new DateTimePoint(d.Time, d.ReactiveLoadPower));
+        //                    if (_ReactiveLPvalues6.Count > maxVal) _ReactiveLPvalues6.RemoveAt(0);
+        //                    _FullLPvalues6.Add(new DateTimePoint(d.Time, d.FullLoadPower));
+        //                    if (_FullLPvalues6.Count > maxVal) _FullLPvalues6.RemoveAt(0);
+        //                    _ActiveLPvalues6.Add(new DateTimePoint(d.Time, d.ActiveLoadPower));
+        //                    if (_ActiveLPvalues6.Count > maxVal) _ActiveLPvalues6.RemoveAt(0);
+
+        //                    _CurrentValue6.Add(new DateTimePoint(d.Time, d.CurrentValue));
+        //                    if (_CurrentValue6.Count > maxVal) _CurrentValue6.RemoveAt(0);
+        //                    _LPF6.Add(new DateTimePoint(d.Time, d.LoadPowerFactor));
+        //                    if (_LPF6.Count > maxVal) _LPF6.RemoveAt(0);
+        //                    _MicrogridFr6.Add(new DateTimePoint(d.Time, d.MicrogridFrequency));
+        //                    if (_MicrogridFr6.Count > maxVal) _MicrogridFr6.RemoveAt(0);
+        //                    break;
+        //            }
+        //        }
+        //        _customAxis.MaxLimit = DateTime.Now.AddSeconds(-3).Ticks;
+        //        _customAxis.MinLimit = DateTime.Now.AddSeconds(-8).Ticks;
+        //        _customAxis.CustomSeparators = GetSeparators();
+        //    }
+        //}
 
     }
 }
