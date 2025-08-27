@@ -200,7 +200,7 @@
                         <lvc:CartesianChart
                             Grid.Column="0"
                             SyncContext="{Binding Sync}"
-                            Series="{Binding SeriesCollection[1]}"
+                            Series="{Binding ChartCollection[0].Series}"
                             XAxes="{Binding XAxes}"
                             YAxes="{Binding YAxes}"
                             LegendPosition="Right"
@@ -227,7 +227,7 @@
                         <lvc:CartesianChart
                 Grid.Column="0"
                 SyncContext="{Binding Sync}"
-                Series="{Binding Series2}"
+                Series="{Binding ChartCollection[1].Series}"
                 XAxes="{Binding XAxes}"
                 YAxes="{Binding YAxes}"
                 LegendPosition="Right"
@@ -253,7 +253,7 @@
                         <lvc:CartesianChart
                  Grid.Column="0"
                  SyncContext="{Binding Sync}"
-                 Series="{Binding Series3}"
+                 Series="{Binding ChartCollection[2].Series}"
                  XAxes="{Binding XAxes}"
                  YAxes="{Binding YAxes}"
                  LegendPosition="Right"
@@ -279,7 +279,7 @@
                         <lvc:CartesianChart
                  Grid.Column="0"
                  SyncContext="{Binding Sync}"
-                 Series="{Binding Series4}"
+                 Series="{Binding ChartCollection[3].Series}"
                  XAxes="{Binding XAxes}"
                  YAxes="{Binding YAxes}"
                  LegendPosition="Right"
@@ -306,7 +306,7 @@
                         <lvc:CartesianChart
                  Grid.Column="0"
                  SyncContext="{Binding Sync}"
-                 Series="{Binding Series5}"
+                 Series="{Binding ChartCollection[4].Series}"
                  XAxes="{Binding XAxes}"
                  YAxes="{Binding YAxes}"
                  LegendTextSize="10"
@@ -332,7 +332,7 @@
                         <lvc:CartesianChart
                  Grid.Column="0"
                  SyncContext="{Binding Sync}"
-                 Series="{Binding Series6}"
+                 Series="{Binding ChartCollection[5].Series}"
                  XAxes="{Binding XAxes}"
                  YAxes="{Binding YAxes}"
                  LegendPosition="Right"

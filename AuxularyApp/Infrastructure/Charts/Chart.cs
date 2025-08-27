@@ -104,6 +104,7 @@ namespace AuxularyApp.Infrastructure.Graphics
                 }
             ];
         }
+        
         public void PushChartData(int maxVal,DateTime time, double voltageValue, double activeLPvalue, double reactiveLPvalue, double fullLPvalue, double microgridFr, double currentValue, double lPF )
         {
             Voltagevalues.Add(new DateTimePoint(time, voltageValue));
@@ -114,13 +115,13 @@ namespace AuxularyApp.Infrastructure.Graphics
             CurrentValue.Add(new DateTimePoint(time, currentValue));
             LPF.Add(new DateTimePoint(time, lPF));
 
-            if (Voltagevalues.Count > maxVal) Voltagevalues.Remove(0);
-            if (ActiveLPvalues.Count > maxVal) ActiveLPvalues.Remove(0);
-            if (ReactiveLPvalues.Count > maxVal) ReactiveLPvalues.Remove(0);
-            if (FullLPvalues.Count > maxVal) FullLPvalues.Remove(0);
-            if (MicrogridFr.Count > maxVal) MicrogridFr.Remove(0);
-            if (CurrentValue.Count > maxVal) CurrentValue.Remove(0);
-            if (LPF.Count > maxVal) LPF.Remove(0);
+            if (Voltagevalues.Count > maxVal) Voltagevalues.RemoveAt(0);
+            if (ActiveLPvalues.Count > maxVal) ActiveLPvalues.RemoveAt(0);
+            if (ReactiveLPvalues.Count > maxVal) ReactiveLPvalues.RemoveAt(0);
+            if (FullLPvalues.Count > maxVal) FullLPvalues.RemoveAt(0);
+            if (MicrogridFr.Count > maxVal) MicrogridFr.RemoveAt(0);
+            if (CurrentValue.Count > maxVal) CurrentValue.RemoveAt(0);
+            if (LPF.Count > maxVal) LPF.RemoveAt(0);
         }
     }
 }
