@@ -48,7 +48,8 @@ namespace OperatorApplication.ViewModels
         public ObservableCollection<object> InstructionStepsCollection { get; } =[];
         public MainWindowViewModel()
         {
-            Task.Run(async () => { await Recieve(); });
+            Recieve();
+           // Task.Run(async () => { await Recieve(); });
         }
 
         public async Task Recieve()

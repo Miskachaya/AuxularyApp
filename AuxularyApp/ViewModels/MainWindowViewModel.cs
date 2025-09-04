@@ -54,7 +54,7 @@ namespace AuxularyApp.ViewModels
 {
     internal partial class MainWindowViewModel : ViewModel
     {
-        
+        private static HttpClient httpClient { get; set; }
         public ObservableCollection<Instruction> CompletedInstructions { get; } = new ObservableCollection<Instruction>();
         public ObservableCollection<Instruction> PlannedInstructions { get; } = new ObservableCollection<Instruction>();
         int maxVal =18;
@@ -136,159 +136,9 @@ namespace AuxularyApp.ViewModels
                 ChartCollection.Add(chart);
             }
         }
-        //public ObservableCollection<ObservableCollection<ISeries>> SeriesOfSeriesCollection { get; } = [];
-        //public ObservableCollection<ISeries> SeriesCollection { get; set; }
-        //public Dictionary<string, List<DateTimePoint>> DateTimePointDictionary { get; set; }
-        //private List<DateTimePoint> Voltagevalues = [];
-        //private List<DateTimePoint> ActiveLPvalues = [];
-        //private List<DateTimePoint> ReactiveLPvalues = [];
-        //private List<DateTimePoint> FullLPvalues = [];
-        //private List<DateTimePoint> MicrogridFr = [];
-        //private List<DateTimePoint> CurrentValue = [];
-        //private List<DateTimePoint> LPF = [];
+       
 
-        //public List<List<DateTimePoint>> DateTimePointList { get; set; }
-        //public void CreateSerieses()
-        //{
-        //    for (int i = 0; i < 6; i++)
-        //    {
-        //        SeriesCollection = [
-        //            new LineSeries<DateTimePoint>
-        //            {
-        //                Name = "Напряжение",
-        //                IsVisible = true,
-        //                Values = _Voltagevalues1,
-        //                Fill = null,
-        //                GeometryFill = null,
-        //                GeometryStroke = null,
-        //                LineSmoothness = 0
-        //            },
-        //            new LineSeries<DateTimePoint>
-        //            {
-        //                Name = "Ток",
-        //                IsVisible = true,
-        //                Values = _CurrentValue1,
-        //                Fill = null,
-        //                GeometryFill = null,
-        //                GeometryStroke = null,
-        //                LineSmoothness = 0
-        //            },
-        //            new LineSeries<DateTimePoint>
-        //            {
-        //                Name = "Ативная МН",
-        //                IsVisible = true,
-        //                Values = _ActiveLPvalues1,
-        //                Fill = null,
-        //                GeometryFill = null,
-        //                GeometryStroke = null,
-        //                LineSmoothness = 0
-        //            },
-        //            new LineSeries<DateTimePoint>
-        //            {
-        //                Name = "Реактивная МН",
-        //                IsVisible = true,
-        //                Values = _ReactiveLPvalues1,
-        //                Fill = null,
-        //                GeometryFill = null,
-        //                GeometryStroke = null,
-        //                LineSmoothness = 0
-        //            },
-        //            new LineSeries<DateTimePoint>
-        //            {
-        //                Name = "Полная МН",
-        //                IsVisible = true,
-        //                Values = _FullLPvalues1,
-        //                Fill = null,
-        //                GeometryFill = null,
-        //                GeometryStroke = null,
-        //                LineSmoothness = 0
-        //            },
-        //            new LineSeries<DateTimePoint>
-        //            {
-        //                Name = "Коэф. мощности нагрузки",
-        //                IsVisible = true,
-        //                Values = _LPF1,
-        //                Fill = null,
-        //                GeometryFill = null,
-        //                GeometryStroke = null,
-        //                LineSmoothness = 0
-        //            },
-        //            new LineSeries<DateTimePoint>
-        //            {
-        //                Name = "Частота эл.сети",
-        //                IsVisible = true,
-        //                Values = _MicrogridFr1,
-        //                Fill = null,
-        //                GeometryFill = null,
-        //                GeometryStroke = null,
-        //                LineSmoothness = 0
-        //            }];
-        //        SeriesOfSeriesCollection.Add(SeriesCollection);
-        //    }
-        //}
-
-        public ObservableCollection<ISeries> Series1 { get; set; }
-        private readonly List<DateTimePoint> _Voltagevalues1 = [];
-        private readonly List<DateTimePoint> _ActiveLPvalues1 = [];
-        private readonly List<DateTimePoint> _ReactiveLPvalues1 = [];
-        private readonly List<DateTimePoint> _FullLPvalues1 = [];
-        private readonly List<DateTimePoint> _MicrogridFr1 = [];
-        private readonly List<DateTimePoint> _CurrentValue1 = [];
-        private readonly List<DateTimePoint> _LPF1 = [];
-
-        public ObservableCollection<ISeries> Series2 { get; set; }
-        private readonly List<DateTimePoint> _Voltagevalues2 = [];
-        private readonly List<DateTimePoint> _ActiveLPvalues2 = [];
-        private readonly List<DateTimePoint> _ReactiveLPvalues2 = [];
-        private readonly List<DateTimePoint> _FullLPvalues2 = [];
-        private readonly List<DateTimePoint> _MicrogridFr2 = [];
-        private readonly List<DateTimePoint> _CurrentValue2 = [];
-        private readonly List<DateTimePoint> _LPF2 = [];
-
-        public ObservableCollection<ISeries> Series3 { get; set; }
-        private readonly List<DateTimePoint> _Voltagevalues3 = [];
-        private readonly List<DateTimePoint> _ActiveLPvalues3 = [];
-        private readonly List<DateTimePoint> _ReactiveLPvalues3 = [];
-        private readonly List<DateTimePoint> _FullLPvalues3 = [];
-        private readonly List<DateTimePoint> _MicrogridFr3 = [];
-        private readonly List<DateTimePoint> _CurrentValue3 = [];
-        private readonly List<DateTimePoint> _LPF3 = [];
-
-        public ObservableCollection<ISeries> Series4 { get; set; }
-        private readonly List<DateTimePoint> _Voltagevalues4 = [];
-        private readonly List<DateTimePoint> _ActiveLPvalues4 = [];
-        private readonly List<DateTimePoint> _ReactiveLPvalues4 = [];
-        private readonly List<DateTimePoint> _FullLPvalues4 = [];
-        private readonly List<DateTimePoint> _MicrogridFr4 = [];
-        private readonly List<DateTimePoint> _CurrentValue4 = [];
-        private readonly List<DateTimePoint> _LPF4 = [];
-
-        public ObservableCollection<ISeries> Series5 { get; set; }
-        private readonly List<DateTimePoint> _Voltagevalues5 = [];
-        private readonly List<DateTimePoint> _ActiveLPvalues5 = [];
-        private readonly List<DateTimePoint> _ReactiveLPvalues5 = [];
-        private readonly List<DateTimePoint> _FullLPvalues5 = [];
-        private readonly List<DateTimePoint> _MicrogridFr5 = [];
-        private readonly List<DateTimePoint> _CurrentValue5 = [];
-        private readonly List<DateTimePoint> _LPF5 = [];
-
-        public ObservableCollection<ISeries> Series6 { get; set; }
-        private readonly List<DateTimePoint> _Voltagevalues6 = [];
-        private readonly List<DateTimePoint> _ActiveLPvalues6 = [];
-        private readonly List<DateTimePoint> _ReactiveLPvalues6= [];
-        private readonly List<DateTimePoint> _FullLPvalues6 = [];
-        private readonly List<DateTimePoint> _MicrogridFr6 = [];
-        private readonly List<DateTimePoint> _CurrentValue6 = [];
-        private readonly List<DateTimePoint> _LPF6 = [];
-
-        public ObservableCollection<ISeries> Series7 { get; set; }
-        private readonly List<DateTimePoint> _Voltagevalues7 = [];
-        private readonly List<DateTimePoint> _ActiveLPvalues7 = [];
-        private readonly List<DateTimePoint> _ReactiveLPvalues7 = [];
-        private readonly List<DateTimePoint> _FullLPvalues7 = [];
-        private readonly List<DateTimePoint> _MicrogridFr7 = [];
-        private readonly List<DateTimePoint> _CurrentValue7 = [];
-        private readonly List<DateTimePoint> _LPF7 = [];
+       
 
         #endregion
         public Axis[] XAxes { get; set; }
@@ -618,6 +468,14 @@ namespace AuxularyApp.ViewModels
 
             Series6[i].IsVisible = !Series6[i].IsVisible;
         }
+
+        public ICommand SwitchVisiableCommand { get; }
+        private void OnSwitchVisibleCommandExecuted(object p)
+        {
+            int i = int.Parse(p.ToString());
+
+            ChartCollection[1].
+        }
         private bool CanSwitchVisiableCommandExecuted(object p) => true;
         public ICommand CanGetDataList { get; }
         private async void OnGetDataList(object p)
@@ -766,18 +624,6 @@ namespace AuxularyApp.ViewModels
             public string ParameterName { get; set; }
             public string ParameterSubName { get; set; }
         }
-
-        private List<ParametersData> _ParamData = new List<ParametersData>()
-        {
-            new ParametersData() { ParameterSubName = "Напряжение", ParameterName="VoltageValue" },
-            new ParametersData() { ParameterSubName = "Ток", ParameterName="CurrentValue"},
-            new ParametersData() { ParameterSubName = "Активная мощность", ParameterName="ActiveLoadPower" },
-            new ParametersData() { ParameterSubName = "Реактивная мощность", ParameterName="ReactiveLoadPower"},
-            new ParametersData() { ParameterSubName = "Полная мощность", ParameterName="FullLoadPower" },
-            new ParametersData() { ParameterSubName = "Коэф. мощности нагрузки", ParameterName="LoadPowerFactor" },
-            new ParametersData() { ParameterSubName = "Частота эл. сети", ParameterName="MicrogridFrequency" },
-        };
-        public List<ParametersData> ParamData { get => _ParamData; set => _ParamData = value; }
         #endregion
         #region DateTime
         private string _Date = DateTime.Now.ToString("dd.MM.yyyy\nHH:mm:ss");
@@ -832,17 +678,17 @@ namespace AuxularyApp.ViewModels
         #endregion
         public async void GetResponse()
         {
+            HttpClientHandler handler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
+                {
+                    return true;
+                }
+            };
+            httpClient = new HttpClient(handler);
             while (true)
             {
                 await Task.Delay(500);
-                HttpClientHandler handler = new HttpClientHandler
-                {
-                    ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
-                    {
-                        return true;
-                    }
-                };
-                HttpClient httpClient = new HttpClient(handler);
                 using var response = await httpClient.GetAsync("https://localhost:7133/api/ParametersMeasures/lv");
                 string content = await response.Content.ReadAsStringAsync();
                 ParametersMeasure[] collection = JsonSerializer.Deserialize<ParametersMeasure[]>(content);
@@ -856,137 +702,5 @@ namespace AuxularyApp.ViewModels
                 _customAxis.CustomSeparators = GetSeparators();
             }
         }
-        //public async void GetResponse()
-        //{
-        //    while (true)
-        //    {
-        //        await Task.Delay(500);
-        //        HttpClientHandler handler = new HttpClientHandler
-        //        {
-        //            ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
-        //            {
-        //                return true;
-        //            }
-        //        };
-        //        HttpClient httpClient = new HttpClient(handler);
-        //        using var response = await httpClient.GetAsync("https://localhost:7133/api/ParametersMeasures/lv");
-        //        string content = await response.Content.ReadAsStringAsync();
-        //        ParametersMeasure[] collection = JsonSerializer.Deserialize<ParametersMeasure[]>(content);
-        //        foreach (ParametersMeasure d in collection)
-        //        {
-        //            d.Time = DateTime.Now;
-        //            switch (d.BlockId)
-        //            {
-
-        //                case 1:
-        //                    _Voltagevalues1.Add(new DateTimePoint(d.Time, d.VoltageValue));
-        //                    if (_Voltagevalues1.Count > maxVal) _Voltagevalues1.RemoveAt(0);
-        //                    _ReactiveLPvalues1.Add(new DateTimePoint(d.Time, d.ReactiveLoadPower));
-        //                    if (_ReactiveLPvalues1.Count > maxVal) _ReactiveLPvalues1.RemoveAt(0);
-        //                    _FullLPvalues1.Add(new DateTimePoint(d.Time, d.FullLoadPower));
-        //                    if (_FullLPvalues1.Count > maxVal) _FullLPvalues1.RemoveAt(0);
-        //                    _ActiveLPvalues1.Add(new DateTimePoint(d.Time, d.ActiveLoadPower));
-        //                    if (_ActiveLPvalues1.Count > maxVal) _ActiveLPvalues1.RemoveAt(0);
-
-        //                    _CurrentValue1.Add(new DateTimePoint(d.Time, d.CurrentValue));
-        //                    if (_CurrentValue1.Count > maxVal) _CurrentValue1.RemoveAt(0);
-        //                    _LPF1.Add(new DateTimePoint(d.Time, d.LoadPowerFactor));
-        //                    if (_LPF1.Count > maxVal) _LPF1.RemoveAt(0);
-        //                    _MicrogridFr1.Add(new DateTimePoint(d.Time, d.MicrogridFrequency));
-        //                    if (_MicrogridFr1.Count > maxVal) _MicrogridFr1.RemoveAt(0);
-        //                    break;
-        //                case 2:
-        //                    _Voltagevalues2.Add(new DateTimePoint(d.Time, d.VoltageValue));
-        //                    if (_Voltagevalues2.Count > maxVal) _Voltagevalues2.RemoveAt(0);
-        //                    _ReactiveLPvalues2.Add(new DateTimePoint(d.Time, d.ReactiveLoadPower));
-        //                    if (_ReactiveLPvalues2.Count > maxVal) _ReactiveLPvalues2.RemoveAt(0);
-        //                    _FullLPvalues2.Add(new DateTimePoint(d.Time, d.FullLoadPower));
-        //                    if (_FullLPvalues2.Count > maxVal) _FullLPvalues2.RemoveAt(0);
-        //                    _ActiveLPvalues2.Add(new DateTimePoint(d.Time, d.ActiveLoadPower));
-        //                    if (_ActiveLPvalues2.Count > maxVal) _ActiveLPvalues2.RemoveAt(0);
-
-        //                    _CurrentValue2.Add(new DateTimePoint(d.Time, d.CurrentValue));
-        //                    if (_CurrentValue2.Count > maxVal) _CurrentValue2.RemoveAt(0);
-        //                    _LPF2.Add(new DateTimePoint(d.Time, d.LoadPowerFactor));
-        //                    if (_LPF2.Count > maxVal) _LPF2.RemoveAt(0);
-        //                    _MicrogridFr2.Add(new DateTimePoint(d.Time, d.MicrogridFrequency));
-        //                    if (_MicrogridFr2.Count > maxVal) _MicrogridFr2.RemoveAt(0);
-        //                    break;
-        //                case 3:
-        //                    _Voltagevalues3.Add(new DateTimePoint(d.Time, d.VoltageValue));
-        //                    if (_Voltagevalues3.Count > maxVal) _Voltagevalues3.RemoveAt(0);
-        //                    _ReactiveLPvalues3.Add(new DateTimePoint(d.Time, d.ReactiveLoadPower));
-        //                    if (_ReactiveLPvalues3.Count > maxVal) _ReactiveLPvalues3.RemoveAt(0);
-        //                    _FullLPvalues3.Add(new DateTimePoint(d.Time, d.FullLoadPower));
-        //                    if (_FullLPvalues3.Count > maxVal) _FullLPvalues3.RemoveAt(0);
-        //                    _ActiveLPvalues3.Add(new DateTimePoint(d.Time, d.ActiveLoadPower));
-        //                    if (_ActiveLPvalues3.Count > maxVal) _ActiveLPvalues3.RemoveAt(0);
-
-        //                    _CurrentValue3.Add(new DateTimePoint(d.Time, d.CurrentValue));
-        //                    if (_CurrentValue3.Count > maxVal) _CurrentValue3.RemoveAt(0);
-        //                    _LPF3.Add(new DateTimePoint(d.Time, d.LoadPowerFactor));
-        //                    if (_LPF3.Count > maxVal) _LPF3.RemoveAt(0);
-        //                    _MicrogridFr3.Add(new DateTimePoint(d.Time, d.MicrogridFrequency));
-        //                    if (_MicrogridFr3.Count > maxVal) _MicrogridFr3.RemoveAt(0);
-        //                    break;
-        //                case 4:
-        //                    _Voltagevalues4.Add(new DateTimePoint(d.Time, d.VoltageValue));
-        //                    if (_Voltagevalues4.Count > maxVal) _Voltagevalues4.RemoveAt(0);
-        //                    _ReactiveLPvalues4.Add(new DateTimePoint(d.Time, d.ReactiveLoadPower));
-        //                    if (_ReactiveLPvalues4.Count > maxVal) _ReactiveLPvalues4.RemoveAt(0);
-        //                    _FullLPvalues4.Add(new DateTimePoint(d.Time, d.FullLoadPower));
-        //                    if (_FullLPvalues4.Count > maxVal) _FullLPvalues4.RemoveAt(0);
-        //                    _ActiveLPvalues4.Add(new DateTimePoint(d.Time, d.ActiveLoadPower));
-        //                    if (_ActiveLPvalues4.Count > maxVal) _ActiveLPvalues4.RemoveAt(0);
-
-        //                    _CurrentValue4.Add(new DateTimePoint(d.Time, d.CurrentValue));
-        //                    if (_CurrentValue4.Count > maxVal) _CurrentValue4.RemoveAt(0);
-        //                    _LPF4.Add(new DateTimePoint(d.Time, d.LoadPowerFactor));
-        //                    if (_LPF4.Count > maxVal) _LPF4.RemoveAt(0);
-        //                    _MicrogridFr4.Add(new DateTimePoint(d.Time, d.MicrogridFrequency));
-        //                    if (_MicrogridFr4.Count > maxVal) _MicrogridFr4.RemoveAt(0);
-        //                    break;
-        //                case 5:
-        //                    _Voltagevalues5.Add(new DateTimePoint(d.Time, d.VoltageValue));
-        //                    if (_Voltagevalues5.Count > maxVal) _Voltagevalues5.RemoveAt(0);
-        //                    _ReactiveLPvalues5.Add(new DateTimePoint(d.Time, d.ReactiveLoadPower));
-        //                    if (_ReactiveLPvalues5.Count > maxVal) _ReactiveLPvalues5.RemoveAt(0);
-        //                    _FullLPvalues5.Add(new DateTimePoint(d.Time, d.FullLoadPower));
-        //                    if (_FullLPvalues5.Count > maxVal) _FullLPvalues5.RemoveAt(0);
-        //                    _ActiveLPvalues5.Add(new DateTimePoint(d.Time, d.ActiveLoadPower));
-        //                    if (_ActiveLPvalues5.Count > maxVal) _ActiveLPvalues5.RemoveAt(0);
-
-        //                    _CurrentValue5.Add(new DateTimePoint(d.Time, d.CurrentValue));
-        //                    if (_CurrentValue5.Count > maxVal) _CurrentValue5.RemoveAt(0);
-        //                    _LPF5.Add(new DateTimePoint(d.Time, d.LoadPowerFactor));
-        //                    if (_LPF5.Count > maxVal) _LPF5.RemoveAt(0);
-        //                    _MicrogridFr5.Add(new DateTimePoint(d.Time, d.MicrogridFrequency));
-        //                    if (_MicrogridFr5.Count > maxVal) _MicrogridFr5.RemoveAt(0);
-        //                    break;
-        //                case 6:
-        //                    _Voltagevalues6.Add(new DateTimePoint(d.Time, d.VoltageValue));
-        //                    if (_Voltagevalues6.Count > maxVal) _Voltagevalues6.RemoveAt(0);
-        //                    _ReactiveLPvalues6.Add(new DateTimePoint(d.Time, d.ReactiveLoadPower));
-        //                    if (_ReactiveLPvalues6.Count > maxVal) _ReactiveLPvalues6.RemoveAt(0);
-        //                    _FullLPvalues6.Add(new DateTimePoint(d.Time, d.FullLoadPower));
-        //                    if (_FullLPvalues6.Count > maxVal) _FullLPvalues6.RemoveAt(0);
-        //                    _ActiveLPvalues6.Add(new DateTimePoint(d.Time, d.ActiveLoadPower));
-        //                    if (_ActiveLPvalues6.Count > maxVal) _ActiveLPvalues6.RemoveAt(0);
-
-        //                    _CurrentValue6.Add(new DateTimePoint(d.Time, d.CurrentValue));
-        //                    if (_CurrentValue6.Count > maxVal) _CurrentValue6.RemoveAt(0);
-        //                    _LPF6.Add(new DateTimePoint(d.Time, d.LoadPowerFactor));
-        //                    if (_LPF6.Count > maxVal) _LPF6.RemoveAt(0);
-        //                    _MicrogridFr6.Add(new DateTimePoint(d.Time, d.MicrogridFrequency));
-        //                    if (_MicrogridFr6.Count > maxVal) _MicrogridFr6.RemoveAt(0);
-        //                    break;
-        //            }
-        //        }
-        //        _customAxis.MaxLimit = DateTime.Now.AddSeconds(-3).Ticks;
-        //        _customAxis.MinLimit = DateTime.Now.AddSeconds(-8).Ticks;
-        //        _customAxis.CustomSeparators = GetSeparators();
-        //    }
-        //}
-
     }
 }

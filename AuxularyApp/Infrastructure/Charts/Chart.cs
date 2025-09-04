@@ -21,15 +21,15 @@ namespace AuxularyApp.Infrastructure.Graphics
 {
     public class Chart 
     {
-        public List<DateTimePoint> Voltagevalues { get; set; } = [];
-        public List<DateTimePoint> ActiveLPvalues { get; set; } = [];
+        private List<DateTimePoint> Voltagevalues { get; set; } = [];
+        private List<DateTimePoint> ActiveLPvalues { get; set; } = [];
         private List<DateTimePoint> ReactiveLPvalues { get; set; } = [];
-        public List<DateTimePoint> FullLPvalues { get; set; } = [];
-        public List<DateTimePoint> MicrogridFr { get; set; } = [];
-        public List<DateTimePoint> CurrentValue { get; set; } = [];
-        public List<DateTimePoint> LPF { get; set; } = [];
-        public ObservableCollection<ISeries> Series { get; set; }
-        public Chart()
+        private List<DateTimePoint> FullLPvalues { get; set; } = [];
+        private List<DateTimePoint> MicrogridFr { get; set; } = [];
+        private List<DateTimePoint> CurrentValue { get; set; } = [];
+        private List<DateTimePoint> LPF { get; set; } = [];
+        private ObservableCollection<ISeries> Series { get; set; }
+        private Chart()
         {
             Series= [
                 new LineSeries<DateTimePoint>
