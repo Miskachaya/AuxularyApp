@@ -21,6 +21,16 @@ namespace AuxularyApp.Infrastructure.Graphics
 {
     public class Chart 
     {
+        private  ObservableCollection<ObservablePoint> _values = [];
+        public ObservableCollection<ObservablePoint> GetValues() { return _values; }
+        private int count=0;
+        public void SetValues(int i)
+        {
+            count = i;
+        }
+
+        private List<DateTimePoint> _points = new List<DateTimePoint>();
+        public List<DateTimePoint > GetPoints() { return _points; }
         private List<DateTimePoint> Voltagevalues { get; set; } = [];
         private List<DateTimePoint> ActiveLPvalues { get; set; } = [];
         private List<DateTimePoint> ReactiveLPvalues { get; set; } = [];
@@ -131,25 +141,38 @@ namespace AuxularyApp.Infrastructure.Graphics
             {
                 case "VoltageValue":
                     Voltagevalues.Add(new DateTimePoint(time, value));
+                    _values.Add(new ObservablePoint(count++, value));
+                    _points.Add(new DateTimePoint(time, value));
                     break;
                 case "ActiveLPValues":
                     ActiveLPvalues.Add(new DateTimePoint(time, value));
+                    _values.Add(new ObservablePoint(count++, value));
+                    _points.Add(new DateTimePoint(time, value));
                     break;
                 case "ReactiveLPvalues":
                     ReactiveLPvalues.Add(new DateTimePoint(time, value));
+                    _values.Add(new ObservablePoint(count++, value));
+                    _points.Add(new DateTimePoint(time, value));
                     break;
                 case "FullLPvalues":
                     FullLPvalues.Add(new DateTimePoint(time, value));
+                    _values.Add(new ObservablePoint(count++, value));
+                    _points.Add(new DateTimePoint(time, value));
                     break ;
                 case "MicrogridFr":
                     MicrogridFr.Add(new DateTimePoint(time, value));
-                    
+                    _values.Add(new ObservablePoint(count++, value));
+                    _points.Add(new DateTimePoint(time, value));
                     break;
                 case "CurrentValue":
                     CurrentValue.Add(new DateTimePoint(time, value));
+                    _values.Add(new ObservablePoint(count++, value));
+                    _points.Add(new DateTimePoint(time, value));
                     break ; 
                 case "LPF":
                     LPF.Add(new DateTimePoint(time, value));
+                    _values.Add(new ObservablePoint(count++, value));
+                    _points.Add(new DateTimePoint(time, value));
                     break;
             }
         }

@@ -396,12 +396,15 @@
                             </Grid>
                         </Grid>
                         <lvc:CartesianChart
+                            LegendPosition="Right"
                              Grid.Row="0"
-                             Series="{Binding RetrospectiveChartCollection[3].Series[1]}"
+                             Series="{Binding Series}"
                              XAxes="{Binding ScrollableAxes}"
                              ZoomMode="X"
                              DrawMargin="{Binding Margin}"
-                             UpdateStartedCommand="{Binding ChartUpdatedCommand}">
+                             UpdateStartedCommand="{Binding ChartUpdatedCommand}"
+                            EasingFunction="{x:Null}"
+                            TooltipPosition="Hidden">
                         </lvc:CartesianChart>
                     </Grid>
                     <Grid Grid.Row="1" Grid.Column="0">
@@ -409,7 +412,7 @@
                  x:Name="ScrollBarChart"
                             
                  Grid.Row="1"
-                 Series="{Binding _values1}"
+                 Series="{Binding ScrollbarSeries}"
                  DrawMargin="{Binding Margin}"
                  Sections="{Binding Thumbs}"
                  XAxes="{Binding InvisibleX}"
@@ -417,7 +420,9 @@
                  PointerPressedCommand="{Binding PointerDownCommand}"
                  PointerMoveCommand="{Binding PointerMoveCommand}"
                  PointerReleasedCommand="{Binding PointerUpCommand}"
-                 TooltipPosition="Hidden">
+                 TooltipPosition="Hidden"
+                EasingFunction="{x:Null}"
+                    >
                         </lvc:CartesianChart>
                     </Grid>
                 </Grid>

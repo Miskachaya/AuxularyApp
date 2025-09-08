@@ -205,63 +205,129 @@ namespace AuxularyApp.ViewModels
                 
 
             Series = [
+                 new LineSeries<DateTimePoint>
+                {
+                    Name = "МТПН1-А3",
+                    Values = RetrospectiveChartCollection[0].GetPoints(),
+                    GeometryStroke = null,
+                    GeometryFill = null,
+                    Fill = null,
+                    LineSmoothness = 0
+                    //DataPadding = new(0, 1)
+                },
                 new LineSeries<DateTimePoint>
-            {
-                Name = "МТПН1-А3",
-                IsVisible = true,
-                Values = _values1,
-                Fill = null,
-                GeometryFill = null,
-                GeometryStroke = null,
-                LineSmoothness = 0,
-                DataPadding = new(0, 1)
-            },
-            //new LineSeries<DateTimePoint>
-            //{
-            //    Name = "МТПН1-А4",
-            //    IsVisible = true,
-            //    Values = _values2,
-            //    Fill = null,
-            //    GeometryFill = null,
-            //    GeometryStroke = null,
-            //    LineSmoothness = 0,
-            //    DataPadding = new(0, 1)
-            //},
-            //    new LineSeries<DateTimePoint>
-            //{
-            //    Name = "ИПОС1-Р1",
-            //    IsVisible = true,
-            //    Values = _values3,
-            //    Fill = null,
-            //    GeometryFill = null,
-            //    GeometryStroke = null,
-            //    LineSmoothness = 0,
-            //    DataPadding = new (0, 1)
-            //}
+                {
+                    Name = "МТПН1-А4",
+                    Values = RetrospectiveChartCollection[1].GetPoints(),
+                    GeometryStroke = null,
+                    GeometryFill = null,
+                    Fill = null,
+                    LineSmoothness = 0
+                    //DataPadding = new(0, 1)
+                },
+                new LineSeries<DateTimePoint>
+                {
+                    Name = "МТПН1-А5",
+                    Values = RetrospectiveChartCollection[2].GetPoints(),
+                    GeometryStroke = null,
+                    GeometryFill = null,
+                    Fill = null,
+                    LineSmoothness = 0
+                    //DataPadding = new(0, 1)
+                },
+                new LineSeries<DateTimePoint>
+                {
+                    Name = "МТПН1-А6",
+                    Values = RetrospectiveChartCollection[3].GetPoints(),
+                    GeometryStroke = null,
+                    GeometryFill = null,
+                    Fill = null,
+                    LineSmoothness = 0
+                    //DataPadding = new(0, 1)
+                },
+                new LineSeries<DateTimePoint>
+                {
+                    Name = "ИПОС1-Р1",
+                    Values = RetrospectiveChartCollection[4].GetPoints(),
+                    GeometryStroke = null,
+                    GeometryFill = null,
+                    Fill = null,
+                    LineSmoothness = 0
+                    //DataPadding = new(0, 1)
+                },
+                new LineSeries<DateTimePoint>
+                {
+                    Name = "ИПОС1-Р2",
+                    Values = RetrospectiveChartCollection[5].GetPoints(),
+                    GeometryStroke = null,
+                    GeometryFill = null,
+                    Fill = null,
+                    LineSmoothness = 0
+                    //DataPadding = new(0, 1)
+                }
             ];
 
             ScrollbarSeries = [
-                new LineSeries<DateTimePoint>
-            {
-                Values = _values1,
-                GeometryStroke = null,
-                GeometryFill = null,
-                DataPadding = new(0, 1)
-            },
-            //new LineSeries<DateTimePoint>
-            //{
-            //    Values = _values2,
-            //    GeometryStroke = null,
-            //    GeometryFill = null,
-            //    DataPadding = new(0, 1)
-            //},
-            //new LineSeries<DateTimePoint>
-            //{
-            //    Values = _values3,
-            //    GeometryStroke = null,
-            //    GeometryFill = null,
-            //    DataPadding = new(0, 1)
-            //}
+                new LineSeries<ObservablePoint>
+                {
+                    Name = "МТПН1-А3",
+                    Values = RetrospectiveChartCollection[0].GetValues(),
+                    GeometryStroke = null,
+                    GeometryFill = null,
+                    Fill = null,
+                    LineSmoothness = 0
+                    //DataPadding = new(0, 1)
+                },
+                new LineSeries<ObservablePoint>
+                {
+                    Name = "МТПН1-А4",
+                    Values = RetrospectiveChartCollection[1].GetValues(),
+                    GeometryStroke = null,
+                    GeometryFill = null,
+                    Fill = null,
+                    LineSmoothness = 0
+                    //DataPadding = new(0, 1)
+                },
+                new LineSeries<ObservablePoint>
+                {
+                    Name = "МТПН1-А5",
+                    Values = RetrospectiveChartCollection[2].GetValues(),
+                    GeometryStroke = null,
+                    GeometryFill = null,
+                    Fill = null,
+                    LineSmoothness = 0
+                    //DataPadding = new(0, 1)
+                },
+                new LineSeries<ObservablePoint>
+                {
+                    Name = "МТПН1-А6",
+                    Values = RetrospectiveChartCollection[3].GetValues(),
+                    GeometryStroke = null,
+                    GeometryFill = null,
+                    Fill = null,
+                    LineSmoothness = 0
+                    //DataPadding = new(0, 1)
+                },
+                new LineSeries<ObservablePoint>
+                {
+                    Name = "ИПОС1-Р1",
+                    Values = RetrospectiveChartCollection[4].GetValues(),
+                    GeometryStroke = null,
+                    GeometryFill = null,
+                    Fill = null,
+                    LineSmoothness = 0
+                    //DataPadding = new(0, 1)
+                },
+                new LineSeries<ObservablePoint>
+                {
+                    Name = "ИПОС1-Р2",
+                    Values = RetrospectiveChartCollection[5].GetValues(),
+                    GeometryStroke = null,
+                    GeometryFill = null,
+                    Fill = null,
+                    LineSmoothness = 0
+                    //DataPadding = new(0, 1)
+                }
             ];
 
 
@@ -475,14 +541,65 @@ namespace AuxularyApp.ViewModels
             using HttpResponseMessage response = await httpClient.GetAsync($"https://localhost:7133/api/ParametersMeasures/Retrospective{FirstDate}b{SeconfDate}");
             string content = await response.Content.ReadAsStringAsync();
             ParametersMeasure[] collection = JsonSerializer.Deserialize<ParametersMeasure[]>(content);
-            foreach (ParametersMeasure d in collection)
-            {
-                RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey,d.LoadPowerFactor.Value);
-                _values1.Add(new DateTimePoint(d.Time,d.VoltageValue));
-            }
-            MessageBox.Show(RetrospectiveChartCollection[3].Series[1].Values.ToString());
+            //foreach (ParametersMeasure param in collection) {
+            //    RetrospectiveChartCollection[param.Id.Value - 1].SetValues(0);
+            //}
+                switch (SelectedKey)
+                {
+                    case ("VoltageValue"):
+                    foreach (ParametersMeasure d in collection)
+                    {
+                        RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.VoltageValue.Value);
+                    }
+                        break;
+                case ("CurrentValue"):
+                    foreach (ParametersMeasure d in collection)
+                    {
+                        RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.CurrentValue.Value);
+                    }
+                    break;
+                case ("ActiveLPValues"):
+                    foreach (ParametersMeasure d in collection)
+                    {
+                        RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.ActiveLoadPower.Value);
+                    }
+                    break;
+                case ("ReactiveLPvalues"):
+                    foreach (ParametersMeasure d in collection)
+                    {
+                        RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.ReactiveLoadPower.Value);
+                    }
+                    break;
+                case ("FullLPvalues"):
+                    foreach (ParametersMeasure d in collection)
+                    {
+                        RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.FullLoadPower.Value);
+                    }
+                    break;
+                case ("MicrogridFr"):
+                    foreach (ParametersMeasure d in collection)
+                    {
+                        RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.MicrogridFrequency.Value);
+                    }
+                    break;
+                case ("LPF"):
+                    foreach (ParametersMeasure d in collection)
+                    {
+                        RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.LoadPowerFactor.Value);
+                    }
+                    break;
+
+                    break;
+                default:
+                    MessageBox.Show("Выберите параметр");
+                        break;
+                    
+                //RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.LoadPowerFactor.Value);
+                //_values1.Add(new DateTimePoint(d.Time,d.VoltageValue));
+                }
+            //MessageBox.Show($"{RetrospectiveChartCollection[0].GetValues().Count} {RetrospectiveChartCollection[1].GetValues().Count} {RetrospectiveChartCollection[2].GetValues().Count} {RetrospectiveChartCollection[3].GetValues().Count} {RetrospectiveChartCollection[4].GetValues().Count} {RetrospectiveChartCollection[5].GetValues().Count}");
         }
-        private string _selectedKey="Действ. знач. напряжения";
+        private string _selectedKey;
         public string SelectedKey
         {
             get => _selectedKey;
@@ -569,7 +686,7 @@ namespace AuxularyApp.ViewModels
         {
             get => _retrospectiveSeries; set => Set(ref _retrospectiveSeries, value);
         }
-        private Dictionary<string , string> _paramData= new Dictionary<string, string>{ {"VolatgeValue","Действ. знач. напржение"}, {"CurrentValue","Действ. знач. тока" },{ "ActiveLPValues","Активная МН" },{ "ReactiveLPvalues", "Реактивная МН"},{"FullLPvalues","Полная МН" },{ "MicrogridFr", "Коэф. мощности нагрузки" }, { "LPF", "Частота эл. сети" } };
+        private Dictionary<string , string> _paramData= new Dictionary<string, string>{ { "VoltageValue", "Действ. знач. напржение"}, { "CurrentValue", "Действ. знач. тока" },{ "ActiveLPValues", "Активная МН" },{ "ReactiveLPvalues", "Реактивная МН"},{ "FullLPvalues", "Полная МН" },{ "MicrogridFr", "Коэф. мощности нагрузки" }, { "LPF", "Частота эл. сети" } };
         public Dictionary<string , string> ParamData { get => _paramData; set => _paramData = value; }
         private bool[] _blockId = { false,false,false,false,false,false,false};
         public bool[] BlockId
