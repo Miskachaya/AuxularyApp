@@ -399,7 +399,7 @@
                             LegendPosition="Right"
                              Grid.Row="0"
                              Series="{Binding Series}"
-                             XAxes="{Binding ScrollableAxes}"
+                             XAxes="{Binding XAxesRetrospective}"
                              ZoomMode="X"
                              DrawMargin="{Binding Margin}"
                              UpdateStartedCommand="{Binding ChartUpdatedCommand}"

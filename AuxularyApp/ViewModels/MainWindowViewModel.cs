@@ -62,6 +62,7 @@ namespace AuxularyApp.ViewModels
         int maxVal =18;
         public ObservableCollection<ObservableCollection<ParametersMeasure>> _Measurements = new ObservableCollection<ObservableCollection<ParametersMeasure>>();
         private readonly DateTimeAxis _customAxis;
+        private readonly DateTimeAxis _RetrospectiveAxis;
         private readonly DateTimeAxis _customAxis2;
         private bool _isDown = false;
         public readonly ObservableCollection<DateTimePoint> _values1 = [];
@@ -144,6 +145,7 @@ namespace AuxularyApp.ViewModels
         }
         #endregion
         public Axis[] XAxes { get; set; }
+        public Axis[] XAxesRetrospective { get; set; }
         public ICartesianAxis[] YAxes { get; set; } = [
         new Axis
             {
@@ -373,6 +375,7 @@ namespace AuxularyApp.ViewModels
                 SeparatorsPaint = new SolidColorPaint(SKColors.Black.WithAlpha(100))
             };
             XAxes = [_customAxis];
+            XAxesRetrospective = [_RetrospectiveAxis];
             GetResponse();
         }
         public LabelVisual[] Title { get; set; } =
