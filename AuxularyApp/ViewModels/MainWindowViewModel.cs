@@ -46,6 +46,7 @@ using System.Text.Unicode;
 using System.Threading.Tasks;
 using System.Threading.Tasks;
 using System.Timers;
+using System.Web;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -53,21 +54,23 @@ using System.Xml.Linq;
 namespace AuxularyApp.ViewModels
 {
     internal partial class MainWindowViewModel : ViewModel
-    {
+    { 
+        public ObservableCollection<AuxularyApp.Infrastructure.Graphics.Chart> ChartCollection { get;  } = [];
         private static HttpClient httpClient { get; set; }
-        public ObservableCollection<Instruction> CompletedInstructions { get; } = new ObservableCollection<Instruction>();
+        public ObservableCollection<Instruction> CompletedInstructions { get; } = [];
         public ObservableCollection<Instruction> PlannedInstructions { get; } = new ObservableCollection<Instruction>();
         int maxVal =18;
         public ObservableCollection<ObservableCollection<ParametersMeasure>> _Measurements = new ObservableCollection<ObservableCollection<ParametersMeasure>>();
         private readonly DateTimeAxis _customAxis;
         private readonly DateTimeAxis _customAxis2;
         private bool _isDown = false;
-        private readonly ObservableCollection<DateTimePoint> _values1 = [];
+        public readonly ObservableCollection<DateTimePoint> _values1 = [];
         private readonly ObservableCollection<DateTimePoint> _values2 = [];
         private readonly ObservableCollection<DateTimePoint> _values3 = [];
 
         public Dictionary<int, (ParametersChange, StateChange)> GeneralDictionary = new();
 
+        public ObservableCollection<AuxularyApp.Infrastructure.Graphics.Chart> RetrospectiveChartCollection { get; } = [];
 
         //public Instruction instruction = new Instruction();
         public List<InstructionStep> steps = new List<InstructionStep>();   
@@ -80,6 +83,7 @@ namespace AuxularyApp.ViewModels
         
         // Общий список всех добавленных панелей (для отображения)
         public ObservableCollection<object> AddedPanels { get; } = new ObservableCollection<object>();
+
         public List<int> AddedPanelsValue { get; } = new List<int>();
         private void AddStatePanel()
         {
@@ -127,19 +131,17 @@ namespace AuxularyApp.ViewModels
         public RectangularSection[] Thumbs { get; set; }
 
         #region Series
-        public ObservableCollection<AuxularyApp.Infrastructure.Graphics.Chart> ChartCollection { get; set; } = [];
+        
         public void CreateCharts()
         {
             for (int i = 1; i <= 6; i++)
             {
                AuxularyApp.Infrastructure.Graphics.Chart chart = new();
                 ChartCollection.Add(chart);
+                AuxularyApp.Infrastructure.Graphics.Chart Rchart = new();
+                RetrospectiveChartCollection.Add(Rchart);
             }
         }
-       
-
-       
-
         #endregion
         public Axis[] XAxes { get; set; }
         public ICartesianAxis[] YAxes { get; set; } = [
@@ -175,6 +177,16 @@ namespace AuxularyApp.ViewModels
 
         public MainWindowViewModel(){
             CreateCharts();
+            
+            HttpClientHandler handler = new()
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
+                {
+                    return true;
+                }
+            };
+            httpClient = new HttpClient(handler);
+
             AddParameterPanelCommand = new RelayCommand(AddParameterPanel);
             AddStatePanelCommand = new RelayCommand(AddStatePanel);
             AcceptCommand = new AsyncLambdaCommand(Acept);
@@ -184,12 +196,12 @@ namespace AuxularyApp.ViewModels
             var trend3 = 252;
             var r = new Random();
 
-            for (var i = 0; i < 500; i++)
-            {
-                _values1.Add(new DateTimePoint(DateTime.Now.AddSeconds(i), trend1 += r.Next(-3, 3)));
-                _values2.Add(new DateTimePoint(DateTime.Now.AddSeconds(i), trend2 + r.Next(-1, 1)));
-                _values3.Add(new DateTimePoint(DateTime.Now.AddSeconds(i), trend3 + r.Next(-5, 5)));
-            }
+            //for (var i = 0; i < 500; i++)
+            //{
+            //    _values1.Add(new DateTimePoint(DateTime.Now.AddSeconds(i), trend1 += r.Next(-3, 3)));
+            //    _values2.Add(new DateTimePoint(DateTime.Now.AddSeconds(i), trend2 + r.Next(-1, 1)));
+            //    _values3.Add(new DateTimePoint(DateTime.Now.AddSeconds(i), trend3 + r.Next(-5, 5)));
+            //}
                 
 
             Series = [
@@ -281,14 +293,10 @@ namespace AuxularyApp.ViewModels
             //AddAcceptCommand = new GalaSoft.MvvmLight.CommandWpf.RelayCommand<string>(OnAccept);
             //AddStepStateCommand = new LambdaCommand(OnAddState, CanAddStepStateExecuted);
             //AddStepParameterCommand = new LambdaCommand(OnAddStepParameter, CanAddStepParameterExecuted);
-            SwitchVisiableCommand1 = new LambdaCommand(OnSwitchVisibleCommandExecuted1, CanSwitchVisiableCommandExecuted);
-            SwitchVisiableCommand2 = new LambdaCommand(OnSwitchVisibleCommandExecuted2, CanSwitchVisiableCommandExecuted);
-            SwitchVisiableCommand3 = new LambdaCommand(OnSwitchVisibleCommandExecuted3, CanSwitchVisiableCommandExecuted);
-            SwitchVisiableCommand4 = new LambdaCommand(OnSwitchVisibleCommandExecuted4, CanSwitchVisiableCommandExecuted);
-            SwitchVisiableCommand5 = new LambdaCommand(OnSwitchVisibleCommandExecuted5, CanSwitchVisiableCommandExecuted);
-            SwitchVisiableCommand6 = new LambdaCommand(OnSwitchVisibleCommandExecuted6, CanSwitchVisiableCommandExecuted);
+            SwitchVisiableCommand = new LambdaCommand(OnSwitchVisibleCommandExecuted, CanSwitchVisiableCommandExecuted);
             CreateNewInstructionCommand = new LambdaCommand(OnCreateNewInstructionCommand, CanSwitchVisiableCommandExecuted);
-            
+            GetDataList=new LambdaCommand(OnGetDataList,CanSwitchVisiableCommandExecuted);
+
             _customAxis = new DateTimeAxis(TimeSpan.FromSeconds(1), Formatter)
             {
                 TextSize = 13,
@@ -406,27 +414,7 @@ namespace AuxularyApp.ViewModels
         [RelayCommand]
         public void PointerUp(PointerCommandArgs args) =>
             _isDown = false;
-        public ICommand SwitchVisiableCommand1 { get; }
-        private void OnSwitchVisibleCommandExecuted1(object p)
-        {
-            int i = int.Parse(p.ToString());
-            
-            Series1[i].IsVisible = !Series1[i].IsVisible;
-        }
-        public ICommand SwitchVisiableCommand2 { get; }
-        private void OnSwitchVisibleCommandExecuted2(object p)
-        {
-            int i = int.Parse(p.ToString());
 
-            Series2[i].IsVisible = !Series2[i].IsVisible;
-        }
-        public ICommand SwitchVisiableCommand3{ get; }
-        private void OnSwitchVisibleCommandExecuted3(object p)
-        {
-            int i = int.Parse(p.ToString());
-
-            Series3[i].IsVisible = !Series3[i].IsVisible;
-        }
         public ICommand CreateNewInstructionCommand { get; }
         private void OnCreateNewInstructionCommand(object p)
         {
@@ -447,66 +435,59 @@ namespace AuxularyApp.ViewModels
                 }
             }
         }
-        public ICommand SwitchVisiableCommand4 { get; }
-        private void OnSwitchVisibleCommandExecuted4(object p)
-        {
-            int i = int.Parse(p.ToString());
-
-            Series4[i].IsVisible = !Series4[i].IsVisible;
-        }
-        public ICommand SwitchVisiableCommand5 { get; }
-        private void OnSwitchVisibleCommandExecuted5(object p)
-        {
-            int i = int.Parse(p.ToString());
-
-            Series5[i].IsVisible = !Series5[i].IsVisible;
-        }
-        public ICommand SwitchVisiableCommand6 { get; }
-        private void OnSwitchVisibleCommandExecuted6(object p)
-        {
-            int i = int.Parse(p.ToString());
-
-            Series6[i].IsVisible = !Series6[i].IsVisible;
-        }
-
         public ICommand SwitchVisiableCommand { get; }
         private void OnSwitchVisibleCommandExecuted(object p)
         {
-            int i = int.Parse(p.ToString());
+            
+            string[] array = p.ToString().Split(' ');
+            int chartNum = int.Parse(array[0]);
+            int paramNum = int.Parse(array[1]);
+            ChartCollection[chartNum].Series[paramNum].IsVisible=!ChartCollection[chartNum].Series[paramNum].IsVisible;
 
-            ChartCollection[1].
+        }
+
+        public ICommand SwitchVisiableRetrospectiveCommand { get; }
+        private void OnSwitchVisibleRetrospectiveCommandExecuted(object p)
+        {
+
+            string[] array = p.ToString().Split(' ');
+            int chartNum = int.Parse(array[0]);
+            int paramNum = int.Parse(array[1]);
+            ChartCollection[chartNum].Series[paramNum].IsVisible = !ChartCollection[chartNum].Series[paramNum].IsVisible;
+
+        }
+
+        private string _firstDate;
+        public string FirstDate
+        {
+            get => _firstDate; set => _firstDate = value;
+        }
+        private string _seconfDate;
+        public string SeconfDate
+        {
+            get => _seconfDate; set => _seconfDate = value;
         }
         private bool CanSwitchVisiableCommandExecuted(object p) => true;
-        public ICommand CanGetDataList { get; }
+        public ICommand GetDataList { get; }
         private async void OnGetDataList(object p)
         {
-            
-            HttpClientHandler handler = new HttpClientHandler
-            {
-                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
-                {
-                    return true;
-                }
-            };
-            HttpClient httpClient = new HttpClient(handler);
-            using var response = await httpClient.GetAsync("https://localhost:7133/api/ParametersMeasures/lv");
+            //DateTime a = DateTime.Parse(FirstDate,f);
+            using HttpResponseMessage response = await httpClient.GetAsync($"https://localhost:7133/api/ParametersMeasures/Retrospective{FirstDate}b{SeconfDate}");
             string content = await response.Content.ReadAsStringAsync();
             ParametersMeasure[] collection = JsonSerializer.Deserialize<ParametersMeasure[]>(content);
+            foreach (ParametersMeasure d in collection)
+            {
+                RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey,d.LoadPowerFactor.Value);
+                _values1.Add(new DateTimePoint(d.Time,d.VoltageValue));
+            }
+            MessageBox.Show(RetrospectiveChartCollection[3].Series[1].Values.ToString());
         }
-        //private bool CanAddStepParameterExecuted(object p) => true;
-        //public ICommand AddStepParameterCommand { get; }
-        //public async void OnAddStepParameter(object p)
-        //{
-        //    InstructionStep step = new InstructionStep();
-        //    step.StepNumber = instructionStepList.Count + 1;
-        //    instructionStepList.Add(step);
-        //    //instructionStepList.Add(IS);
-        //    //ParametersChange paremeterChange = new ParametersChange();
-        //    //IS.ParametersChanges.Add(paremeterChange);
-        //    //parameterChangeList.Add(paremeterChange);
-        //    //MessageBox.Show("Писянчик1");
-        //}
-
+        private string _selectedKey="Действ. знач. напряжения";
+        public string SelectedKey
+        {
+            get => _selectedKey;
+            set => _selectedKey = value;
+        }
         public async Task Acept()
         {
             Instruction instruction = new Instruction();
@@ -583,6 +564,18 @@ namespace AuxularyApp.ViewModels
         }
         #endregion
         #region Properties 
+        private ObservableCollection<ISeries> _retrospectiveSeries;
+        public ObservableCollection<ISeries> RetrospectiveSeries
+        {
+            get => _retrospectiveSeries; set => Set(ref _retrospectiveSeries, value);
+        }
+        private Dictionary<string , string> _paramData= new Dictionary<string, string>{ {"VolatgeValue","Действ. знач. напржение"}, {"CurrentValue","Действ. знач. тока" },{ "ActiveLPValues","Активная МН" },{ "ReactiveLPvalues", "Реактивная МН"},{"FullLPvalues","Полная МН" },{ "MicrogridFr", "Коэф. мощности нагрузки" }, { "LPF", "Частота эл. сети" } };
+        public Dictionary<string , string> ParamData { get => _paramData; set => _paramData = value; }
+        private bool[] _blockId = { false,false,false,false,false,false,false};
+        public bool[] BlockId
+        {
+            get => _blockId; set => _blockId = value;
+        }
         #region Instruction
         private Instruction _Instruction;
         public Instruction Instruction
@@ -678,14 +671,6 @@ namespace AuxularyApp.ViewModels
         #endregion
         public async void GetResponse()
         {
-            HttpClientHandler handler = new HttpClientHandler
-            {
-                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
-                {
-                    return true;
-                }
-            };
-            httpClient = new HttpClient(handler);
             while (true)
             {
                 await Task.Delay(500);

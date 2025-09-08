@@ -28,10 +28,11 @@ namespace AuxularyApp.Infrastructure.Graphics
         private List<DateTimePoint> MicrogridFr { get; set; } = [];
         private List<DateTimePoint> CurrentValue { get; set; } = [];
         private List<DateTimePoint> LPF { get; set; } = [];
-        private ObservableCollection<ISeries> Series { get; set; }
-        private Chart()
+        public ObservableCollection<ISeries> Series { get; set; } = [];
+
+        public Chart()
         {
-            Series= [
+            Series = [
                 new LineSeries<DateTimePoint>
                 {
                     Name = "Напряжение",
@@ -122,6 +123,35 @@ namespace AuxularyApp.Infrastructure.Graphics
             if (MicrogridFr.Count > maxVal) MicrogridFr.RemoveAt(0);
             if (CurrentValue.Count > maxVal) CurrentValue.RemoveAt(0);
             if (LPF.Count > maxVal) LPF.RemoveAt(0);
+        }
+
+        public void PushRetrospectiveChartData( DateTime time,string parameter, double value)
+        {
+            switch (parameter)
+            {
+                case "VoltageValue":
+                    Voltagevalues.Add(new DateTimePoint(time, value));
+                    break;
+                case "ActiveLPValues":
+                    ActiveLPvalues.Add(new DateTimePoint(time, value));
+                    break;
+                case "ReactiveLPvalues":
+                    ReactiveLPvalues.Add(new DateTimePoint(time, value));
+                    break;
+                case "FullLPvalues":
+                    FullLPvalues.Add(new DateTimePoint(time, value));
+                    break ;
+                case "MicrogridFr":
+                    MicrogridFr.Add(new DateTimePoint(time, value));
+                    
+                    break;
+                case "CurrentValue":
+                    CurrentValue.Add(new DateTimePoint(time, value));
+                    break ; 
+                case "LPF":
+                    LPF.Add(new DateTimePoint(time, value));
+                    break;
+            }
         }
     }
 }
