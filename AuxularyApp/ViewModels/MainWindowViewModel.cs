@@ -209,6 +209,7 @@ namespace AuxularyApp.ViewModels
             Series = [
                  new LineSeries<DateTimePoint>
                 {
+                     Stroke = new SolidColorPaint(SKColors.Red) { StrokeThickness = 1 },
                     Name = "МТПН1-А3",
                     Values = RetrospectiveChartCollection[0].GetPoints(),
                     GeometryStroke = null,
@@ -219,6 +220,7 @@ namespace AuxularyApp.ViewModels
                 },
                 new LineSeries<DateTimePoint>
                 {
+                    Stroke = new SolidColorPaint(SKColors.Blue) { StrokeThickness = 1 },
                     Name = "МТПН1-А4",
                     Values = RetrospectiveChartCollection[1].GetPoints(),
                     GeometryStroke = null,
@@ -229,6 +231,7 @@ namespace AuxularyApp.ViewModels
                 },
                 new LineSeries<DateTimePoint>
                 {
+                    Stroke = new SolidColorPaint(SKColors.Green) { StrokeThickness = 1 },
                     Name = "МТПН1-А5",
                     Values = RetrospectiveChartCollection[2].GetPoints(),
                     GeometryStroke = null,
@@ -239,6 +242,7 @@ namespace AuxularyApp.ViewModels
                 },
                 new LineSeries<DateTimePoint>
                 {
+                    Stroke = new SolidColorPaint(SKColors.Purple) { StrokeThickness = 1 },
                     Name = "МТПН1-А6",
                     Values = RetrospectiveChartCollection[3].GetPoints(),
                     GeometryStroke = null,
@@ -249,6 +253,7 @@ namespace AuxularyApp.ViewModels
                 },
                 new LineSeries<DateTimePoint>
                 {
+                    Stroke = new SolidColorPaint(SKColors.Pink) { StrokeThickness = 1 },
                     Name = "ИПОС1-Р1",
                     Values = RetrospectiveChartCollection[4].GetPoints(),
                     GeometryStroke = null,
@@ -259,6 +264,7 @@ namespace AuxularyApp.ViewModels
                 },
                 new LineSeries<DateTimePoint>
                 {
+                    Stroke = new SolidColorPaint(SKColors.Brown) { StrokeThickness = 1 },
                     Name = "ИПОС1-Р2",
                     Values = RetrospectiveChartCollection[5].GetPoints(),
                     GeometryStroke = null,
@@ -270,60 +276,66 @@ namespace AuxularyApp.ViewModels
             ];
 
             ScrollbarSeries = [
-                new LineSeries<ObservablePoint>
+                new LineSeries<DateTimePoint>
                 {
+                    Stroke = new SolidColorPaint(SKColors.Red) { StrokeThickness = 1 },
                     Name = "МТПН1-А3",
-                    Values = RetrospectiveChartCollection[0].GetValues(),
+                    Values = RetrospectiveChartCollection[0].GetPoints(),
                     GeometryStroke = null,
                     GeometryFill = null,
                     Fill = null,
                     LineSmoothness = 0
                     //DataPadding = new(0, 1)
                 },
-                new LineSeries<ObservablePoint>
+                new LineSeries<DateTimePoint>
                 {
+                    Stroke = new SolidColorPaint(SKColors.Blue) { StrokeThickness = 1 },
                     Name = "МТПН1-А4",
-                    Values = RetrospectiveChartCollection[1].GetValues(),
+                    Values = RetrospectiveChartCollection[1].GetPoints(),
                     GeometryStroke = null,
                     GeometryFill = null,
                     Fill = null,
                     LineSmoothness = 0
                     //DataPadding = new(0, 1)
                 },
-                new LineSeries<ObservablePoint>
+                new LineSeries<DateTimePoint>
                 {
+                    Stroke = new SolidColorPaint(SKColors.Green) { StrokeThickness = 1 },
                     Name = "МТПН1-А5",
-                    Values = RetrospectiveChartCollection[2].GetValues(),
+                    Values = RetrospectiveChartCollection[2].GetPoints(),
                     GeometryStroke = null,
                     GeometryFill = null,
                     Fill = null,
                     LineSmoothness = 0
                     //DataPadding = new(0, 1)
                 },
-                new LineSeries<ObservablePoint>
+                new LineSeries<DateTimePoint>
                 {
+                    Stroke = new SolidColorPaint(SKColors.Purple)  { StrokeThickness = 1 },
                     Name = "МТПН1-А6",
-                    Values = RetrospectiveChartCollection[3].GetValues(),
+                    Values = RetrospectiveChartCollection[3].GetPoints(),
                     GeometryStroke = null,
                     GeometryFill = null,
                     Fill = null,
                     LineSmoothness = 0
                     //DataPadding = new(0, 1)
                 },
-                new LineSeries<ObservablePoint>
+                new LineSeries<DateTimePoint>
                 {
+                    Stroke = new SolidColorPaint(SKColors.Pink) { StrokeThickness = 1 },
                     Name = "ИПОС1-Р1",
-                    Values = RetrospectiveChartCollection[4].GetValues(),
+                    Values = RetrospectiveChartCollection[4].GetPoints(),
                     GeometryStroke = null,
                     GeometryFill = null,
                     Fill = null,
                     LineSmoothness = 0
                     //DataPadding = new(0, 1)
                 },
-                new LineSeries<ObservablePoint>
+                new LineSeries<DateTimePoint>
                 {
+                    Stroke = new SolidColorPaint(SKColors.Brown) { StrokeThickness = 1 },
                     Name = "ИПОС1-Р2",
-                    Values = RetrospectiveChartCollection[5].GetValues(),
+                    Values = RetrospectiveChartCollection[5].GetPoints(),
                     GeometryStroke = null,
                     GeometryFill = null,
                     Fill = null,
@@ -343,12 +355,7 @@ namespace AuxularyApp.ViewModels
                 SeparatorsPaint = new SolidColorPaint(SKColors.Black.WithAlpha(100))
             };
             ScrollableAxes = [_customAxis2];
-            Thumbs = [
-                new RectangularSection
-            {
-                Fill = new SolidColorPaint(new SKColor(255, 205, 210, 100))
-            }
-            ];
+            
 
             InvisibleX = [new Axis { IsVisible = false }];
             InvisibleY = [new Axis { IsVisible = false }];
@@ -376,6 +383,12 @@ namespace AuxularyApp.ViewModels
             };
             XAxes = [_customAxis];
             XAxesRetrospective = [_RetrospectiveAxis];
+            Thumbs = [
+                new RectangularSection
+            {
+                Fill = new SolidColorPaint(new SKColor(255, 205, 210, 100))
+            }
+            ];
             GetResponse();
         }
         public LabelVisual[] Title { get; set; } =
@@ -448,12 +461,13 @@ namespace AuxularyApp.ViewModels
 
             var x = cartesianChart.XAxes.First();
 
-            // update the scroll bar thumb when the chart is updated (zoom/pan)
-            // this will let the user know the current visible range
+            //// update the scroll bar thumb when the chart is updated (zoom/pan)
+            //// this will let the user know the current visible range
             var thumb = Thumbs[0];
 
             thumb.Xi = x.MinLimit;
             thumb.Xj = x.MaxLimit;
+
         }
 
         [RelayCommand]
@@ -467,15 +481,14 @@ namespace AuxularyApp.ViewModels
 
             var chart = (ICartesianChartView)args.Chart;
             var positionInData = chart.ScalePixelsToData(args.PointerPosition);
-
             var thumb = Thumbs[0];
             var currentRange = thumb.Xj - thumb.Xi;
 
-            // update the scroll bar thumb when the user is dragging the chart
+            //// update the scroll bar thumb when the user is dragging the chart
             thumb.Xi = positionInData.X - currentRange / 2;
             thumb.Xj = positionInData.X + currentRange / 2;
 
-            // update the chart visible range
+            //// update the chart visible range
             ScrollableAxes[0].MinLimit = thumb.Xi;
             ScrollableAxes[0].MaxLimit = thumb.Xj;
         }

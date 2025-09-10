@@ -23,6 +23,10 @@ namespace AuxularyApp.Views
         public MainWindow()
         {
             InitializeComponent();
+            RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.Default;
+
+            this.SnapsToDevicePixels = true;
+            this.UseLayoutRounding = true;
         }
 
         

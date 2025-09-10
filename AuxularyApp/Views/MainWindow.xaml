@@ -9,7 +9,7 @@
         xmlns:models="clr-namespace:AuxularyApp.Models.DataModels.InstructionModels"
         xmlns:System="clr-namespace:System;assembly=netstandard"
         mc:Ignorable="d"
-        Height="450" Width="800"
+        
         Title="Приложение визуализации данных"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized">
@@ -198,6 +198,10 @@
                         </StackPanel>
                         <TextBlock Text="{Binding Date, UpdateSourceTrigger=Explicit}" />
                         <lvc:CartesianChart
+                            RenderOptions.BitmapScalingMode="HighQuality"
+                            RenderOptions.EdgeMode="Aliased"
+                            SnapsToDevicePixels="True"
+                            UseLayoutRounding="True"
                             Grid.Column="0"
                             SyncContext="{Binding Sync}"
                             Series="{Binding ChartCollection[0].Series}"
@@ -225,13 +229,17 @@
                         </StackPanel>
                         <TextBlock Text="{Binding Date, UpdateSourceTrigger=Explicit}" />
                         <lvc:CartesianChart
+                            RenderOptions.BitmapScalingMode="HighQuality"
+RenderOptions.EdgeMode="Aliased"
+SnapsToDevicePixels="True"
+UseLayoutRounding="True"
                 Grid.Column="0"
                 SyncContext="{Binding Sync}"
                 Series="{Binding ChartCollection[1].Series}"
                 XAxes="{Binding XAxes}"
                 YAxes="{Binding YAxes}"
                 LegendPosition="Right"
-                LegendTextSize="10"
+                LegendTextSize="13"
                 Title="{Binding Title[1]}">
                         </lvc:CartesianChart>
                     </Grid>
@@ -251,14 +259,18 @@
                         </StackPanel>
                         <TextBlock Text="{Binding Date, UpdateSourceTrigger=Explicit}" />
                         <lvc:CartesianChart
-                 Grid.Column="0"
-                 SyncContext="{Binding Sync}"
-                 Series="{Binding ChartCollection[2].Series}"
-                 XAxes="{Binding XAxes}"
-                 YAxes="{Binding YAxes}"
-                 LegendPosition="Right"
-                 LegendTextSize="10"
-                 Title="{Binding Title[2]}">
+                            RenderOptions.BitmapScalingMode="HighQuality"
+                            RenderOptions.EdgeMode="Aliased"
+                            SnapsToDevicePixels="True"
+                            UseLayoutRounding="True"
+                     Grid.Column="0"
+                     SyncContext="{Binding Sync}"
+                     Series="{Binding ChartCollection[2].Series}"
+                     XAxes="{Binding XAxes}"
+                     YAxes="{Binding YAxes}"
+                     LegendPosition="Right"
+                     LegendTextSize="13"
+                     Title="{Binding Title[2]}">        
                         </lvc:CartesianChart>
                     </Grid>
                     <Grid Grid.Row="1" Grid.Column="1" >
@@ -277,14 +289,18 @@
                         </StackPanel>
                         <TextBlock Text="{Binding Date, UpdateSourceTrigger=Explicit}" />
                         <lvc:CartesianChart
-                 Grid.Column="0"
-                 SyncContext="{Binding Sync}"
-                 Series="{Binding ChartCollection[3].Series}"
-                 XAxes="{Binding XAxes}"
-                 YAxes="{Binding YAxes}"
-                 LegendPosition="Right"
-                 LegendTextSize="10"
-                 Title="{Binding Title[3]}">
+                            RenderOptions.BitmapScalingMode="HighQuality"
+                            RenderOptions.EdgeMode="Aliased"
+                            SnapsToDevicePixels="True"
+                            UseLayoutRounding="True"
+                             Grid.Column="0"
+                             SyncContext="{Binding Sync}"
+                             Series="{Binding ChartCollection[3].Series}"
+                             XAxes="{Binding XAxes}"
+                             YAxes="{Binding YAxes}"
+                             LegendPosition="Right"
+                             LegendTextSize="13"
+                             Title="{Binding Title[3]}">    
                         </lvc:CartesianChart>
                     </Grid>
 
@@ -304,12 +320,16 @@
                         </StackPanel>
                         <TextBlock Text="{Binding Date, UpdateSourceTrigger=Explicit}" />
                         <lvc:CartesianChart
+                            RenderOptions.BitmapScalingMode="HighQuality"
+RenderOptions.EdgeMode="Aliased"
+SnapsToDevicePixels="True"
+UseLayoutRounding="True"
                  Grid.Column="0"
                  SyncContext="{Binding Sync}"
                  Series="{Binding ChartCollection[4].Series}"
                  XAxes="{Binding XAxes}"
                  YAxes="{Binding YAxes}"
-                 LegendTextSize="10"
+                 LegendTextSize="13"
                  LegendPosition="Right"
                  Title="{Binding Title[4]}">
                         </lvc:CartesianChart>
@@ -330,13 +350,17 @@
                         </StackPanel>
                         <TextBlock Text="{Binding Date, UpdateSourceTrigger=Explicit}" />
                         <lvc:CartesianChart
+                            RenderOptions.BitmapScalingMode="HighQuality"
+RenderOptions.EdgeMode="Aliased"
+SnapsToDevicePixels="True"
+UseLayoutRounding="True"
                  Grid.Column="0"
                  SyncContext="{Binding Sync}"
                  Series="{Binding ChartCollection[5].Series}"
                  XAxes="{Binding XAxes}"
                  YAxes="{Binding YAxes}"
                  LegendPosition="Right"
-                 LegendTextSize="10"
+                 LegendTextSize="13"
                  Title="{Binding Title[5]}">
                         </lvc:CartesianChart>
                     </Grid>
@@ -366,7 +390,7 @@
                                 <TextBox Background="LightGray" Text="{Binding FirstDate, Mode=TwoWay}"></TextBox>
                                 <Label Content="Конечная дата"></Label>
                                 <TextBox Background="LightGray" Text="{Binding SeconfDate, Mode=TwoWay}"></TextBox>
-                                <Button Background="LightGreen" Content="Построить график" Command="{Binding GetDataList}" CommandParameter="{Binding ElementName=ParametersComboBox, Path=Va}"></Button>
+                                <Button Background="LightGreen" Content="Построить график" Command="{Binding GetDataList}" CommandParameter="{Binding ElementName=ParametersComboBox}"></Button>
                             </StackPanel>
                         </Grid>
                         <Grid Grid.Column="1" >
@@ -396,6 +420,10 @@
                             </Grid>
                         </Grid>
                         <lvc:CartesianChart
+                            RenderOptions.BitmapScalingMode="HighQuality"
+                            RenderOptions.EdgeMode="Aliased"
+                            SnapsToDevicePixels="True"
+                            UseLayoutRounding="True"
                             LegendPosition="Right"
                              Grid.Row="0"
                              Series="{Binding Series}"
@@ -410,7 +438,6 @@
                     <Grid Grid.Row="1" Grid.Column="0">
                         <lvc:CartesianChart
                  x:Name="ScrollBarChart"
-                            
                  Grid.Row="1"
                  Series="{Binding ScrollbarSeries}"
                  DrawMargin="{Binding Margin}"

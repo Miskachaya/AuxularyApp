@@ -8,7 +8,9 @@ using LiveChartsCore.Measure;
 using LiveChartsCore.Motion;
 using LiveChartsCore.Painting;
 using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
 using LiveChartsCore.VisualElements;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,6 +18,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace AuxularyApp.Infrastructure.Graphics
 {
@@ -46,6 +49,7 @@ namespace AuxularyApp.Infrastructure.Graphics
                 new LineSeries<DateTimePoint>
                 {
                     Name = "Напряжение",
+                    Stroke = new SolidColorPaint(SKColors.Red) { StrokeThickness = 2 },
                     IsVisible = true,
                     Values = Voltagevalues,
                     Fill = null,
@@ -55,6 +59,7 @@ namespace AuxularyApp.Infrastructure.Graphics
                 },
                 new LineSeries<DateTimePoint>
                 {
+                    Stroke = new SolidColorPaint(SKColors.Blue) { StrokeThickness = 2 },
                     Name = "Ток",
                     IsVisible = true,
                     Values = CurrentValue,
@@ -65,6 +70,7 @@ namespace AuxularyApp.Infrastructure.Graphics
                 },
                 new LineSeries<DateTimePoint>
                 {
+                    Stroke = new SolidColorPaint(SKColors.Orange) { StrokeThickness = 2 },
                     Name = "Ативная МН",
                     IsVisible = true,
                     Values = ActiveLPvalues,
@@ -75,6 +81,7 @@ namespace AuxularyApp.Infrastructure.Graphics
                 },
                 new LineSeries<DateTimePoint>
                 {
+                    Stroke = new SolidColorPaint(SKColors.Purple) { StrokeThickness = 2 },
                     Name = "Реактивная МН",
                     IsVisible = true,
                     Values = ReactiveLPvalues,
@@ -85,6 +92,7 @@ namespace AuxularyApp.Infrastructure.Graphics
                 },
                 new LineSeries<DateTimePoint>
                 {
+                    Stroke = new SolidColorPaint(SKColors.Pink) { StrokeThickness = 2 },
                     Name = "Полная МН",
                     IsVisible = true,
                     Values = FullLPvalues,
@@ -95,6 +103,7 @@ namespace AuxularyApp.Infrastructure.Graphics
                 },
                 new LineSeries<DateTimePoint>
                 {
+                    Stroke = new SolidColorPaint(SKColors.Green) { StrokeThickness = 2 },
                     Name = "Коэф. мощности нагрузки",
                     IsVisible = true,
                     Values = LPF,
@@ -105,6 +114,7 @@ namespace AuxularyApp.Infrastructure.Graphics
                 },
                 new LineSeries<DateTimePoint>
                 {
+                    Stroke = new SolidColorPaint(SKColors.Brown) { StrokeThickness = 2 },
                     Name = "Частота эл.сети",
                     IsVisible = true,
                     Values = MicrogridFr,
