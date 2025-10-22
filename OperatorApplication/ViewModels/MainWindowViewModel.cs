@@ -50,13 +50,12 @@ namespace OperatorApplication.ViewModels
         //Dispatcher dispatcher = Application.Current.Dispatcher;
         public ObservableCollection<Instruction> InstructionCollection { get; } = [];
         public ObservableCollection<object> InstructionStepsCollection { get; } =[];
-        public MainWindowViewModel(IServiceProvider serviseP):base(serviseP)
+        public MainWindowViewModel(IServiceProvider serviseP) : base(serviseP)
         {
-            MessageBox.Show("точка6");
             _serviceProvider = serviseP;
             //_rabbitMQService = _serviceProvider.GetRequiredService<IRabbitMQService>();
             _kafkaService = _serviceProvider.GetRequiredService<IKafkaService>();
-            _kafkaService.SetCollectionUpdater(AddInstructionToCollections);
+            //_kafkaService.SetCollectionUpdater(AddInstructionToCollections);
             //_rabbitMQService.SetCollectionUpdater(AddInstructionToCollections);
             //_kafkaService.SetCollectionUpdater(AddInstructionToCollections);
             Recieve();
@@ -66,17 +65,11 @@ namespace OperatorApplication.ViewModels
 
         public async Task Recieve()
         {
-            MessageBox.Show("точка5");
             try
             {
                 if (_serviceProvider == null) MessageBox.Show("serviceProviderisnull");
                 //await _rabbitMQService.DataReceivedEventArgs(InstructionCollection, PlannedInstructionCollection);
-                await _kafkaService.StartConsumingAsync(async message =>
-                {
-                    // Ваша бизнес-логика обработки сообщения
-                    //MessageBox.Show(message);
-                    // Имитация обработки
-                });
+                await _kafkaService.ExecuteAsync( new CancellationToken());
             }
             catch (Exception ex) { MessageBox.Show("При попытке вызова метода startconsumingasync возникла ошибка: "+ex.Message); }
         }

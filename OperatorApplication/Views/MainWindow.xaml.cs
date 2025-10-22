@@ -23,11 +23,11 @@ namespace OperatorApplication.Views
     {
         public MainWindow()
         {
-            MessageBox.Show("точка1");
-            var app =( App)Application.Current;
+
+            var app = (App)Application.Current;
             var mainWindowViewModel = app._serviceProvider.GetRequiredService<MainWindowViewModel>();
             DataContext = mainWindowViewModel;
-            //InitializeComponent();
+            InitializeComponent();
         }
     }
 }

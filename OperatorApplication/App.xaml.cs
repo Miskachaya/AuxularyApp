@@ -19,13 +19,9 @@ namespace OperatorApplication
     public partial class App : Application
     {
         public ServiceProvider _serviceProvider;
-        public App() 
-        {
-            MessageBox.Show("точка2");
-        }
         private void ConfigureServices(IServiceCollection services)
         {
-            MessageBox.Show("точка3");
+
             services.AddSingleton<IKafkaService, KafkaService>();
             services.AddSingleton<IRabbitMQService, RabbitMQService>();
 
@@ -38,13 +34,13 @@ namespace OperatorApplication
         }
         protected override async void OnStartup(StartupEventArgs e)
         {
-            MessageBox.Show("точка4");
+
             base.OnStartup(e);
             var services = new ServiceCollection();
             ConfigureServices(services);
             _serviceProvider = services.BuildServiceProvider();
             var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
-            mainWindow?.Show();
+            //mainWindow?.Show();
         }
         protected override async void OnExit(ExitEventArgs e)
         {
