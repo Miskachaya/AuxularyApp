@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using AuxularyApp.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
 namespace AuxularyApp.Views
 {
     /// <summary>
@@ -22,6 +23,8 @@ namespace AuxularyApp.Views
     {
         public MainWindow()
         {
+            var app =(App)Application.Current;
+            DataContext = app._serviceProvider.GetRequiredService<MainWindowViewModel>();
             InitializeComponent();
             RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.Default;
 

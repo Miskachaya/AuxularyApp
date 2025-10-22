@@ -4,6 +4,7 @@ using AuxularyApp.Models.DataModels.Base;
 using AuxularyApp.Models.DataModels.InstructionModels;
 using AuxularyApp.Models.DataModels.MicrogridModels;
 using AuxularyApp.Models.DataModels.ViewComponentModels;
+using AuxularyApp.Services;
 using AuxularyApp.ViewModels.Base;
 using AuxularyApp.Views;
 using CommunityToolkit.Mvvm.Input;
@@ -55,6 +56,7 @@ namespace AuxularyApp.ViewModels
 {
     internal partial class MainWindowViewModel : ViewModel
     { 
+        IServiceProvider _serviceProvider; IRabbitMQService _rabbitmqService; IKafkaService _kafkaService;
         public ObservableCollection<AuxularyApp.Infrastructure.Graphics.Chart> ChartCollection { get;  } = [];
         private static HttpClient httpClient { get; set; }
         public ObservableCollection<Instruction> CompletedInstructions { get; } = [];
@@ -177,9 +179,11 @@ namespace AuxularyApp.ViewModels
 
         public bool IsReading { get; set; } = true;
 
-        public MainWindowViewModel(){
+        public MainWindowViewModel(IServiceProvider serviceP):base(serviceP){
             CreateCharts();
-            
+            _serviceProvider = serviceP;
+            _rabbitmqService = _serviceProvider.GetRequiredService<IRabbitMQService>();
+            _kafkaService = _serviceProvider.GetRequiredService<IKafkaService>();
             HttpClientHandler handler = new()
             {
                 ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
@@ -652,30 +656,24 @@ namespace AuxularyApp.ViewModels
             };
             string json = JsonSerializer.Serialize<Instruction>(instruction, options);
             json = json.Replace("\r\n", "");
-            // replace \" with "
             json = json.Replace('\"', '"');
             json = json.Replace("\'", "");
-            //Clipboard.SetText(json);
             //MessageBox.Show(json);
+            //try
+            //{
+            //    if (base._serviceProvider == null) MessageBox.Show("serviceProviderisnull");
 
-            var factory = new ConnectionFactory() { HostName = "localhost" };
-            using var connection = await factory.CreateConnectionAsync();
-            using var channel = await connection.CreateChannelAsync();
+            //    await _rabbitmqService.DataSendEventArgs(json);
+            //}
+            //catch (Exception ex) { MessageBox.Show(ex.Message); }
+            //MessageBox.Show(json);
+            try
             {
-                // Создание очереди (если её нет)
-                await channel.QueueDeclareAsync(queue: "instructionQueue",
-                                     durable: false,
-                                     exclusive: false,
-                                     autoDelete: false,
-                                     arguments: null);
+                if (base._serviceProvider == null) MessageBox.Show("serviceProviderisnull");
 
-                // Сообщение для отправки
-                string message = json;
-                var body = Encoding.UTF8.GetBytes(message);
-
-                // Отправка сообщения
-                await channel.BasicPublishAsync(exchange: string.Empty, routingKey: "instructionQueue", body: body);
+                await _kafkaService.SendMessageAsync(json);
             }
+            catch (Exception ex) { MessageBox.Show(ex.Message); }
             AddedPanels.Clear();
             OnCreateNewInstructionCommand(new object());
             PlannedInstructions.Add(instruction);

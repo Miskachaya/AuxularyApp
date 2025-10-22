@@ -1,4 +1,5 @@
-﻿using OperatorApplication.ViewModels;
+﻿using Microsoft.Extensions.DependencyInjection;
+using OperatorApplication.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-
+using OperatorApplication;
 namespace OperatorApplication.Views
 {
     /// <summary>
@@ -22,8 +23,11 @@ namespace OperatorApplication.Views
     {
         public MainWindow()
         {
-            InitializeComponent();
-            //DataContext = new MainWindowViewModel();
+            MessageBox.Show("точка1");
+            var app =( App)Application.Current;
+            var mainWindowViewModel = app._serviceProvider.GetRequiredService<MainWindowViewModel>();
+            DataContext = mainWindowViewModel;
+            //InitializeComponent();
         }
     }
 }

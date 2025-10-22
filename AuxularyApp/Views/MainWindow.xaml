@@ -9,13 +9,9 @@
         xmlns:models="clr-namespace:AuxularyApp.Models.DataModels.InstructionModels"
         xmlns:System="clr-namespace:System;assembly=netstandard"
         mc:Ignorable="d"
-        
         Title="Приложение визуализации данных"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized">
-    <Window.DataContext>
-        <vm:MainWindowViewModel/>
-    </Window.DataContext>
     <Window.Resources>
         <Style x:Key="BigFont20">
             <Setter Property="Control.FontSize" Value="20"/>

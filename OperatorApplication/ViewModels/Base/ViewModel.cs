@@ -11,8 +11,12 @@ namespace OperatorApplication.ViewModels.Base
 {
     public abstract class ViewModel : INotifyPropertyChanged, IDisposable
     {
+        protected readonly IServiceProvider _serviceProvider;
         public event PropertyChangedEventHandler? PropertyChanged;
-
+        public ViewModel(IServiceProvider serviceProvider)
+        {
+            _serviceProvider = serviceProvider;
+        }
         public void Dispose()
         {
             Dispose(true);

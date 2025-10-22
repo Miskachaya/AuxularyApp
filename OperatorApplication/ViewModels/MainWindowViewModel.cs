@@ -1,4 +1,6 @@
-﻿using OperatorApplication.Models.DataModels.InstructionModels;
+﻿using Microsoft.Extensions.DependencyInjection;
+using OperatorApplication.Models.DataModels.InstructionModels;
+using OperatorApplication.Services;
 using OperatorApplication.ViewModels.Base;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -7,10 +9,12 @@ using System.Text;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Threading;
+using static Confluent.Kafka.ConfigPropertyNames;
 namespace OperatorApplication.ViewModels
 {
     public partial class MainWindowViewModel : ViewModel
     {
+        public IServiceProvider _serviceProvider; public IRabbitMQService _rabbitMQService; public IKafkaService _kafkaService;
         public List<int> AddedPanelsValue { get; } = new List<int>();
         private Instruction _SelectedInstruction;
         public Instruction SelectedInstruction
@@ -43,42 +47,58 @@ namespace OperatorApplication.ViewModels
         }
         public ObservableCollection<Instruction> PlannedInstructionCollection { get; } = [];
         public ObservableCollection<Instruction> CompleteInstructionCollection { get; } = [];
-        Dispatcher dispatcher = Application.Current.Dispatcher;
+        //Dispatcher dispatcher = Application.Current.Dispatcher;
         public ObservableCollection<Instruction> InstructionCollection { get; } = [];
         public ObservableCollection<object> InstructionStepsCollection { get; } =[];
-        public MainWindowViewModel()
+        public MainWindowViewModel(IServiceProvider serviseP):base(serviseP)
         {
+            MessageBox.Show("точка6");
+            _serviceProvider = serviseP;
+            //_rabbitMQService = _serviceProvider.GetRequiredService<IRabbitMQService>();
+            _kafkaService = _serviceProvider.GetRequiredService<IKafkaService>();
+            _kafkaService.SetCollectionUpdater(AddInstructionToCollections);
+            //_rabbitMQService.SetCollectionUpdater(AddInstructionToCollections);
+            //_kafkaService.SetCollectionUpdater(AddInstructionToCollections);
             Recieve();
-           // Task.Run(async () => { await Recieve(); });
+           // MessageBox.Show(InstructionCollection.Count.ToString());
+
         }
 
         public async Task Recieve()
         {
-            var factory = new ConnectionFactory { HostName = "localhost" };
-            var connection = await factory.CreateConnectionAsync();
-            var channel = await connection.CreateChannelAsync();
-
-            await channel.QueueDeclareAsync(queue: "instructionQueue",
-                                        durable: false,
-                                        exclusive: false,
-                                        autoDelete: false,
-                                        arguments: null);
-            var consumer = new AsyncEventingBasicConsumer(channel);
-            consumer.ReceivedAsync += (model, ea) =>
+            MessageBox.Show("точка5");
+            try
             {
-                var body = ea.Body.ToArray();
-                var message = Encoding.UTF8.GetString(body);
-                //MessageBox.Show(message);
-                dispatcher.Invoke(() =>
+                if (_serviceProvider == null) MessageBox.Show("serviceProviderisnull");
+                //await _rabbitMQService.DataReceivedEventArgs(InstructionCollection, PlannedInstructionCollection);
+                await _kafkaService.StartConsumingAsync(async message =>
                 {
-                    Instruction? instruction = JsonSerializer.Deserialize<Instruction>(message);
-                    InstructionCollection?.Add(instruction);
-                    PlannedInstructionCollection?.Add(instruction);
+                    // Ваша бизнес-логика обработки сообщения
+                    //MessageBox.Show(message);
+                    // Имитация обработки
                 });
-                return Task.CompletedTask;
-            };
-            await channel.BasicConsumeAsync("instructionQueue", autoAck: true, consumer: consumer);
+            }
+            catch (Exception ex) { MessageBox.Show("При попытке вызова метода startconsumingasync возникла ошибка: "+ex.Message); }
         }
+
+        private void AddInstructionToCollections(Instruction instruction)
+        {
+            // Убеждаемся, что работаем в UI потоке
+            if (Application.Current.Dispatcher.CheckAccess())
+            {
+                InstructionCollection.Add(instruction);
+                PlannedInstructionCollection.Add(instruction);
+            }
+            else
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    InstructionCollection.Add(instruction);
+                    PlannedInstructionCollection.Add(instruction);
+                });
+            }
+        }
+
         private string _Text=$"";
         public string Text
         {

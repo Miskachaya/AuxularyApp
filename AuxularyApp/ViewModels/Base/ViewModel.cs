@@ -12,7 +12,11 @@ namespace AuxularyApp.ViewModels.Base
     public abstract class ViewModel : INotifyPropertyChanged, IDisposable
     {
         public event PropertyChangedEventHandler? PropertyChanged;
-
+        protected readonly IServiceProvider _serviceProvider;
+        public ViewModel(IServiceProvider serviceProvider)
+        {
+            _serviceProvider = serviceProvider;
+        }
         public void Dispose()
         {
             Dispose(true);
