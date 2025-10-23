@@ -57,8 +57,8 @@ namespace OperatorApplication.ViewModels
             _kafkaService = _serviceProvider.GetRequiredService<IKafkaService>();
             //_kafkaService.SetCollectionUpdater(AddInstructionToCollections);
             //_rabbitMQService.SetCollectionUpdater(AddInstructionToCollections);
-            //_kafkaService.SetCollectionUpdater(AddInstructionToCollections);
-            Recieve();
+            _kafkaService.SetCollectionUpdater(AddInstructionToCollections);
+            Task.Run(async()=>Recieve());
            // MessageBox.Show(InstructionCollection.Count.ToString());
 
         }

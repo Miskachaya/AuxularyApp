@@ -17,11 +17,16 @@ namespace OperatorApplication.Services
     {
         Task StartAsync(CancellationToken cancellationToken);
         Task ExecuteAsync(CancellationToken stoppingToken);
+        public void SetCollectionUpdater(Action<Instruction> updater);
     }
     public class KafkaService : IKafkaService
     {
+        private Action<Instruction> _collectionUpdater;
         private IConsumer<Ignore, string>? _consumer;
-
+        public void SetCollectionUpdater(Action<Instruction> updater)
+        {
+            _collectionUpdater = updater;
+        }
         public Task StartAsync(CancellationToken cancellationToken)
         {
             var config = new ConsumerConfig
@@ -37,11 +42,18 @@ namespace OperatorApplication.Services
             _consumer.Subscribe("fistingtopic");
             return Task.CompletedTask;
         }
+
+        private void OnMessageReceived(string message)
+        {
+            Instruction? instruction = JsonSerializer.Deserialize<Instruction>(message);
+            // Вызываем метод ViewModel для обновления коллекций
+            _collectionUpdater?.Invoke(instruction);
+        }
+
         public async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            await Task.Yield(); // Ensures method runs asynchronously
             StartAsync(stoppingToken);
-            //await Task.Yield(); // Ensures method runs asynchronously
-
             while (!stoppingToken.IsCancellationRequested)
             {
                 try
@@ -49,7 +61,11 @@ namespace OperatorApplication.Services
                     var result = _consumer?.Consume(stoppingToken);
                     if (result == null || string.IsNullOrWhiteSpace(result.Message?.Value))
                         continue;
-                    MessageBox.Show($"message {result.Message}\n value {result.Value}\n message value {result.Message.Value}");
+                    if(result!=null || result.Message?.Value != null)
+                    {
+                        OnMessageReceived(result.Message.Value);
+                    }
+                   // MessageBox.Show($"message {result.Message}\n value {result.Value}\n message value {result.Message.Value}");
                 } catch (Exception ex) { MessageBox.Show("ошибка: " + ex.Message); }  
             }
         }
