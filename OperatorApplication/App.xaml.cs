@@ -24,7 +24,7 @@ namespace OperatorApplication
 
             services.AddSingleton<IKafkaService, KafkaService>();
             services.AddSingleton<IRabbitMQService, RabbitMQService>();
-
+            services.AddSingleton<INatsService, NATSService>();
             // Регистрируем ViewModels
             services.AddTransient<MainWindowViewModel>();
             services.AddSingleton<IServiceProvider>(provider => provider);
@@ -35,7 +35,7 @@ namespace OperatorApplication
         protected override async void OnStartup(StartupEventArgs e)
         {
 
-            base.OnStartup(e);
+            //base.OnStartup(e);
             var services = new ServiceCollection();
             ConfigureServices(services);
             _serviceProvider = services.BuildServiceProvider();

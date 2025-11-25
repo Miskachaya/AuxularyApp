@@ -34,6 +34,7 @@ namespace AuxularyApp
         }
         private void ConfigureService(IServiceCollection services)
         {
+            services.AddTransient<INatsServise, NATSService>(); 
             services.AddTransient<IKafkaService,KafkaService>();
             services.AddTransient<IRabbitMQService, RabbitMQService>();
             services.AddTransient<MainWindowViewModel>();

@@ -56,17 +56,21 @@ namespace OperatorApplication.Services
             StartAsync(stoppingToken);
             while (!stoppingToken.IsCancellationRequested)
             {
-                try
+                //MessageBox.Show("Начаало опроса");
+                if (stoppingToken.IsCancellationRequested) MessageBox.Show("stoppentoken is cancel");
+                var result = _consumer?.Consume(stoppingToken);
+                if (result == null || string.IsNullOrWhiteSpace(result.Message?.Value))
                 {
-                    var result = _consumer?.Consume(stoppingToken);
-                    if (result == null || string.IsNullOrWhiteSpace(result.Message?.Value))
-                        continue;
-                    if(result!=null || result.Message?.Value != null)
-                    {
-                        OnMessageReceived(result.Message.Value);
-                    }
-                   // MessageBox.Show($"message {result.Message}\n value {result.Value}\n message value {result.Message.Value}");
-                } catch (Exception ex) { MessageBox.Show("ошибка: " + ex.Message); }  
+                    MessageBox.Show("Сообщение не получено");
+                    continue;
+                }
+                        
+                if(result!=null || result.Message?.Value != null)
+                {
+                    OnMessageReceived(result.Message.Value);
+                    MessageBox.Show($"message {result.Message}\n value {result.Value}\n message value {result.Message.Value}");
+                }
+                Task.Delay(1000);
             }
         }
     }

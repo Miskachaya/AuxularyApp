@@ -56,7 +56,7 @@ namespace AuxularyApp.ViewModels
 {
     internal partial class MainWindowViewModel : ViewModel
     { 
-        IServiceProvider _serviceProvider; IRabbitMQService _rabbitmqService; IKafkaService _kafkaService;
+        IServiceProvider _serviceProvider; IRabbitMQService _rabbitmqService; IKafkaService _kafkaService; INatsServise _natsService;
         public ObservableCollection<AuxularyApp.Infrastructure.Graphics.Chart> ChartCollection { get;  } = [];
         private static HttpClient httpClient { get; set; }
         public ObservableCollection<Instruction> CompletedInstructions { get; } = [];
@@ -182,6 +182,7 @@ namespace AuxularyApp.ViewModels
         public MainWindowViewModel(IServiceProvider serviceP):base(serviceP){
             CreateCharts();
             _serviceProvider = serviceP;
+            _natsService = _serviceProvider.GetRequiredService<INatsServise>();
             _rabbitmqService = _serviceProvider.GetRequiredService<IRabbitMQService>();
             _kafkaService = _serviceProvider.GetRequiredService<IKafkaService>();
             HttpClientHandler handler = new()
@@ -670,8 +671,8 @@ namespace AuxularyApp.ViewModels
             try
             {
                 if (base._serviceProvider == null) MessageBox.Show("serviceProviderisnull");
-
-                await _kafkaService.SendMessageAsync(json);
+                _kafkaService.SendMessageAsync(json);   
+                //await _natsService.SendAsync(json);
             }
             catch (Exception ex) { MessageBox.Show(ex.Message); }
             AddedPanels.Clear();

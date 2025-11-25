@@ -14,7 +14,7 @@ namespace OperatorApplication.ViewModels
 {
     public partial class MainWindowViewModel : ViewModel
     {
-        public IServiceProvider _serviceProvider; public IRabbitMQService _rabbitMQService; public IKafkaService _kafkaService;
+        public IServiceProvider _serviceProvider; public IRabbitMQService _rabbitMQService; public IKafkaService _kafkaService; public INatsService _natsService;
         public List<int> AddedPanelsValue { get; } = new List<int>();
         private Instruction _SelectedInstruction;
         public Instruction SelectedInstruction
@@ -55,9 +55,11 @@ namespace OperatorApplication.ViewModels
             _serviceProvider = serviseP;
             //_rabbitMQService = _serviceProvider.GetRequiredService<IRabbitMQService>();
             _kafkaService = _serviceProvider.GetRequiredService<IKafkaService>();
-            //_kafkaService.SetCollectionUpdater(AddInstructionToCollections);
-            //_rabbitMQService.SetCollectionUpdater(AddInstructionToCollections);
             _kafkaService.SetCollectionUpdater(AddInstructionToCollections);
+            //_rabbitMQService.SetCollectionUpdater(AddInstructionToCollections);
+            //_natsService=_serviceProvider.GetRequiredService<INatsService>();
+            
+            //_kafkaService.SetCollectionUpdater(AddInstructionToCollections);
             Task.Run(async()=>Recieve());
            // MessageBox.Show(InstructionCollection.Count.ToString());
 
@@ -70,6 +72,7 @@ namespace OperatorApplication.ViewModels
                 if (_serviceProvider == null) MessageBox.Show("serviceProviderisnull");
                 //await _rabbitMQService.DataReceivedEventArgs(InstructionCollection, PlannedInstructionCollection);
                 await _kafkaService.ExecuteAsync( new CancellationToken());
+                //await _natsService.ReceiveAsync();
             }
             catch (Exception ex) { MessageBox.Show("При попытке вызова метода startconsumingasync возникла ошибка: "+ex.Message); }
         }
