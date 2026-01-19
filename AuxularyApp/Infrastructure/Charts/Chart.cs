@@ -24,9 +24,9 @@ namespace AuxularyApp.Infrastructure.Graphics
 {
     public class Chart 
     {
-        private  ObservableCollection<ObservablePoint> _values = [];
+        public ObservableCollection<ObservablePoint> _values = [];
         public ObservableCollection<ObservablePoint> GetValues() { return _values; }
-        private int count=0;
+        public int count=0;
         public void SetValues(int i)
         {
             count = i;
@@ -143,6 +143,23 @@ namespace AuxularyApp.Infrastructure.Graphics
             if (MicrogridFr.Count > maxVal) MicrogridFr.RemoveAt(0);
             if (CurrentValue.Count > maxVal) CurrentValue.RemoveAt(0);
             if (LPF.Count > maxVal) LPF.RemoveAt(0);
+        }
+
+        public void ClearChartData()
+        {
+            _points.Clear();
+            _values.Clear();
+            count = 0;
+            ActiveLPvalues.Clear();
+            ReactiveLPvalues.Clear();
+            FullLPvalues.Clear();
+            MicrogridFr.Clear();
+            CurrentValue.Clear();
+            LPF.Clear();
+            MicrogridFr.Clear();
+            CurrentValue.Clear();
+            MicrogridFr.Clear();
+
         }
 
         public void PushRetrospectiveChartData( DateTime time,string parameter, double value)

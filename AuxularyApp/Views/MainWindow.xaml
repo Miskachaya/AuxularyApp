@@ -7,7 +7,7 @@
         xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
         xmlns:vm="clr-namespace:AuxularyApp.ViewModels"
         xmlns:models="clr-namespace:AuxularyApp.Models.DataModels.InstructionModels"
-        xmlns:System="clr-namespace:System;assembly=netstandard"
+        xmlns:System="clr-namespace:System;assembly=netstandard" d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}"
         mc:Ignorable="d"
         Title="Приложение визуализации данных"
         WindowStartupLocation="CenterScreen"
@@ -17,6 +17,8 @@
             <Setter Property="Control.FontSize" Value="20"/>
         </Style>
         <!-- Шаблон для красной панели -->
+
+
         <DataTemplate x:Key="ParameterTemplate" >
             <Border Background="#FFFFCCCC" BorderBrush="Red" BorderThickness="1" Margin="5" Padding="10">
                 <Grid>
@@ -387,6 +389,7 @@ UseLayoutRounding="True"
                                 <Label Content="Конечная дата"></Label>
                                 <TextBox Background="LightGray" Text="{Binding SeconfDate, Mode=TwoWay}"></TextBox>
                                 <Button Background="LightGreen" Content="Построить график" Command="{Binding GetDataList}" CommandParameter="{Binding ElementName=ParametersComboBox}"></Button>
+                                <Button Background="LightGreen" Content="Выгрузить данные" Command="{Binding WriteCommand}" CommandParameter="{Binding ElementName=ParametersComboBox}"></Button>
                             </StackPanel>
                         </Grid>
                         <Grid Grid.Column="1" >
@@ -400,12 +403,12 @@ UseLayoutRounding="True"
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
-                                <CheckBox Grid.Row="0" VerticalAlignment="Center" Content="МТПН1-А3" Margin="0,0,0,0" IsChecked="{Binding BlockId[0]}" Command="{Binding SwitchVisiableCommand}" CommandParameter="0"/>
-                                <CheckBox Grid.Row="1" VerticalAlignment="Center" Content="МТПН1-А4" Margin="0,0,0,0" IsChecked="{Binding BlockId[1]}" Command="{Binding SwitchVisiableCommand}" CommandParameter="1"/>
-                                <CheckBox Grid.Row="2" VerticalAlignment="Center" Content="МТПН1-А5" Margin="0,0,0,0" IsChecked="{Binding BlockId[2]}" Command="{Binding SwitchVisiableCommand}" CommandParameter="2"/>
-                                <CheckBox Grid.Row="3" VerticalAlignment="Center" Content="МТПН1-А6" Margin="0,0,0,0" IsChecked="{Binding BlockId[4]}" Command="{Binding SwitchVisiableCommand}" CommandParameter="3"/>
-                                <CheckBox Grid.Row="4" VerticalAlignment="Center" Content="ИПОС1-Р1" Margin="0,0,0,0" IsChecked="{Binding BlockId[5]}" Command="{Binding SwitchVisiableCommand}" CommandParameter="3"/>
-                                <CheckBox Grid.Row="5" VerticalAlignment="Center" Content="ИПОС1-Р2" Margin="0,0,0,0" IsChecked="{Binding BlockId[6]}" Command="{Binding SwitchVisiableCommand}" CommandParameter="3"/>
+                                <CheckBox Grid.Row="0" VerticalAlignment="Center" Content="МТПН1-А3" Margin="0,0,0,0" IsChecked="{Binding BlockIdForRetroList[0], Mode=TwoWay}" Command="{Binding SwitchVisiableParametersCommand}" CommandParameter="0"/>
+                                <CheckBox Grid.Row="1" VerticalAlignment="Center" Content="МТПН1-А4" Margin="0,0,0,0" IsChecked="{Binding BlockIdForRetroList[1], Mode=TwoWay}" Command="{Binding SwitchVisiableParametersCommand}" CommandParameter="1"/>
+                                <CheckBox Grid.Row="2" VerticalAlignment="Center" Content="МТПН1-А5" Margin="0,0,0,0" IsChecked="{Binding BlockIdForRetroList[2], Mode=TwoWay}" Command="{Binding SwitchVisiableParametersCommand}" CommandParameter="2"/>
+                                <CheckBox Grid.Row="3" VerticalAlignment="Center" Content="МТПН1-А6" Margin="0,0,0,0" IsChecked="{Binding BlockIdForRetroList[3], Mode=TwoWay}" Command="{Binding SwitchVisiableParametersCommand}" CommandParameter="3"/>
+                                <CheckBox Grid.Row="4" VerticalAlignment="Center" Content="ИПОС1-Р1" Margin="0,0,0,0" IsChecked="{Binding BlockIdForRetroList[4], Mode=TwoWay}" Command="{Binding SwitchVisiableParametersCommand}" CommandParameter="4"/>
+                                <CheckBox Grid.Row="5" VerticalAlignment="Center" Content="ИПОС1-Р2" Margin="0,0,0,0" IsChecked="{Binding BlockIdForRetroList[5], Mode=TwoWay}" Command="{Binding SwitchVisiableParametersCommand}" CommandParameter="5"/>
                                 <ComboBox Grid.Row="6" x:Name="ParametersComboBox" ItemsSource="{Binding ParamData}" SelectedValuePath="Key" DisplayMemberPath="Value" SelectedValue="{Binding SelectedKey,Mode=TwoWay}" FontSize="14" VerticalContentAlignment="Center" >
                                     <ComboBox.Style>
                                         <Style TargetType="ComboBox">
@@ -487,8 +490,8 @@ UseLayoutRounding="True"
                                     <RowDefinition/>
                                     <RowDefinition Height="2*"/>
                                 </Grid.RowDefinitions>
-                                <Button Margin="0,25,0,0" Background="Green"/>
-                                <Button  Margin="0,25,0,0" Background="Green" Grid.Column="2"/>
+                                <Button Margin="0,25,0,0" Background="{Binding ButtonOfStatesList[3].Color}" Command="{Binding SwitchStateCommand}" CommandParameter="8 L" Grid.Column="0"/>
+                                <Button Margin="0,25,0,0" Background="{Binding ButtonOfStatesList[2].Color}" Command="{Binding SwitchStateCommand}" CommandParameter="8 R" Grid.Column="2"/>
                             </Grid>
                             <Grid Grid.Column="3">
                                 <Grid.ColumnDefinitions>
@@ -500,8 +503,8 @@ UseLayoutRounding="True"
                                     <RowDefinition/>
                                     <RowDefinition Height="2*"/>
                                 </Grid.RowDefinitions>
-                                <Button  Margin="0,25,0,0" Background="Green"/>
-                                <Button  Margin="0,25,0,0" Background="Green" Grid.Column="2"/>
+                                <Button Margin="0,25,0,0" Background="{Binding ButtonOfStatesList[5].Color}" Command="{Binding SwitchStateCommand}" CommandParameter="9 L" Grid.Column="0"/>
+                                <Button Margin="0,25,0,0" Background="{Binding ButtonOfStatesList[4].Color}" Command="{Binding SwitchStateCommand}" CommandParameter="9 R" Grid.Column="2"/>
                             </Grid>
                         </Grid>
                         <Grid Grid.Row="1">
@@ -521,8 +524,8 @@ UseLayoutRounding="True"
                                     <RowDefinition/>
                                     <RowDefinition Height="2*"/>
                                 </Grid.RowDefinitions>
-                                <Button  Margin="0,25,0,0" Background="Green"/>
-                                <Button Margin="0,25,0,0" Background="Red"  Grid.Column="2"/>
+                                <Button Margin="0,25,0,0" Background="{Binding ButtonOfStatesList[1].Color}" Command="{Binding SwitchStateCommand}" CommandParameter="7 L" Grid.Column="0"/>
+                                <Button Margin="0,25,0,0" Background="{Binding ButtonOfStatesList[0].Color}" Command="{Binding SwitchStateCommand}" CommandParameter="7 R" Grid.Column="2"/>
                             </Grid>
                             <Grid Grid.Column="4">
                                 <Grid.ColumnDefinitions>
@@ -534,17 +537,13 @@ UseLayoutRounding="True"
                                     <RowDefinition/>
                                     <RowDefinition Height="2*"/>
                                 </Grid.RowDefinitions>
-                                <Button  Margin="0,25,0,0" Background="Green"/>
-                                <Button  Margin="0,25,0,0" Background="Green" Grid.Column="2"/>
+                                <Button Margin="0,25,0,0" Background="{Binding ButtonOfStatesList[7].Color}" Command="{Binding SwitchStateCommand}" CommandParameter="10 L" Grid.Column="0"/>
+                                <Button Margin="0,25,0,0" Background="{Binding ButtonOfStatesList[6].Color}" Command="{Binding SwitchStateCommand}" CommandParameter="10 R" Grid.Column="2"/>
                             </Grid>
                         </Grid>
                     </Grid>
                     <StackPanel Style="{StaticResource BigFont20}">
-                        <TextBlock FontSize="30" Text="Состоянеие"/>
-                        <TextBlock FontSize="30" Text="МТПиН1-А3             вкл.\выкл."/>
-                        <TextBlock FontSize="30" Text="МТПиН1-А4             вкл.\вкл."/>
-                        <TextBlock FontSize="30" Text="МТПиН1-А5             вкл.\вкл."/>
-                        <TextBlock FontSize="30" Text="МТПиН1-А6             вкл.\вкл."/>
+                        
                     </StackPanel>
                 </Grid>
             </TabItem>

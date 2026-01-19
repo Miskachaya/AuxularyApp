@@ -25,7 +25,7 @@ namespace AuxularyApp.Views
         {
             var app =(App)Application.Current;
             DataContext = app._serviceProvider.GetRequiredService<MainWindowViewModel>();
-            InitializeComponent();
+            //InitializeComponent();
             RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.Default;
 
             this.SnapsToDevicePixels = true;

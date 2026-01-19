@@ -1,4 +1,5 @@
 ﻿using AuxularyApp.Infrastructure.Commands;
+using AuxularyApp.Infrastructure.Graphics;
 using AuxularyApp.Models;
 using AuxularyApp.Models.DataModels.Base;
 using AuxularyApp.Models.DataModels.InstructionModels;
@@ -22,8 +23,11 @@ using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using LiveChartsCore.SkiaSharpView.Painting;
 using LiveChartsCore.SkiaSharpView.VisualElements;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.VisualBasic;
+using OpenTK.Graphics.ES11;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using SkiaSharp;
@@ -34,10 +38,12 @@ using System.Collections.ObjectModel;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Text;
@@ -55,8 +61,24 @@ using System.Xml.Linq;
 namespace AuxularyApp.ViewModels
 {
     internal partial class MainWindowViewModel : ViewModel
-    { 
-        IServiceProvider _serviceProvider; IRabbitMQService _rabbitmqService; IKafkaService _kafkaService; INatsServise _natsService;
+    {
+        public ObservableCollection<ButtonOfState> _ButtonOfStatesList =
+        [
+            new ButtonOfState(title: "7", side: "R", color:Brushes.Green),
+            new ButtonOfState(title: "7", side: "L", color:Brushes.Green),
+            new ButtonOfState(title: "8", side: "R", color:Brushes.Green),
+            new ButtonOfState(title: "8", side: "L", color:Brushes.Green),
+            new ButtonOfState(title: "9", side: "R", color:Brushes.Green),
+            new ButtonOfState(title: "9", side: "L", color:Brushes.Green),
+            new ButtonOfState(title: "10", side: "R", color:Brushes.Green),
+            new ButtonOfState(title: "10", side: "L", color:Brushes.Green)
+        ];
+        public ObservableCollection<ButtonOfState> ButtonOfStatesList
+        {
+            get => _ButtonOfStatesList;
+            set => Set(ref _ButtonOfStatesList, value);
+        }
+        IServiceProvider _serviceProvider; IRabbitMQService _rabbitmqService; IKafkaService _kafkaService; INatsServise _natsService; IEquipmentService _equipmentService;
         public ObservableCollection<AuxularyApp.Infrastructure.Graphics.Chart> ChartCollection { get;  } = [];
         private static HttpClient httpClient { get; set; }
         public ObservableCollection<Instruction> CompletedInstructions { get; } = [];
@@ -82,8 +104,10 @@ namespace AuxularyApp.ViewModels
         public ICommand AddParameterPanelCommand { get; }
         public ICommand AddStatePanelCommand { get; }
         public ICommand AcceptCommand { get; }
-        
-        
+
+        public ButtonOfStateChanger buttonOfStateChanger;
+
+
         // Общий список всех добавленных панелей (для отображения)
         public ObservableCollection<object> AddedPanels { get; } = new ObservableCollection<object>();
 
@@ -155,9 +179,9 @@ namespace AuxularyApp.ViewModels
                 // We can specify a custom separator collection
                 // the library will use this separators instead of
                 // calculating them based on the date of the chart
-                CustomSeparators = [0,  1000, 2000,3000,4000, 5000],
+                CustomSeparators = [0,  50, 100,150,200, 250],
                 MinLimit = 0, // forces the axis to start at 0
-                MaxLimit = 5000, // forces the axis to end at 100
+                MaxLimit = 250, // forces the axis to end at 100
                 SeparatorsPaint = new SolidColorPaint(SKColors.Black.WithAlpha(100))
             }
         ];
@@ -180,11 +204,16 @@ namespace AuxularyApp.ViewModels
         public bool IsReading { get; set; } = true;
 
         public MainWindowViewModel(IServiceProvider serviceP):base(serviceP){
-            CreateCharts();
             _serviceProvider = serviceP;
-            _natsService = _serviceProvider.GetRequiredService<INatsServise>();
-            _rabbitmqService = _serviceProvider.GetRequiredService<IRabbitMQService>();
-            _kafkaService = _serviceProvider.GetRequiredService<IKafkaService>();
+            _equipmentService = _serviceProvider.GetRequiredService<IEquipmentService>();
+            _equipmentService.ProcessCycleAsync();
+            //ButtonOfStatesList.Add(new ButtonOfState { Title = ""});
+            buttonOfStateChanger = new ButtonOfStateChanger(_equipmentService,ButtonOfStatesList, httpClient);
+            CreateCharts();
+            
+            //_natsService = _serviceProvider.GetRequiredService<INatsServise>();
+            //_rabbitmqService = _serviceProvider.GetRequiredService<IRabbitMQService>();
+            //_kafkaService = _serviceProvider.GetRequiredService<IKafkaService>();
             HttpClientHandler handler = new()
             {
                 ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
@@ -348,8 +377,6 @@ namespace AuxularyApp.ViewModels
                     //DataPadding = new(0, 1)
                 }
             ];
-
-
             _customAxis2 = new DateTimeAxis(TimeSpan.FromSeconds(1), Formatter)
             {
                 
@@ -360,7 +387,6 @@ namespace AuxularyApp.ViewModels
                 SeparatorsPaint = new SolidColorPaint(SKColors.Black.WithAlpha(100))
             };
             ScrollableAxes = [_customAxis2];
-            
 
             InvisibleX = [new Axis { IsVisible = false }];
             InvisibleY = [new Axis { IsVisible = false }];
@@ -374,8 +400,11 @@ namespace AuxularyApp.ViewModels
             //AddStepStateCommand = new LambdaCommand(OnAddState, CanAddStepStateExecuted);
             //AddStepParameterCommand = new LambdaCommand(OnAddStepParameter, CanAddStepParameterExecuted);
             SwitchVisiableCommand = new LambdaCommand(OnSwitchVisibleCommandExecuted, CanSwitchVisiableCommandExecuted);
+            SwitchVisiableParametersCommand = new LambdaCommand(OnSwitchVisibleParametersCommandExecuted, CanSwitchVisiableCommandExecuted);
             CreateNewInstructionCommand = new LambdaCommand(OnCreateNewInstructionCommand, CanSwitchVisiableCommandExecuted);
+            SwitchStateCommand = new LambdaCommand(OnSwitchStateCommandExecuted, CanSwitchVisiableCommandExecuted);
             GetDataList=new LambdaCommand(OnGetDataList,CanSwitchVisiableCommandExecuted);
+            WriteCommand = new LambdaCommand(OnWriteCommand, CanSwitchVisiableCommandExecuted);
 
             _customAxis = new DateTimeAxis(TimeSpan.FromSeconds(1), Formatter)
             {
@@ -533,6 +562,27 @@ namespace AuxularyApp.ViewModels
 
         }
 
+        public ICommand SwitchVisiableParametersCommand { get; }
+        private void OnSwitchVisibleParametersCommandExecuted(object p)
+        {
+
+            string[] array = p.ToString().Split(' ');
+            int chartNum = int.Parse(array[0]);
+            Series[chartNum].IsVisible = BlockIdForRetroList[chartNum];
+            //BlockIdForRetroList[chartNum] = !BlockIdForRetroList[chartNum];
+            
+            
+        }
+
+        public ICommand SwitchStateCommand { get; }
+        private void OnSwitchStateCommandExecuted(object p)
+        {
+            string[] array = p.ToString().Split(' ');
+            string blockId = array[0];
+            string side = array[1];
+            buttonOfStateChanger.SetNewValue(blockId, side);
+        }
+
         public ICommand SwitchVisiableRetrospectiveCommand { get; }
         private void OnSwitchVisibleRetrospectiveCommandExecuted(object p)
         {
@@ -555,70 +605,201 @@ namespace AuxularyApp.ViewModels
             get => _seconfDate; set => _seconfDate = value;
         }
         private bool CanSwitchVisiableCommandExecuted(object p) => true;
+        private string FormatCsvRow(string[] row)
+        {
+            var formatted = new string[row.Length];
+            for (int i = 0; i < row.Length; i++)
+            {
+                string cell = row[i];
+                if (cell.Contains(",") || cell.Contains("\"") || cell.Contains("\n"))
+                    cell = $"\"{cell.Replace("\"", "\"\"")}\"";
+                formatted[i] = cell;
+            }
+            return string.Join(",", formatted);
+        }
+        public ICommand WriteCommand { get; }
+        private async void OnWriteCommand(object p)
+        {
+            if (RetrospectiveChartCollection == null)
+                throw new ArgumentNullException(nameof(RetrospectiveChartCollection));
+
+            using (StreamWriter writer = new StreamWriter("Z:\\Data\\Data.csv", false, Encoding.UTF8))
+            {
+                Type itemType = typeof(Infrastructure.Graphics.Chart);
+                PropertyInfo[] properties = itemType.GetProperties();
+
+                // Записываем заголовки
+                if (true)
+                {
+                    var headers = new List<string>();
+                    foreach (var prop in properties)
+                    {
+                        headers.Add(prop.Name);
+                    }
+                    writer.WriteLine(FormatCsvRow(headers.ToArray()));
+                }
+
+                // Записываем данные
+                foreach (var item in RetrospectiveChartCollection)
+                {
+                    var values = new List<string>();
+                    foreach (var prop in properties)
+                    {
+                        object value = prop.GetValue(item);
+                        values.Add(value?.ToString() ?? "");
+                    }
+                    writer.WriteLine(FormatCsvRow(values.ToArray()));
+                }
+            }
+        }
         public ICommand GetDataList { get; }
         private async void OnGetDataList(object p)
         {
-            //DateTime a = DateTime.Parse(FirstDate,f);
-            using HttpResponseMessage response = await httpClient.GetAsync($"https://localhost:7133/api/ParametersMeasures/Retrospective{FirstDate}b{SeconfDate}");
-            string content = await response.Content.ReadAsStringAsync();
-            ParametersMeasure[] collection = JsonSerializer.Deserialize<ParametersMeasure[]>(content);
-            //foreach (ParametersMeasure param in collection) {
-            //    RetrospectiveChartCollection[param.Id.Value - 1].SetValues(0);
-            //}
+            
+            try
+            {
+                using HttpResponseMessage response = await httpClient.GetAsync($"https://localhost:7133/api/ParametersMeasures/Retrospective{FirstDate}b{SeconfDate}");
+                string content = await response.Content.ReadAsStringAsync();
+                ParametersMeasure[] collection = JsonSerializer.Deserialize<ParametersMeasure[]>(content);
+                foreach (var d in collection)
+                {
+                    RetrospectiveChartCollection[d.BlockId.Value - 1].ClearChartData();
+                }
                 switch (SelectedKey)
                 {
                     case ("VoltageValue"):
-                    foreach (ParametersMeasure d in collection)
-                    {
-                        RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.VoltageValue.Value);
-                    }
+                        foreach (ParametersMeasure d in collection)
+                        {
+                            RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.VoltageValue.Value);
+                        }
                         break;
-                case ("CurrentValue"):
-                    foreach (ParametersMeasure d in collection)
-                    {
-                        RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.CurrentValue.Value);
-                    }
-                    break;
-                case ("ActiveLPValues"):
-                    foreach (ParametersMeasure d in collection)
-                    {
-                        RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.ActiveLoadPower.Value);
-                    }
-                    break;
-                case ("ReactiveLPvalues"):
-                    foreach (ParametersMeasure d in collection)
-                    {
-                        RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.ReactiveLoadPower.Value);
-                    }
-                    break;
-                case ("FullLPvalues"):
-                    foreach (ParametersMeasure d in collection)
-                    {
-                        RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.FullLoadPower.Value);
-                    }
-                    break;
-                case ("MicrogridFr"):
-                    foreach (ParametersMeasure d in collection)
-                    {
-                        RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.MicrogridFrequency.Value);
-                    }
-                    break;
-                case ("LPF"):
-                    foreach (ParametersMeasure d in collection)
-                    {
-                        RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.LoadPowerFactor.Value);
-                    }
-                    break;
+                    case ("CurrentValue"):
+                        foreach (ParametersMeasure d in collection)
+                        {
+                            RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.CurrentValue.Value);
+                        }
+                        break;
+                    case ("ActiveLPValues"):
+                        foreach (ParametersMeasure d in collection)
+                        {
+                            RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.ActiveLoadPower.Value);
+                        }
+                        break;
+                    case ("ReactiveLPvalues"):
+                        foreach (ParametersMeasure d in collection)
+                        {
+                            RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.ReactiveLoadPower.Value);
+                        }
+                        break;
+                    case ("FullLPvalues"):
+                        foreach (ParametersMeasure d in collection)
+                        {
+                            RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.FullLoadPower.Value);
+                        }
+                        break;
+                    case ("MicrogridFr"):
+                        foreach (ParametersMeasure d in collection)
+                        {
+                            RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.MicrogridFrequency.Value);
+                        }
+                        break;
+                    case ("LPF"):
+                        foreach (ParametersMeasure d in collection)
+                        {
+                            RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.LoadPowerFactor.Value);
+                        }
+                        break;
 
-                    break;
-                default:
-                    MessageBox.Show("Выберите параметр");
+                    default:
+                        MessageBox.Show("Выберите параметр");
                         break;
-                    
-                //RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.LoadPowerFactor.Value);
-                //_values1.Add(new DateTimePoint(d.Time,d.VoltageValue));
+
+                        //RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.LoadPowerFactor.Value);
+                        //_values1.Add(new DateTimePoint(d.Time,d.VoltageValue));
                 }
-            //MessageBox.Show($"{RetrospectiveChartCollection[0].GetValues().Count} {RetrospectiveChartCollection[1].GetValues().Count} {RetrospectiveChartCollection[2].GetValues().Count} {RetrospectiveChartCollection[3].GetValues().Count} {RetrospectiveChartCollection[4].GetValues().Count} {RetrospectiveChartCollection[5].GetValues().Count}");
+                for (int i = 0; i < BlockIdForRetroList.Count; i++)
+                {
+                    BlockIdForRetroList[i] = true;
+                    Series[i].IsVisible = BlockIdForRetroList[i];
+                }
+            } catch { Exception ex; } finally
+            {
+                string content="";
+                string localDBConnectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\maksb\\source\\repos\\Miskachaya\\AuxularyApp\\AuxularyApp\\Common\\localDB.mdf;Integrated Security=True";
+                SqlConnection sqlConnection = new SqlConnection(localDBConnectionString);
+                sqlConnection.Open();
+                var query = $"select Cast(ID AS int) AS id,\r\n     Cast(BlockID AS int  )              AS blockId,\r\n    CAST(VoltageValue AS decimal(10,5))  AS voltageValue,\r\n    CAST(CurrentValue AS decimal(10,5))  AS currentValue,\r\n    CAST(ActiveLoadPower AS decimal(10,5)) AS activeLoadPower,\r\n    CAST(ReactiveLoadPower AS decimal(10,5)) AS reactiveLoadPower,\r\n    CAST(FullLoadPower AS decimal(10,5)) AS fullLoadPower,\r\n    CAST(LoadPowerFactor AS decimal(10,5)) AS loadPowerFactor,\r\n    CAST(MicrogridFrequency AS decimal(10,5)) AS microgridFrequency,\r\n    [time] from \"Table\" where Time > '{FirstDate}' and Time < '{SeconfDate}' FOR JSON Path";
+                var command = new SqlCommand(query, sqlConnection);
+                SqlDataReader reader = command.ExecuteReader();
+                if (reader.HasRows)
+                {
+                    int i = 0;
+                    while (reader.Read())
+                    {
+                        content+= reader.GetString(i);
+                    }
+                }
+                reader.Close();
+                ParametersMeasure[] collection = JsonSerializer.Deserialize<ParametersMeasure[]>(content);
+                foreach (var d in collection)
+                {
+                    RetrospectiveChartCollection[d.BlockId.Value - 1].ClearChartData();
+                }
+                switch (SelectedKey)
+                {
+                    case ("VoltageValue"):
+                        foreach (ParametersMeasure d in collection)
+                        {
+                            RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.VoltageValue.Value);
+                        }
+                        break;
+                    case ("CurrentValue"):
+                        foreach (ParametersMeasure d in collection)
+                        {
+                            RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.CurrentValue.Value);
+                        }
+                        break;
+                    case ("ActiveLPValues"):
+                        foreach (ParametersMeasure d in collection)
+                        {
+                            RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.ActiveLoadPower.Value);
+                        }
+                        break;
+                    case ("ReactiveLPvalues"):
+                        foreach (ParametersMeasure d in collection)
+                        {
+                            RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.ReactiveLoadPower.Value);
+                        }
+                        break;
+                    case ("FullLPvalues"):
+                        foreach (ParametersMeasure d in collection)
+                        {
+                            RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.FullLoadPower.Value);
+                        }
+                        break;
+                    case ("MicrogridFr"):
+                        foreach (ParametersMeasure d in collection)
+                        {
+                            RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.MicrogridFrequency.Value);
+                        }
+                        break;
+                    case ("LPF"):
+                        foreach (ParametersMeasure d in collection)
+                        {
+                            RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.LoadPowerFactor.Value);
+                        }
+                        break;
+
+                    default:
+                        MessageBox.Show("Выберите параметр");
+                        break;
+                }
+                for (int i = 0; i < BlockIdForRetroList.Count; i++)
+                {
+                    BlockIdForRetroList[i] = true;
+                    Series[i].IsVisible = BlockIdForRetroList[i];
+                }
+            }            
         }
         private string _selectedKey;
         public string SelectedKey
@@ -703,11 +884,26 @@ namespace AuxularyApp.ViewModels
         }
         private Dictionary<string , string> _paramData= new Dictionary<string, string>{ { "VoltageValue", "Действ. знач. напржение"}, { "CurrentValue", "Действ. знач. тока" },{ "ActiveLPValues", "Активная МН" },{ "ReactiveLPvalues", "Реактивная МН"},{ "FullLPvalues", "Полная МН" },{ "MicrogridFr", "Коэф. мощности нагрузки" }, { "LPF", "Частота эл. сети" } };
         public Dictionary<string , string> ParamData { get => _paramData; set => _paramData = value; }
-        private bool[] _blockId = { false,false,false,false,false,false,false};
-        public bool[] BlockId
+
+        private ObservableCollection<bool> _blockIdForRetroList = new() { false, false, false, false, false, false };
+        public ObservableCollection<bool> BlockIdForRetroList
         {
-            get => _blockId; set => _blockId = value;
+            get => _blockIdForRetroList;
+            set => Set(ref _blockIdForRetroList, value);
         }
+        
+        //ObservableCollection<Brush >_ButtonOfStatesList = new() { Brushes.Blue,Brushes.Black };
+        //public ObservableCollection<Brush> ButtonOfStatesList
+        //{
+        //    get => _ButtonOfStatesList;
+        //    set => Set(ref _ButtonOfStatesList, value);
+        //}
+        //private bool[] _blockIdForRetroList = {false, false, false, false, false, false };
+        //public bool[] BlockIdForRetroList
+        //{
+        //    get => _blockIdForRetroList;
+        //    set => Set(ref _blockIdForRetroList, value);
+        //}
         #region Instruction
         private Instruction _Instruction;
         public Instruction Instruction
@@ -805,18 +1001,58 @@ namespace AuxularyApp.ViewModels
         {
             while (true)
             {
+                HttpResponseMessage response = null;
                 await Task.Delay(500);
-                using var response = await httpClient.GetAsync("https://localhost:7133/api/ParametersMeasures/lv");
-                string content = await response.Content.ReadAsStringAsync();
-                ParametersMeasure[] collection = JsonSerializer.Deserialize<ParametersMeasure[]>(content);
-                foreach (ParametersMeasure d in collection)
+                try
                 {
-                    d.Time = DateTime.Now;
-                    ChartCollection[d.BlockId.Value-1].PushChartData(maxVal,d.Time,d.VoltageValue.Value,d.ActiveLoadPower.Value, d.ReactiveLoadPower.Value, d.FullLoadPower.Value, d.MicrogridFrequency.Value, d.CurrentValue.Value, d.LoadPowerFactor.Value);
+                    response = await httpClient.GetAsync("https://localhost:7133/api/ParametersMeasures/lv");
+                    string content = await response.Content.ReadAsStringAsync();
+                    ParametersMeasure[] collection = JsonSerializer.Deserialize<ParametersMeasure[]>(content);
+                    foreach (ParametersMeasure d in collection)
+                    {
+                        d.Time = DateTime.Now;
+                        ChartCollection[d.BlockId.Value - 1].PushChartData(maxVal, d.Time, d.VoltageValue.Value, d.ActiveLoadPower.Value, d.ReactiveLoadPower.Value, d.FullLoadPower.Value, d.MicrogridFrequency.Value, d.CurrentValue.Value, d.LoadPowerFactor.Value);
+                    }
+                    _customAxis.MaxLimit = DateTime.Now.AddSeconds(-3).Ticks;
+                    _customAxis.MinLimit = DateTime.Now.AddSeconds(-8).Ticks;
+                    _customAxis.CustomSeparators = GetSeparators();
                 }
-                _customAxis.MaxLimit = DateTime.Now.AddSeconds(-3).Ticks;
-                _customAxis.MinLimit = DateTime.Now.AddSeconds(-8).Ticks;
-                _customAxis.CustomSeparators = GetSeparators();
+                catch (Exception ex) { }
+                finally
+                {
+                    string localDBConnectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\maksb\\source\\repos\\Miskachaya\\AuxularyApp\\AuxularyApp\\Common\\localDB.mdf;Integrated Security=True";
+                    SqlConnection sqlConnection = new SqlConnection(localDBConnectionString);
+                    sqlConnection.Open();
+                    var query = @"SELECT t1.*
+                                    FROM ""Table"" t1
+                                    INNER JOIN (
+                                    SELECT BlockID, MAX(Time) as max_time
+                                    FROM ""Table""
+                                    GROUP BY BlockID
+                                    ) t2 ON t1.BlockID = t2.BlockID AND t1.Time = t2.max_time;";
+                    var command = new SqlCommand(query, sqlConnection);
+                    SqlDataReader reader =  command.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        while ( await reader.ReadAsync())
+                        {
+                            object blockID = reader.GetValue(1);
+                            object VoltageValue = reader.GetValue(2);
+                            object ActiveLoadPower = reader.GetValue(3);
+                            object ReactiveLoadPower = reader.GetValue(4);
+                            object FullLoadPower = reader.GetValue(5);
+                            object MicrogridFreaquency = reader.GetValue(6);
+                            object CurrentValue = reader.GetValue(7);
+                            object LoadPowerFactor = reader.GetValue(8);
+                            object Time = reader.GetValue(9);
+                            ChartCollection[Convert.ToUInt16(blockID) - 1].PushChartData(maxVal,Convert.ToDateTime(Time),Convert.ToDouble(VoltageValue), Convert.ToDouble(ActiveLoadPower), Convert.ToDouble(ReactiveLoadPower), Convert.ToDouble(FullLoadPower), Convert.ToDouble(MicrogridFreaquency), Convert.ToDouble(CurrentValue), Convert.ToDouble(LoadPowerFactor));
+                            _customAxis.MaxLimit = DateTime.Now.AddSeconds(-3).Ticks;
+                            _customAxis.MinLimit = DateTime.Now.AddSeconds(-8).Ticks;
+                            _customAxis.CustomSeparators = GetSeparators();
+                        }
+                    }
+                    reader.Close();
+                }
             }
         }
     }
