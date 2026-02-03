@@ -88,7 +88,7 @@ namespace AuxularyApp.Models
     {
         IEquipmentService EquipmentService { get; set; }
         ObservableCollection<ButtonOfState> ButtonList = new();
-        HttpClient client;
+        HttpClient client = new();
         public ButtonOfStateChanger(IEquipmentService equipmentService, ObservableCollection<ButtonOfState> List, HttpClient httpClient)
         {
             this.EquipmentService = equipmentService;
@@ -103,8 +103,6 @@ namespace AuxularyApp.Models
                 {
                     button.setStateChange();
                     string value="";
-                    try
-                    {
                         switch (button.getTitle())
                         {
                             case ("7"):
@@ -295,7 +293,6 @@ namespace AuxularyApp.Models
                         }
                         catch (Exception e)
                         {
-                            Console.WriteLine(e.ToString());
                             button.setStateChange();
                         }
                         finally
@@ -310,12 +307,8 @@ namespace AuxularyApp.Models
                             command.Value = values;
                             EquipmentService.ExecuteCommandAsync(command);
                         }
-                        
-                    }
-                    catch (Exception ex)
-                    { 
-                        
-                    }
+                    
+
                 }
             }
         }

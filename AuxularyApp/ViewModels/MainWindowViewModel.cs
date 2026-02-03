@@ -208,6 +208,7 @@ namespace AuxularyApp.ViewModels
             _equipmentService = _serviceProvider.GetRequiredService<IEquipmentService>();
             _equipmentService.ProcessCycleAsync();
             //ButtonOfStatesList.Add(new ButtonOfState { Title = ""});
+            httpClient = new HttpClient();
             buttonOfStateChanger = new ButtonOfStateChanger(_equipmentService,ButtonOfStatesList, httpClient);
             CreateCharts();
             
@@ -423,6 +424,7 @@ namespace AuxularyApp.ViewModels
                 Fill = new SolidColorPaint(new SKColor(255, 205, 210, 100))
             }
             ];
+            _equipmentService.ProcessCycleAsync();
             GetResponse();
         }
         public LabelVisual[] Title { get; set; } =

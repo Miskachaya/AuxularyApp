@@ -6,10 +6,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using System.Diagnostics;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 
 namespace AuxularyApp.Services
@@ -26,6 +28,8 @@ namespace AuxularyApp.Services
         private readonly object _queueLock = new();
         private EquipmentStatus _status = new();
         IModbusSerialMaster master;
+        int count = 0;
+        ushort[] registers = new ushort[14];
         public EquipmentService()
         {
             serialPort = new SerialPort(portName, baudRate, parity, dataBits, stopBits);
@@ -75,11 +79,59 @@ namespace AuxularyApp.Services
                         // В NModbus нет прямого аналога, но можно подписаться на события
 
                         // Устанавливаем таймауты (по умолчанию в .NET они уже установлены)
-                        serialPort.ReadTimeout = 1000;
-                        serialPort.WriteTimeout = 1000;
-
+                        serialPort.ReadTimeout = 500;
+                        serialPort.WriteTimeout = 500;
+                        
                         // Читаем 2 регистра начиная с адреса 0 (как в оригинальном коде)
-                        ushort[] registers = master.ReadInputRegisters(slaveId, 0, 14);
+                        try {
+                            Debug.WriteLine($"{count}");
+                            registers = master.ReadHoldingRegisters(slaveId, 0, 14);
+                            count++;
+                            for (int i = 0; i < registers.Length; i += 2)
+                            {
+
+
+                                if (i + 1 < registers.Length)
+                                {
+                                    float val = ModbusUtility.GetSingle(registers[i], registers[i + 1]);
+                                    Console.WriteLine($"Регистр{slaveId} номер параметра{i / 2}: {val}");
+                                    switch (i / 2)
+                                    {
+                                        case 0:
+                                            VoltageValue = val.ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"));
+                                            break;
+                                        case 1:
+                                            CurrentValue = val.ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"));
+                                            break;
+                                        case 2:
+                                            MicrogridFrequency = val.ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"));
+                                            break;
+                                        case 3:
+                                            FullLoadPower = val.ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"));
+                                            break;
+                                        case 4:
+                                            ActiveLoadPower = val.ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"));
+                                            break;
+                                        case 5:
+                                            ReactiveLoadPower = val.ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"));
+                                            break;
+                                        case 6:
+                                            LoadPowerFactor = val.ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"));
+                                            break;
+                                    }
+                                    /// Thread.Sleep(100);
+
+                                }
+
+                                //Создаем команду
+
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            MessageBox.Show($"127 EquipmentService {e}");
+                        }
+                        
 
                         // Преобразуем в float (аналог modbus_get_float)
                         //if (registers.Length >= 2)
@@ -90,77 +142,41 @@ namespace AuxularyApp.Services
 
                         // Если нужно прочитать больше регистров:
 
-                        for (int i = 0; i < registers.Length; i += 2)
-                        {
-
-
-                            if (i + 1 < registers.Length)
-                            {
-                                float val = ModbusUtility.GetSingle(registers[i], registers[i + 1]);
-                                Console.WriteLine($"Регистр{slaveId} номер параметра{i / 2}: {val}");
-                                switch (i / 2)
-                                {
-                                    case 0:
-                                        VoltageValue = val.ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"));
-                                        break;
-                                    case 1:
-                                        CurrentValue = val.ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"));
-                                        break;
-                                    case 2:
-                                        MicrogridFrequency = val.ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"));
-                                        break;
-                                    case 3:
-                                        FullLoadPower = val.ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"));
-                                        break;
-                                    case 4:
-                                        ActiveLoadPower = val.ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"));
-                                        break;
-                                    case 5:
-                                        ReactiveLoadPower = val.ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"));
-                                        break;
-                                    case 6:
-                                        LoadPowerFactor = val.ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"));
-                                        break;
-                                }
-                                /// Thread.Sleep(100);
-
-                            }
-
-                            //Создаем команду
-
-                        }
-                        string query = $"insert into ParametersMeasure " +
+                        
+                        string query = "insert into \"Table\" " +
                                             $"(BlockID,VoltageValue,ActiveLoadPower,ReactiveLoadPower, FullLoadPower, CurrentValue, LoadPowerFactor,MicrogridFrequency, Time) " +
                                             $"values ({k},{VoltageValue}, {ActiveLoadPower},{ReactiveLoadPower},{FullLoadPower},{CurrentValue},{LoadPowerFactor},{MicrogridFrequency},'{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")}')";
                         try
                         {
-                            string localDBConnectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\maksb\\source\\repos\\Miskachaya\\AuxularyApp\\AuxularyApp\\Services\\localDB.mdf;Integrated Security=True";
+                            string localDBConnectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\maksb\\source\\repos\\Miskachaya\\AuxularyApp\\AuxularyApp\\Common\\localDB.mdf;Integrated Security=True";
                             SqlConnection sqlConnection = new SqlConnection(localDBConnectionString);
                             sqlConnection.Open();
                             var command = new SqlCommand(query, sqlConnection);
                             command.ExecuteNonQuery();
+                            sqlConnection.Close();
                         }
                         catch (Exception e)
                         {
                             Console.WriteLine(e.Message);
+                            MessageBox.Show($"147 EquipmentService {e}");
                         }
-                        finally 
-                        {
-                            using (var connection = new SQLiteConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\maksb\\source\\repos\\Miskachaya\\AuxularyApp\\AuxularyApp\\Common\\localDB.mdf;Integrated Security=True"))
-                            {
-                                connection.Open();
-                                if (connection != null)
-                                {
-                                    Console.WriteLine("Connection");
-                                }
-                                else Console.WriteLine("No connection");
-                                using (SQLiteCommand command = new SQLiteCommand(query, connection))
-                                {
-                                    command.ExecuteNonQuery();
-                                    Console.WriteLine("response");
-                                }
-                            }
-                        }
+                        //finally 
+                        //{
+                        //    using (var connection = new SQLiteConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\maksb\\source\\repos\\Miskachaya\\AuxularyApp\\AuxularyApp\\Common\\localDB.mdf;Integrated Security=True"))
+                        //    {
+                        //        connection.Open();
+                        //        if (connection != null)
+                        //        {
+                        //            Console.WriteLine("Connection");
+                        //        }
+                        //        else Console.WriteLine("No connection");
+                        //        using (SQLiteCommand command = new SQLiteCommand(query, connection))
+                        //        {
+                        //            command.ExecuteNonQuery();
+                        //            Console.WriteLine("response");
+                        //        }
+                        //    }
+                        //}
                     }
                     catch (Exception ex)
                     {
@@ -208,9 +224,7 @@ namespace AuxularyApp.Services
             }
             catch (Exception ex)
             {
-                //serialPort.Close();
-                //Console.WriteLine($"Error in MethodB: {ex.Message}");
-                //throw;
+                MessageBox.Show("212 EquipmentService");
 
             }
 
@@ -220,12 +234,13 @@ namespace AuxularyApp.Services
         {
             try
             {
-                serialPort.Open();
+               
                 while (!cancellationToken.IsCancellationRequested)
                 {
+                    serialPort.Open();
                     // Выполняем метод А
                     MethodA();
-
+                    serialPort.Close();
                     // Проверяем и выполняем команды из очереди
                     CommandRequest? nextCommand = null;
                     lock (_queueLock)
@@ -246,14 +261,18 @@ namespace AuxularyApp.Services
                         catch (Exception ex)
                         {
                             Console.WriteLine($"Failed to execute command {nextCommand.Value}: {ex.Message}");
+                            MessageBox.Show("250 EquipmentService");
                         }
                     }
 
                     Task.Delay(250, cancellationToken); // 4 раза в секунду
                 }
-                serialPort.Close();
+               
             }
-            catch (Exception ex) { }
+            catch (Exception ex) 
+            {
+                MessageBox.Show("259 EquipmentService");
+            }
 
             
             return Task.CompletedTask;
