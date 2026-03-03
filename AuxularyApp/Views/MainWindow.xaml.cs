@@ -24,7 +24,7 @@ namespace AuxularyApp.Views
         public MainWindow()
         {
             var app =(App)Application.Current;
-            DataContext = app._serviceProvider.GetRequiredService<MainWindowViewModel>();
+            //DataContext = app._serviceProvider.GetRequiredService<MainWindowViewModel>();
             //InitializeComponent();
             RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.Default;
 

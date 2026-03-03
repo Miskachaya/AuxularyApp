@@ -204,9 +204,9 @@ namespace AuxularyApp.ViewModels
         public bool IsReading { get; set; } = true;
 
         public MainWindowViewModel(IServiceProvider serviceP):base(serviceP){
-            _serviceProvider = serviceP;
-            _equipmentService = _serviceProvider.GetRequiredService<IEquipmentService>();
-            _equipmentService.ProcessCycleAsync();
+            //_serviceProvider = serviceP;
+            //_equipmentService = _serviceProvider.GetRequiredService<IEquipmentService>();
+            //_equipmentService.ProcessCycleAsync();
             //ButtonOfStatesList.Add(new ButtonOfState { Title = ""});
             httpClient = new HttpClient();
             buttonOfStateChanger = new ButtonOfStateChanger(_equipmentService,ButtonOfStatesList, httpClient);
