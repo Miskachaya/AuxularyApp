@@ -205,8 +205,8 @@ namespace AuxularyApp.ViewModels
 
         public MainWindowViewModel(IServiceProvider serviceP):base(serviceP){
             //_serviceProvider = serviceP;
-            //_equipmentService = _serviceProvider.GetRequiredService<IEquipmentService>();
-            //_equipmentService.ProcessCycleAsync();
+            _equipmentService = _serviceProvider.GetRequiredService<IEquipmentService>();
+
             //ButtonOfStatesList.Add(new ButtonOfState { Title = ""});
             httpClient = new HttpClient();
             buttonOfStateChanger = new ButtonOfStateChanger(_equipmentService,ButtonOfStatesList, httpClient);
