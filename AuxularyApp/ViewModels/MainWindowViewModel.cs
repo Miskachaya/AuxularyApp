@@ -204,7 +204,7 @@ namespace AuxularyApp.ViewModels
         public bool IsReading { get; set; } = true;
 
         public MainWindowViewModel(IServiceProvider serviceP):base(serviceP){
-            //_serviceProvider = serviceP;
+            _serviceProvider = serviceP;
             _equipmentService = _serviceProvider.GetRequiredService<IEquipmentService>();
 
             //ButtonOfStatesList.Add(new ButtonOfState { Title = ""});
@@ -424,7 +424,7 @@ namespace AuxularyApp.ViewModels
                 Fill = new SolidColorPaint(new SKColor(255, 205, 210, 100))
             }
             ];
-            _equipmentService.ProcessCycleAsync();
+           _equipmentService.ProcessCycleAsync();
             GetResponse();
         }
         public LabelVisual[] Title { get; set; } =
@@ -1020,41 +1020,41 @@ namespace AuxularyApp.ViewModels
                     _customAxis.CustomSeparators = GetSeparators();
                 }
                 catch (Exception ex) { }
-                finally
-                {
-                    string localDBConnectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\maksb\\source\\repos\\Miskachaya\\AuxularyApp\\AuxularyApp\\Common\\localDB.mdf;Integrated Security=True";
-                    SqlConnection sqlConnection = new SqlConnection(localDBConnectionString);
-                    sqlConnection.Open();
-                    var query = @"SELECT t1.*
-                                    FROM ""Table"" t1
-                                    INNER JOIN (
-                                    SELECT BlockID, MAX(Time) as max_time
-                                    FROM ""Table""
-                                    GROUP BY BlockID
-                                    ) t2 ON t1.BlockID = t2.BlockID AND t1.Time = t2.max_time;";
-                    var command = new SqlCommand(query, sqlConnection);
-                    SqlDataReader reader =  command.ExecuteReader();
-                    if (reader.HasRows)
-                    {
-                        while ( await reader.ReadAsync())
-                        {
-                            object blockID = reader.GetValue(1);
-                            object VoltageValue = reader.GetValue(2);
-                            object ActiveLoadPower = reader.GetValue(3);
-                            object ReactiveLoadPower = reader.GetValue(4);
-                            object FullLoadPower = reader.GetValue(5);
-                            object MicrogridFreaquency = reader.GetValue(6);
-                            object CurrentValue = reader.GetValue(7);
-                            object LoadPowerFactor = reader.GetValue(8);
-                            object Time = reader.GetValue(9);
-                            ChartCollection[Convert.ToUInt16(blockID) - 1].PushChartData(maxVal,Convert.ToDateTime(Time),Convert.ToDouble(VoltageValue), Convert.ToDouble(ActiveLoadPower), Convert.ToDouble(ReactiveLoadPower), Convert.ToDouble(FullLoadPower), Convert.ToDouble(MicrogridFreaquency), Convert.ToDouble(CurrentValue), Convert.ToDouble(LoadPowerFactor));
-                            _customAxis.MaxLimit = DateTime.Now.AddSeconds(-3).Ticks;
-                            _customAxis.MinLimit = DateTime.Now.AddSeconds(-8).Ticks;
-                            _customAxis.CustomSeparators = GetSeparators();
-                        }
-                    }
-                    reader.Close();
-                }
+                //finally
+                //{
+                //    string localDBConnectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\maksb\\source\\repos\\Miskachaya\\AuxularyApp\\AuxularyApp\\Common\\localDB.mdf;Integrated Security=True";
+                //    SqlConnection sqlConnection = new SqlConnection(localDBConnectionString);
+                //    sqlConnection.Open();
+                //    var query = @"SELECT t1.*
+                //                    FROM ""Table"" t1
+                //                    INNER JOIN (
+                //                    SELECT BlockID, MAX(Time) as max_time
+                //                    FROM ""Table""
+                //                    GROUP BY BlockID
+                //                    ) t2 ON t1.BlockID = t2.BlockID AND t1.Time = t2.max_time;";
+                //    var command = new SqlCommand(query, sqlConnection);
+                //    SqlDataReader reader =  command.ExecuteReader();
+                //    if (reader.HasRows)
+                //    {
+                //        while ( await reader.ReadAsync())
+                //        {
+                //            object blockID = reader.GetValue(1);
+                //            object VoltageValue = reader.GetValue(2);
+                //            object ActiveLoadPower = reader.GetValue(3);
+                //            object ReactiveLoadPower = reader.GetValue(4);
+                //            object FullLoadPower = reader.GetValue(5);
+                //            object MicrogridFreaquency = reader.GetValue(6);
+                //            object CurrentValue = reader.GetValue(7);
+                //            object LoadPowerFactor = reader.GetValue(8);
+                //            object Time = reader.GetValue(9);
+                //            ChartCollection[Convert.ToUInt16(blockID) - 1].PushChartData(maxVal,Convert.ToDateTime(Time),Convert.ToDouble(VoltageValue), Convert.ToDouble(ActiveLoadPower), Convert.ToDouble(ReactiveLoadPower), Convert.ToDouble(FullLoadPower), Convert.ToDouble(MicrogridFreaquency), Convert.ToDouble(CurrentValue), Convert.ToDouble(LoadPowerFactor));
+                //            _customAxis.MaxLimit = DateTime.Now.AddSeconds(-3).Ticks;
+                //            _customAxis.MinLimit = DateTime.Now.AddSeconds(-8).Ticks;
+                //            _customAxis.CustomSeparators = GetSeparators();
+                //        }
+                //    }
+                //    reader.Close();
+                //}
             }
         }
     }

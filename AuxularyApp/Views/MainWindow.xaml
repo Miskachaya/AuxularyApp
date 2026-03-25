@@ -13,6 +13,7 @@
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized">
     <Window.Resources>
+        
         <Style x:Key="BigFont20">
             <Setter Property="Control.FontSize" Value="20"/>
         </Style>

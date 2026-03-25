@@ -54,8 +54,8 @@ namespace OperatorApplication.ViewModels
         {
             _serviceProvider = serviseP;
             //_rabbitMQService = _serviceProvider.GetRequiredService<IRabbitMQService>();
-            _kafkaService = _serviceProvider.GetRequiredService<IKafkaService>();
-            _kafkaService.SetCollectionUpdater(AddInstructionToCollections);
+            //_kafkaService = _serviceProvider.GetRequiredService<IKafkaService>();
+            //_kafkaService.SetCollectionUpdater(AddInstructionToCollections);
             //_rabbitMQService.SetCollectionUpdater(AddInstructionToCollections);
             //_natsService=_serviceProvider.GetRequiredService<INatsService>();
             

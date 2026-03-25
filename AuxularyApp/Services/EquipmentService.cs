@@ -119,7 +119,7 @@ namespace AuxularyApp.Services
                                             LoadPowerFactor = val.ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"));
                                             break;
                                     }
-                                    /// Thread.Sleep(100);
+                                    / Thread.Sleep(100);
 
                                 }
 
@@ -230,7 +230,7 @@ namespace AuxularyApp.Services
 
         }
         // Основной цикл обработки (будет вызываться из фонового сервиса)
-        public Task ProcessCycleAsync(CancellationToken cancellationToken = default)
+        public async Task ProcessCycleAsync(CancellationToken cancellationToken = default)
         {
             try
             {
@@ -275,7 +275,7 @@ namespace AuxularyApp.Services
             }
 
             
-            return Task.CompletedTask;
+            //return Task.CompletedTask;
         }
 
         // Метод для добавления команды в очередь (вызывается из контроллера)
