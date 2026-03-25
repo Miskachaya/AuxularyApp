@@ -45,7 +45,7 @@ namespace AuxularyApp.Services
         }
 
         // Метод А - чтение данных с оборудования
-        private void MethodA()
+        async void MethodA()
         {
             try
             {
@@ -85,7 +85,7 @@ namespace AuxularyApp.Services
                         // Читаем 2 регистра начиная с адреса 0 (как в оригинальном коде)
                         try {
                             Debug.WriteLine($"{count}");
-                            registers = master.ReadHoldingRegisters(slaveId, 0, 14);
+                            registers = master.ReadInputRegisters(slaveId, 0, 14);
                             count++;
                             for (int i = 0; i < registers.Length; i += 2)
                             {
@@ -94,7 +94,7 @@ namespace AuxularyApp.Services
                                 if (i + 1 < registers.Length)
                                 {
                                     float val = ModbusUtility.GetSingle(registers[i], registers[i + 1]);
-                                    Console.WriteLine($"Регистр{slaveId} номер параметра{i / 2}: {val}");
+                                    Debug.WriteLine($"Регистр{slaveId} номер параметра{i / 2}: {val}");
                                     switch (i / 2)
                                     {
                                         case 0:
@@ -119,7 +119,7 @@ namespace AuxularyApp.Services
                                             LoadPowerFactor = val.ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"));
                                             break;
                                     }
-                                    / Thread.Sleep(100);
+                                    Thread.Sleep(100);
 
                                 }
 
@@ -143,16 +143,15 @@ namespace AuxularyApp.Services
                         // Если нужно прочитать больше регистров:
 
                         
-                        string query = "insert into \"Table\" " +
-                                            $"(BlockID,VoltageValue,ActiveLoadPower,ReactiveLoadPower, FullLoadPower, CurrentValue, LoadPowerFactor,MicrogridFrequency, Time) " +
-                                            $"values ({k},{VoltageValue}, {ActiveLoadPower},{ReactiveLoadPower},{FullLoadPower},{CurrentValue},{LoadPowerFactor},{MicrogridFrequency},'{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")}')";
+                        string query = $"insert into [Table] (BlockID, VoltageValue, ActiveLoadPower, ReactiveLoadPower, FullLoadPower, CurrentValue, LoadPowerFactor, MicrogridFrequency, Time) values ({k},{VoltageValue}, {ActiveLoadPower}, {ReactiveLoadPower}, {FullLoadPower}, {CurrentValue}, {LoadPowerFactor}, {MicrogridFrequency}, '{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")}')";
                         try
                         {
                             string localDBConnectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\maksb\\source\\repos\\Miskachaya\\AuxularyApp\\AuxularyApp\\Common\\localDB.mdf;Integrated Security=True";
                             SqlConnection sqlConnection = new SqlConnection(localDBConnectionString);
                             sqlConnection.Open();
                             var command = new SqlCommand(query, sqlConnection);
-                            command.ExecuteNonQuery();
+                            //command.ExecuteNonQuery();
+                            command.ExecuteScalar();
                             sqlConnection.Close();
                         }
                         catch (Exception e)
@@ -208,6 +207,7 @@ namespace AuxularyApp.Services
                 byte numberOfBlock = 10;
                 Console.WriteLine($"Запись значения {value} в регистр {numberOfBlock}...");
                 //master.WriteMultipleRegisters((byte)request.BlockId, address, (ushort[])request.Value);
+                
                 master.WriteMultipleRegisters(request.BlockId, 50, request.Value);
 
                 Console.WriteLine($"Успешно записано значение {value} в регистр {numberOfBlock}");
@@ -220,17 +220,17 @@ namespace AuxularyApp.Services
 
                 ///////Thread.Sleep(50); // Имитация работы команды
                 _status.MethodBExecutionCount++;
-                // serialPort.Close();
+                 //serialPort.Close();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("212 EquipmentService");
+                MessageBox.Show($"212Equpment {ex}");
 
             }
 
         }
         // Основной цикл обработки (будет вызываться из фонового сервиса)
-        public async Task ProcessCycleAsync(CancellationToken cancellationToken = default)
+        public async void ProcessCycleAsync(CancellationToken cancellationToken = default)
         {
             try
             {
@@ -239,8 +239,8 @@ namespace AuxularyApp.Services
                 {
                     serialPort.Open();
                     // Выполняем метод А
-                    MethodA();
-                    serialPort.Close();
+                    await Task.Run(MethodA);
+                    //serialPort.Close();
                     // Проверяем и выполняем команды из очереди
                     CommandRequest? nextCommand = null;
                     lock (_queueLock)
@@ -264,8 +264,8 @@ namespace AuxularyApp.Services
                             MessageBox.Show("250 EquipmentService");
                         }
                     }
-
-                    Task.Delay(250, cancellationToken); // 4 раза в секунду
+                    serialPort.Close();
+                    //Task.Delay(250, cancellationToken); // 4 раза в секунду
                 }
                
             }
@@ -323,7 +323,7 @@ namespace AuxularyApp.Services
     }
     public interface IEquipmentService
     {
-        Task ProcessCycleAsync(CancellationToken cancellationToken = default);
+        void ProcessCycleAsync(CancellationToken cancellationToken = default);
         Task<CommandResponse> ExecuteCommandAsync(CommandRequest request);
         EquipmentStatus GetEquipmentStatus();
     }

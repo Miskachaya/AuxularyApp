@@ -424,7 +424,7 @@ namespace AuxularyApp.ViewModels
                 Fill = new SolidColorPaint(new SKColor(255, 205, 210, 100))
             }
             ];
-           _equipmentService.ProcessCycleAsync();
+            _equipmentService.ProcessCycleAsync();
             GetResponse();
         }
         public LabelVisual[] Title { get; set; } =

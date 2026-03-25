@@ -299,8 +299,8 @@ namespace AuxularyApp.Models
                         {
                             CommandRequest command = new CommandRequest();
                             command.BlockId = Convert.ToByte(title);
-                            ushort[] values = new UInt16[3];
-                            for (int j = 0; i < values.Length; i++) 
+                            ushort[] values = new ushort[] { (ushort) int.Parse( value) };
+                        for (int j = 0; i < values.Length; i++) 
                             {
                                 values[i] = Convert.ToUInt16(values[i]);
                             }
