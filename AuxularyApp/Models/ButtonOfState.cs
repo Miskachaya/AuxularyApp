@@ -288,8 +288,8 @@ namespace AuxularyApp.Models
                         try
                         {
                             HttpContent cont = new StringContent($"{title}-{value}");
-                            var response = client.PostAsync($"https://localhost:7029/api/Equipment/{title}-{value}", null);
-                            //var response = client.GetAsync($"https://localhost:7029/api/Equipment/{title}-{value}");
+                            var response = client.PostAsync($"https://84.237.17.49:5225/api/Equipment/{title}-{value}", null);
+                            
                         }
                         catch (Exception e)
                         {

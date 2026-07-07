@@ -660,7 +660,7 @@ namespace AuxularyApp.ViewModels
             
             try
             {
-                using HttpResponseMessage response = await httpClient.GetAsync($"https://localhost:7133/api/ParametersMeasures/Retrospective{FirstDate}b{SeconfDate}");
+                using HttpResponseMessage response = await httpClient.GetAsync($"http://84.237.17.49:5225/api/ParametersMeasures/Retrospective{FirstDate}b{SeconfDate}");
                 string content = await response.Content.ReadAsStringAsync();
                 ParametersMeasure[] collection = JsonSerializer.Deserialize<ParametersMeasure[]>(content);
                 foreach (var d in collection)
@@ -724,84 +724,85 @@ namespace AuxularyApp.ViewModels
                     BlockIdForRetroList[i] = true;
                     Series[i].IsVisible = BlockIdForRetroList[i];
                 }
-            } catch { Exception ex; } finally
-            {
-                string content="";
-                string localDBConnectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\maksb\\source\\repos\\Miskachaya\\AuxularyApp\\AuxularyApp\\Common\\localDB.mdf;Integrated Security=True";
-                SqlConnection sqlConnection = new SqlConnection(localDBConnectionString);
-                sqlConnection.Open();
-                var query = $"select Cast(ID AS int) AS id,\r\n     Cast(BlockID AS int  )              AS blockId,\r\n    CAST(VoltageValue AS decimal(10,5))  AS voltageValue,\r\n    CAST(CurrentValue AS decimal(10,5))  AS currentValue,\r\n    CAST(ActiveLoadPower AS decimal(10,5)) AS activeLoadPower,\r\n    CAST(ReactiveLoadPower AS decimal(10,5)) AS reactiveLoadPower,\r\n    CAST(FullLoadPower AS decimal(10,5)) AS fullLoadPower,\r\n    CAST(LoadPowerFactor AS decimal(10,5)) AS loadPowerFactor,\r\n    CAST(MicrogridFrequency AS decimal(10,5)) AS microgridFrequency,\r\n    [time] from \"Table\" where Time > '{FirstDate}' and Time < '{SeconfDate}' FOR JSON Path";
-                var command = new SqlCommand(query, sqlConnection);
-                SqlDataReader reader = command.ExecuteReader();
-                if (reader.HasRows)
-                {
-                    int i = 0;
-                    while (reader.Read())
-                    {
-                        content+= reader.GetString(i);
-                    }
-                }
-                reader.Close();
-                ParametersMeasure[] collection = JsonSerializer.Deserialize<ParametersMeasure[]>(content);
-                foreach (var d in collection)
-                {
-                    RetrospectiveChartCollection[d.BlockId.Value - 1].ClearChartData();
-                }
-                switch (SelectedKey)
-                {
-                    case ("VoltageValue"):
-                        foreach (ParametersMeasure d in collection)
-                        {
-                            RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.VoltageValue.Value);
-                        }
-                        break;
-                    case ("CurrentValue"):
-                        foreach (ParametersMeasure d in collection)
-                        {
-                            RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.CurrentValue.Value);
-                        }
-                        break;
-                    case ("ActiveLPValues"):
-                        foreach (ParametersMeasure d in collection)
-                        {
-                            RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.ActiveLoadPower.Value);
-                        }
-                        break;
-                    case ("ReactiveLPvalues"):
-                        foreach (ParametersMeasure d in collection)
-                        {
-                            RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.ReactiveLoadPower.Value);
-                        }
-                        break;
-                    case ("FullLPvalues"):
-                        foreach (ParametersMeasure d in collection)
-                        {
-                            RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.FullLoadPower.Value);
-                        }
-                        break;
-                    case ("MicrogridFr"):
-                        foreach (ParametersMeasure d in collection)
-                        {
-                            RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.MicrogridFrequency.Value);
-                        }
-                        break;
-                    case ("LPF"):
-                        foreach (ParametersMeasure d in collection)
-                        {
-                            RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.LoadPowerFactor.Value);
-                        }
-                        break;
+            } catch { Exception ex; } 
+            //finally
+            //{
+            //    string content="";
+            //    string localDBConnectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\maksb\\source\\repos\\Miskachaya\\AuxularyApp\\AuxularyApp\\Common\\localDB.mdf;Integrated Security=True";
+            //    SqlConnection sqlConnection = new SqlConnection(localDBConnectionString);
+            //    sqlConnection.Open();
+            //    var query = $"select Cast(ID AS int) AS id,\r\n     Cast(BlockID AS int  )              AS blockId,\r\n    CAST(VoltageValue AS decimal(10,5))  AS voltageValue,\r\n    CAST(CurrentValue AS decimal(10,5))  AS currentValue,\r\n    CAST(ActiveLoadPower AS decimal(10,5)) AS activeLoadPower,\r\n    CAST(ReactiveLoadPower AS decimal(10,5)) AS reactiveLoadPower,\r\n    CAST(FullLoadPower AS decimal(10,5)) AS fullLoadPower,\r\n    CAST(LoadPowerFactor AS decimal(10,5)) AS loadPowerFactor,\r\n    CAST(MicrogridFrequency AS decimal(10,5)) AS microgridFrequency,\r\n    [time] from \"Table\" where Time > '{FirstDate}' and Time < '{SeconfDate}' FOR JSON Path";
+            //    var command = new SqlCommand(query, sqlConnection);
+            //    SqlDataReader reader = command.ExecuteReader();
+            //    if (reader.HasRows)
+            //    {
+            //        int i = 0;
+            //        while (reader.Read())
+            //        {
+            //            content+= reader.GetString(i);
+            //        }
+            //    }
+            //    reader.Close();
+            //    ParametersMeasure[] collection = JsonSerializer.Deserialize<ParametersMeasure[]>(content);
+            //    foreach (var d in collection)
+            //    {
+            //        RetrospectiveChartCollection[d.BlockId.Value - 1].ClearChartData();
+            //    }
+            //    switch (SelectedKey)
+            //    {
+            //        case ("VoltageValue"):
+            //            foreach (ParametersMeasure d in collection)
+            //            {
+            //                RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.VoltageValue.Value);
+            //            }
+            //            break;
+            //        case ("CurrentValue"):
+            //            foreach (ParametersMeasure d in collection)
+            //            {
+            //                RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.CurrentValue.Value);
+            //            }
+            //            break;
+            //        case ("ActiveLPValues"):
+            //            foreach (ParametersMeasure d in collection)
+            //            {
+            //                RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.ActiveLoadPower.Value);
+            //            }
+            //            break;
+            //        case ("ReactiveLPvalues"):
+            //            foreach (ParametersMeasure d in collection)
+            //            {
+            //                RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.ReactiveLoadPower.Value);
+            //            }
+            //            break;
+            //        case ("FullLPvalues"):
+            //            foreach (ParametersMeasure d in collection)
+            //            {
+            //                RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.FullLoadPower.Value);
+            //            }
+            //            break;
+            //        case ("MicrogridFr"):
+            //            foreach (ParametersMeasure d in collection)
+            //            {
+            //                RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.MicrogridFrequency.Value);
+            //            }
+            //            break;
+            //        case ("LPF"):
+            //            foreach (ParametersMeasure d in collection)
+            //            {
+            //                RetrospectiveChartCollection[d.BlockId.Value - 1].PushRetrospectiveChartData(d.Time, SelectedKey, d.LoadPowerFactor.Value);
+            //            }
+            //            break;
 
-                    default:
-                        MessageBox.Show("Выберите параметр");
-                        break;
-                }
-                for (int i = 0; i < BlockIdForRetroList.Count; i++)
-                {
-                    BlockIdForRetroList[i] = true;
-                    Series[i].IsVisible = BlockIdForRetroList[i];
-                }
-            }            
+            //        default:
+            //            MessageBox.Show("Выберите параметр");
+            //            break;
+            //    }
+            //    for (int i = 0; i < BlockIdForRetroList.Count; i++)
+            //    {
+            //        BlockIdForRetroList[i] = true;
+            //        Series[i].IsVisible = BlockIdForRetroList[i];
+            //    }
+            //}            
         }
         private string _selectedKey;
         public string SelectedKey
@@ -1007,7 +1008,7 @@ namespace AuxularyApp.ViewModels
                 await Task.Delay(500);
                 try
                 {
-                    response = await httpClient.GetAsync("https://localhost:7133/api/ParametersMeasures/lv");
+                    response = await httpClient.GetAsync("http://84.237.17.49:5225/api/ParametersMeasures/lv");
                     string content = await response.Content.ReadAsStringAsync();
                     ParametersMeasure[] collection = JsonSerializer.Deserialize<ParametersMeasure[]>(content);
                     foreach (ParametersMeasure d in collection)

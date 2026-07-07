@@ -7,8 +7,7 @@ namespace AuxularyApp.Models.DataModels.MicrogridModels;
 public partial class ParametersMeasure : Data
 {
     public ParametersMeasure() { }
-    [JsonPropertyName("id")]
-    public int? Id { get; set; }
+    //public int? Id { get; set; }
     [JsonPropertyName("blockId")]
     public int? BlockId { get; set; }
     [JsonPropertyName("voltageValue")]
