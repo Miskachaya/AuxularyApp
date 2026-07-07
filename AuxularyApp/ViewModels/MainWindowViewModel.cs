@@ -596,12 +596,12 @@ namespace AuxularyApp.ViewModels
 
         }
 
-        private string _firstDate;
+        private string _firstDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
         public string FirstDate
         {
             get => _firstDate; set => _firstDate = value;
         }
-        private string _seconfDate;
+        private string _seconfDate = DateTime.Now.AddMinutes(-3).ToString("yyyy-MM-dd HH:mm:ss");
         public string SeconfDate
         {
             get => _seconfDate; set => _seconfDate = value;

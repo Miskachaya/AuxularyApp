@@ -186,13 +186,13 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="1" >
                             <StackPanel>
-                                <CheckBox  Margin="0,30,0,13"  IsChecked="{Binding ChartCollection[0].Series[0].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="0 0"></CheckBox>
-                                <CheckBox Margin="0,0,0,13" IsChecked="{Binding ChartCollection[0].Series[1].IsVisible, Mode=OneWay}" Command="{Binding  SwitchVisiableCommand}" CommandParameter="0 1"/>
-                                <CheckBox Margin="0,0,0,13"  IsChecked="{Binding ChartCollection[0].Series[2].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="0 2"></CheckBox>
-                                <CheckBox Margin="0,0,0,13" IsChecked="{Binding ChartCollection[0].Series[3].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="0 3"></CheckBox>
-                                <CheckBox Margin="0,0,0,13" IsChecked="{Binding ChartCollection[0].Series[4].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="0 4"></CheckBox>
-                                <CheckBox Margin="0,0,0,13" IsChecked="{Binding ChartCollection[0].Series[5].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="0 5"></CheckBox>
-                                <CheckBox Margin="0,0,0,13" IsChecked="{Binding ChartCollection[0].Series[6].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="0 6"></CheckBox>
+                                <CheckBox  Margin="0,30,0,13"  IsChecked="{Binding ChartCollection[1].Series[0].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="1 0"></CheckBox>
+                                <CheckBox Margin="0,0,0,13" IsChecked="{Binding ChartCollection[1].Series[1].IsVisible, Mode=OneWay}" Command="{Binding  SwitchVisiableCommand}" CommandParameter="1 1"/>
+                                <CheckBox Margin="0,0,0,13"  IsChecked="{Binding ChartCollection[1].Series[2].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="1 2"></CheckBox>
+                                <CheckBox Margin="0,0,0,13" IsChecked="{Binding ChartCollection[1].Series[3].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="1 3"></CheckBox>
+                                <CheckBox Margin="0,0,0,13" IsChecked="{Binding ChartCollection[1].Series[4].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="1 4"></CheckBox>
+                                <CheckBox Margin="0,0,0,13" IsChecked="{Binding ChartCollection[1].Series[5].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="1 5"></CheckBox>
+                                <CheckBox Margin="0,0,0,13" IsChecked="{Binding ChartCollection[1].Series[6].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="1 6"></CheckBox>
                             </StackPanel>
                         </StackPanel>
                         <TextBlock Text="{Binding Date, UpdateSourceTrigger=Explicit}" />
@@ -203,12 +203,12 @@
                             UseLayoutRounding="True"
                             Grid.Column="0"
                             SyncContext="{Binding Sync}"
-                            Series="{Binding ChartCollection[0].Series}"
+                            Series="{Binding ChartCollection[1].Series}"
                             XAxes="{Binding XAxes}"
                             YAxes="{Binding YAxes}"
                             LegendPosition="Right"
                             LegendTextSize="13"
-                            Title="{Binding Title[0]}">
+                            Title="{Binding Title[1]}">
                         </lvc:CartesianChart>
                     </Grid>
                     <Grid Grid.Row="0" Grid.Column="1" >
@@ -218,39 +218,9 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="1" >
                             <StackPanel></StackPanel>
-                            <CheckBox  Margin="0,30,0,13"  IsChecked="{Binding ChartCollection[1].Series[0].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="1 0"></CheckBox>
-                            <CheckBox Margin="0,0,0,13" IsChecked="{Binding ChartCollection[1].Series[1].IsVisible, Mode=OneWay}" Command="{Binding  SwitchVisiableCommand}" CommandParameter="1 1"/>
-                            <CheckBox Margin="0,0,0,13"  IsChecked="{Binding ChartCollection[1].Series[2].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="1 2"></CheckBox>
-                            <CheckBox Margin="0,0,0,13" IsChecked="{Binding ChartCollection[1].Series[3].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="1 3"></CheckBox>
-                            <CheckBox Margin="0,0,0,13" IsChecked="{Binding ChartCollection[1].Series[4].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="1 4"></CheckBox>
-                            <CheckBox Margin="0,0,0,13" IsChecked="{Binding ChartCollection[1].Series[5].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="1 5"></CheckBox>
-                            <CheckBox Margin="0,0,0,13" IsChecked="{Binding ChartCollection[1].Series[6].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="1 6"></CheckBox>
-                        </StackPanel>
-                        <TextBlock Text="{Binding Date, UpdateSourceTrigger=Explicit}" />
-                        <lvc:CartesianChart
-                            RenderOptions.BitmapScalingMode="HighQuality"
-RenderOptions.EdgeMode="Aliased"
-SnapsToDevicePixels="True"
-UseLayoutRounding="True"
-                Grid.Column="0"
-                SyncContext="{Binding Sync}"
-                Series="{Binding ChartCollection[1].Series}"
-                XAxes="{Binding XAxes}"
-                YAxes="{Binding YAxes}"
-                LegendPosition="Right"
-                LegendTextSize="13"
-                Title="{Binding Title[1]}">
-                        </lvc:CartesianChart>
-                    </Grid>
-                    <Grid Grid.Row="1" Grid.Column="0" >
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="7*"></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Column="1" >
-                            <CheckBox Margin="0,30,0,13" IsChecked="{Binding ChartCollection[2].Series[0].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="2 0"></CheckBox>
+                            <CheckBox  Margin="0,30,0,13"  IsChecked="{Binding ChartCollection[2].Series[0].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="2 0"></CheckBox>
                             <CheckBox Margin="0,0,0,13" IsChecked="{Binding ChartCollection[2].Series[1].IsVisible, Mode=OneWay}" Command="{Binding  SwitchVisiableCommand}" CommandParameter="2 1"/>
-                            <CheckBox Margin="0,0,0,13" IsChecked="{Binding ChartCollection[2].Series[2].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="2 2"></CheckBox>
+                            <CheckBox Margin="0,0,0,13"  IsChecked="{Binding ChartCollection[2].Series[2].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="2 2"></CheckBox>
                             <CheckBox Margin="0,0,0,13" IsChecked="{Binding ChartCollection[2].Series[3].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="2 3"></CheckBox>
                             <CheckBox Margin="0,0,0,13" IsChecked="{Binding ChartCollection[2].Series[4].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="2 4"></CheckBox>
                             <CheckBox Margin="0,0,0,13" IsChecked="{Binding ChartCollection[2].Series[5].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="2 5"></CheckBox>
@@ -262,14 +232,44 @@ UseLayoutRounding="True"
                             RenderOptions.EdgeMode="Aliased"
                             SnapsToDevicePixels="True"
                             UseLayoutRounding="True"
+                            Grid.Column="0"
+                            SyncContext="{Binding Sync}"
+                            Series="{Binding ChartCollection[2].Series}"
+                            XAxes="{Binding XAxes}"
+                            YAxes="{Binding YAxes}"
+                            LegendPosition="Right"
+                            LegendTextSize="13"
+                            Title="{Binding Title[2]}">
+                        </lvc:CartesianChart>
+                    </Grid>
+                    <Grid Grid.Row="1" Grid.Column="0" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="7*"></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="1" >
+                            <CheckBox Margin="0,30,0,13" IsChecked="{Binding ChartCollection[0].Series[0].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="0 0"></CheckBox>
+                            <CheckBox Margin="0,0,0,13" IsChecked="{Binding ChartCollection[0].Series[1].IsVisible, Mode=OneWay}" Command="{Binding  SwitchVisiableCommand}" CommandParameter="0 1"/>
+                            <CheckBox Margin="0,0,0,13" IsChecked="{Binding ChartCollection[0].Series[2].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="0 2"></CheckBox>
+                            <CheckBox Margin="0,0,0,13" IsChecked="{Binding ChartCollection[0].Series[3].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="0 3"></CheckBox>
+                            <CheckBox Margin="0,0,0,13" IsChecked="{Binding ChartCollection[0].Series[4].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="0 4"></CheckBox>
+                            <CheckBox Margin="0,0,0,13" IsChecked="{Binding ChartCollection[0].Series[5].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="0 5"></CheckBox>
+                            <CheckBox Margin="0,0,0,13" IsChecked="{Binding ChartCollection[0].Series[6].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="0 6"></CheckBox>
+                        </StackPanel>
+                        <TextBlock Text="{Binding Date, UpdateSourceTrigger=Explicit}" />
+                        <lvc:CartesianChart
+                            RenderOptions.BitmapScalingMode="HighQuality"
+                            RenderOptions.EdgeMode="Aliased"
+                            SnapsToDevicePixels="True"
+                            UseLayoutRounding="True"
                      Grid.Column="0"
                      SyncContext="{Binding Sync}"
-                     Series="{Binding ChartCollection[2].Series}"
+                     Series="{Binding ChartCollection[0].Series}"
                      XAxes="{Binding XAxes}"
                      YAxes="{Binding YAxes}"
                      LegendPosition="Right"
                      LegendTextSize="13"
-                     Title="{Binding Title[2]}">        
+                     Title="{Binding Title[0]}">        
                         </lvc:CartesianChart>
                     </Grid>
                     <Grid Grid.Row="1" Grid.Column="1" >
@@ -278,13 +278,13 @@ UseLayoutRounding="True"
                             <ColumnDefinition></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="1" >
-                            <CheckBox Margin="0,30,0,13"  IsChecked="{Binding ChartCollection[4].Series[0].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="4 0"></CheckBox>
-                            <CheckBox Margin="0,0,0,13" IsChecked="{Binding ChartCollection[4].Series[1].IsVisible, Mode=OneWay}" Command="{Binding  SwitchVisiableCommand}" CommandParameter="4 1"/>
-                            <CheckBox Margin="0,0,0,13"  IsChecked="{Binding ChartCollection[4].Series[2].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="4 2"></CheckBox>
-                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding ChartCollection[4].Series[3].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="4 3"></CheckBox>
-                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding ChartCollection[4].Series[4].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="4 4"></CheckBox>
-                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding ChartCollection[4].Series[5].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="4 5"></CheckBox>
-                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding ChartCollection[4].Series[6].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="4 6"></CheckBox>
+                            <CheckBox Margin="0,30,0,13"  IsChecked="{Binding ChartCollection[3].Series[0].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="3 0"></CheckBox>
+                            <CheckBox Margin="0,0,0,13" IsChecked="{Binding ChartCollection[3].Series[1].IsVisible, Mode=OneWay}" Command="{Binding  SwitchVisiableCommand}" CommandParameter="3 1"/>
+                            <CheckBox Margin="0,0,0,13"  IsChecked="{Binding ChartCollection[3].Series[2].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="3 2"></CheckBox>
+                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding ChartCollection[3].Series[3].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="3 3"></CheckBox>
+                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding ChartCollection[3].Series[4].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="3 4"></CheckBox>
+                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding ChartCollection[3].Series[5].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="3 5"></CheckBox>
+                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding ChartCollection[3].Series[6].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="3 6"></CheckBox>
                         </StackPanel>
                         <TextBlock Text="{Binding Date, UpdateSourceTrigger=Explicit}" />
                         <lvc:CartesianChart
@@ -309,28 +309,28 @@ UseLayoutRounding="True"
                             <ColumnDefinition></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="1" >
-                            <CheckBox Margin="0,30,0,13"  IsChecked="{Binding ChartCollection[5].Series[0].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="5 0"></CheckBox>
-                            <CheckBox Margin="0,0,0,13" IsChecked="{Binding ChartCollection[5].Series[1].IsVisible, Mode=OneWay}" Command="{Binding  SwitchVisiableCommand}" CommandParameter="5 1"/>
-                            <CheckBox Margin="0,0,0,13"  IsChecked="{Binding ChartCollection[5].Series[2].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="5 2"></CheckBox>
-                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding ChartCollection[5].Series[3].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="5 3"></CheckBox>
-                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding ChartCollection[5].Series[4].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="5 4"></CheckBox>
-                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding ChartCollection[5].Series[5].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="5 5"></CheckBox>
-                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding ChartCollection[5].Series[6].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="5 6"></CheckBox>
+                            <CheckBox Margin="0,30,0,13"  IsChecked="{Binding ChartCollection[4].Series[0].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="4 0"></CheckBox>
+                            <CheckBox Margin="0,0,0,13" IsChecked="{Binding ChartCollection[4].Series[1].IsVisible, Mode=OneWay}" Command="{Binding  SwitchVisiableCommand}" CommandParameter="4 1"/>
+                            <CheckBox Margin="0,0,0,13"  IsChecked="{Binding ChartCollection[4].Series[2].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="4 2"></CheckBox>
+                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding ChartCollection[4].Series[3].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="4 3"></CheckBox>
+                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding ChartCollection[4].Series[4].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="4 4"></CheckBox>
+                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding ChartCollection[4].Series[5].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="4 5"></CheckBox>
+                            <CheckBox  Margin="0,0,0,13" IsChecked="{Binding ChartCollection[4].Series[6].IsVisible, Mode=OneWay}" Command="{Binding SwitchVisiableCommand}" CommandParameter="4 6"></CheckBox>
                         </StackPanel>
                         <TextBlock Text="{Binding Date, UpdateSourceTrigger=Explicit}" />
                         <lvc:CartesianChart
                             RenderOptions.BitmapScalingMode="HighQuality"
-RenderOptions.EdgeMode="Aliased"
-SnapsToDevicePixels="True"
-UseLayoutRounding="True"
-                 Grid.Column="0"
-                 SyncContext="{Binding Sync}"
-                 Series="{Binding ChartCollection[4].Series}"
-                 XAxes="{Binding XAxes}"
-                 YAxes="{Binding YAxes}"
-                 LegendTextSize="13"
-                 LegendPosition="Right"
-                 Title="{Binding Title[4]}">
+                            RenderOptions.EdgeMode="Aliased"
+                            SnapsToDevicePixels="True"
+                            UseLayoutRounding="True"
+                            Grid.Column="0"
+                            SyncContext="{Binding Sync}"
+                            Series="{Binding ChartCollection[4].Series}"
+                            XAxes="{Binding XAxes}"
+                            YAxes="{Binding YAxes}"
+                            LegendTextSize="13"
+                            LegendPosition="Right"
+                            Title="{Binding Title[4]}">
                         </lvc:CartesianChart>
                     </Grid>
                     <Grid Grid.Row="2" Grid.Column="1">
@@ -350,17 +350,17 @@ UseLayoutRounding="True"
                         <TextBlock Text="{Binding Date, UpdateSourceTrigger=Explicit}" />
                         <lvc:CartesianChart
                             RenderOptions.BitmapScalingMode="HighQuality"
-RenderOptions.EdgeMode="Aliased"
-SnapsToDevicePixels="True"
-UseLayoutRounding="True"
-                 Grid.Column="0"
-                 SyncContext="{Binding Sync}"
-                 Series="{Binding ChartCollection[5].Series}"
-                 XAxes="{Binding XAxes}"
-                 YAxes="{Binding YAxes}"
-                 LegendPosition="Right"
-                 LegendTextSize="13"
-                 Title="{Binding Title[5]}">
+                            RenderOptions.EdgeMode="Aliased"
+                            SnapsToDevicePixels="True"
+                            UseLayoutRounding="True"
+                            Grid.Column="0"
+                            SyncContext="{Binding Sync}"
+                            Series="{Binding ChartCollection[5].Series}"
+                            XAxes="{Binding XAxes}"
+                            YAxes="{Binding YAxes}"
+                            LegendPosition="Right"
+                            LegendTextSize="13"
+                            Title="{Binding Title[5]}">
                         </lvc:CartesianChart>
                     </Grid>
                 </Grid>
